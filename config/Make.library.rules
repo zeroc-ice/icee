@@ -1,0 +1,23 @@
+
+include $(OBJECT_RULES)
+
+LOCAL_LIBNAME	= lib$(LOCAL_MODULE).a
+LOCAL_LIB 	= lib/$(OBJ_PREFIX)/$(LOCAL_LIBNAME)
+
+$(LOCAL_LIB): LOCAL_OBJS := $(LOCAL_OBJS)
+
+$(LOCAL_LIB): $(LOCAL_OBJS)
+	@mkdir -p $(@D)
+	$(E) Creating library: $(@F)
+	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
+
+.PHONY: $(LOCAL_MODULE)
+
+$(LOCAL_MODULE): LOCAL_LIB := $(LOCAL_LIB)
+
+$(LOCAL_MODULE): $(LOCAL_LIB)
+
+$(LOCAL_MODULE)_clean::
+	$(Q)rm -rf $(LOCAL_LIB)
+
+TARGETS := $(TARGETS) $(LOCAL_LIB)

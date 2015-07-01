@@ -1,0 +1,70 @@
+.PHONY: all clean
+
+all::
+clean::
+
+VERSION		= 3.6.0
+BUILD		= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+ifeq ($(HOST),)
+HOST		= $(BUILD)
+endif
+
+OBJ_PREFIX = $(HOST)
+
+CPPFLAGS 	= -fvisibility=hidden -Wall -Werror -pthread -fPIC
+
+#TODO use ICE_HOME
+CPPFLAGS 	+= -Icpp/src -Iice/cpp/src -Iice/cpp/include
+
+LDFLAGS		= -Llib/$(OBJ_PREFIX) -lIce -lcrypto -lssl -pthread -lbz2 -ldl -lrt -fPIC
+
+SLICE2CPPFLAGS	= -Iice/slice
+
+#
+# If host different than build we are cross compiling
+#
+ifneq ($(HOST),$(BUILD))
+include config/Make.cross.rules
+else
+mklib		= ar cr $(1) $(2)
+endif
+
+
+ifeq ($(OPTIMIZE),yes)
+	CPPFLAGS += -Os
+else
+	CPPFLAGS += -g
+endif
+
+bindir		= bin/$(OBJ_PREFIX)
+libdir		= lib/$(OBJ_PREFIX)
+
+mklibname	= lib$(1).a
+mklibtarget	= $(libdir)/$(call mklibname,$(1))
+mkexetarget	= $(bindir)/$(1)
+ 
+#
+# Recursive wildcard function
+#
+rwildcard	= $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+#
+# Verbosity
+#
+ifdef V
+    ifeq ("$(origin V)", "command line")
+        BUILD_VERBOSE = $(V)
+    endif
+endif
+
+ifndef BUILD_VERBOSE
+    BUILD_VERBOSE = 0
+endif
+
+ifeq ($(BUILD_VERBOSE),0)
+    Q = @
+    E = @echo
+else
+    E = @:
+endif

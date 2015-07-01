@@ -1,0 +1,9 @@
+
+#
+# All non existing objects depend on all generate sources. With this we
+# ensure that compilation of C++ starts after all generated files are in
+# place.
+#
+ALL_OBJS_NOEXIST = $(filter-out $(wildcard  $(ALL_OBJS)), $(ALL_OBJS))
+
+$(ALL_OBJS_NOEXIST): $(ALL_GEN_SRCS)

@@ -1,0 +1,3 @@
+[submodule "ice"]
+	path = ice
+	url = git@github.com:zeroc-ice/ice.git
