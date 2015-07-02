@@ -9,39 +9,10 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE	= client
 LOCAL_PATH	= cpp/test/Ice/adapterDeactivation
 
-LOCAL_SLICES	= Test.ice
+TEST_TARGET_EXT	= colloc
 
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
+SERVER_SRCS_EXT	= ServantLocatorI.cpp
 
-include $(TEST_APPLICATION_RULES)
-
-include $(CLEAR_RULES)
-
-LOCAL_EXE	= server
-LOCAL_PATH	= cpp/test/Ice/adapterDeactivation
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-		  ServantLocatorI.cpp \
-		  Server.cpp
-
-include $(TEST_APPLICATION_RULES)
-
-include $(CLEAR_RULES)
-
-LOCAL_EXE	= colloc
-LOCAL_PATH	= cpp/test/Ice/adapterDeactivation
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-		  ServantLocatorI.cpp \
-		  Collocated.cpp \
-		  AllTests.cpp
-
-include $(TEST_APPLICATION_RULES)
+include $(CLIENTSERVERTEST_RULES)

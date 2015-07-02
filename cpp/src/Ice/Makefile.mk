@@ -43,8 +43,10 @@ LOCAL_SLICES	= $(wildcard $(LOCAL_SLICEDIR)/*.ice)
 LOCAL_SLICE2CPPFLAGS	= --ice -Iice/slice
 
 LOCAL_SRCDIR	= ice/cpp/src/$(LOCAL_MODULE)
-LOCAL_SRCS 	= $(filter-out $(LOCAL_SRCDIR)/DLLMain.cpp, $(wildcard $(LOCAL_SRCDIR)/*.cpp))
+LOCAL_SRCS 	= $(filter-out $(LOCAL_SRCDIR)/DLLMain.cpp $(LOCAL_SRCDIR)/RegisterPlugins.cpp, $(wildcard $(LOCAL_SRCDIR)/*.cpp)) \
+		  $(LOCAL_PATH)/RegisterPlugins.cpp
+
 LOCAL_CPPFLAGS	= -Icpp/src/Ice
 
 LOCAL_OBJS	= $(LIBRARY_OBJS)
-include $(LIBRARY_RULES)
+include $(STATICLIBRARY_RULES)

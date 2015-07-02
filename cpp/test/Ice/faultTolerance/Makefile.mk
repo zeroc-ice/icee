@@ -9,24 +9,6 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE	= client
 LOCAL_PATH	= cpp/test/Ice/faultTolerance
 
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
-
-include $(TEST_APPLICATION_RULES)
-
-include $(CLEAR_RULES)
-
-LOCAL_EXE	= server
-LOCAL_PATH	= cpp/test/Ice/faultTolerance
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-		  Server.cpp
-
-include $(TEST_APPLICATION_RULES)
+include $(CLIENTSERVERTEST_RULES)

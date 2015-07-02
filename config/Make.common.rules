@@ -1,9 +1,24 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
 .PHONY: all clean
 
 all::
 clean::
 
-VERSION		= 3.6.0
+VERSION_MAJOR   = 3
+VERSION_MINOR   = 6
+VERSION_PATCH   = 0
+VERSION         = 3.6.0
+SHORT_VERSION   = 3.6
+SOVERSION	= 36
+
 BUILD		= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 ifeq ($(HOST),)
@@ -17,7 +32,9 @@ CPPFLAGS 	= -fvisibility=hidden -Wall -Werror -pthread -fPIC
 #TODO use ICE_HOME
 CPPFLAGS 	+= -Icpp/src -Iice/cpp/src -Iice/cpp/include
 
-LDFLAGS		= -Llib/$(OBJ_PREFIX) -lIce -lcrypto -lssl -pthread -lbz2 -ldl -lrt -fPIC
+LDFLAGS		= -Llib/$(OBJ_PREFIX) -fPIC
+
+EXELDFLAGS	= -lcrypto -lssl -pthread -lbz2 -ldl -lrt
 
 SLICE2CPPFLAGS	= -Iice/slice
 
@@ -43,7 +60,9 @@ libdir		= lib/$(OBJ_PREFIX)
 mklibname	= lib$(1).a
 mklibtarget	= $(libdir)/$(call mklibname,$(1))
 mkexetarget	= $(bindir)/$(1)
- 
+
+mksoname	= $(if $(2),lib$(1).so.$(2),lib$(1).so)
+
 #
 # Recursive wildcard function
 #
@@ -68,3 +87,17 @@ ifeq ($(BUILD_VERBOSE),0)
 else
     E = @:
 endif
+
+GITIGNORE_DEFAULT	= scripts \
+			  lib \
+			  bin \
+			  .depend \
+			  arm-linux-gnueabihf \
+			  x86_64-linux-gnu \
+			  *.so \
+			  *.so.*
+gitignore::
+	@for line in $(GITIGNORE_DEFAULT) ; do \
+	  echo $$line ; \
+	done
+

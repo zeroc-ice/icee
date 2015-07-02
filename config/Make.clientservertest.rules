@@ -1,0 +1,247 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+TEST_LOCAL_PATH	:= $(LOCAL_PATH)
+
+#
+# Client test
+#
+ifeq ($(CLIENT_SLICES),)
+CLIENT_SLICES	= Test.ice
+endif
+
+ifneq ($(CLIENT_SLICES_EXT),)
+CLIENT_SLICES	:= $(CLIENT_SLICES) \
+		   $(CLIENT_SLICES_EXT)
+endif
+
+ifneq ($(TEST_SLICES_EXT),)
+CLIENT_SLICES	:= $(CLIENT_SLICES) \
+		   $(TEST_SLICES_EXT)
+endif
+
+ifeq ($(CLIENT_SRCS),)
+CLIENT_SRCS	= Client.cpp \
+		  AllTests.cpp
+endif
+
+ifneq ($(CLIENT_SRCS_EXT),)
+CLIENT_SRCS	:= $(CLIENT_SRCS) \
+		   $(CLIENT_SRCS_EXT)
+endif
+
+ifneq ($(TEST_SRCS_EXT),)
+CLIENT_SRCS	:= $(CLIENT_SRCS) \
+		   $(TEST_SRCS_EXT)
+endif
+
+include $(CLEAR_RULES)
+
+LOCAL_EXE	= client
+LOCAL_PATH	= $(TEST_LOCAL_PATH)
+
+LOCAL_SLICES	= $(filter-out $(CLIENT_SLICES_EXCLUDE),$(sort $(CLIENT_SLICES)))
+
+LOCAL_SRCS	= $(filter-out $(CLIENT_SRCS_EXCLUDE),$(sort $(CLIENT_SRCS)))
+
+include $(TEST_APPLICATION_RULES)
+
+#
+# Server test
+#
+ifeq ($(SERVER_SLICES),)
+SERVER_SLICES	= Test.ice
+endif
+
+ifneq ($(SERVER_SLICES_EXT),)
+SERVER_SLICES	:= $(SERVER_SLICES) \
+		   $(SERVER_SLICES_EXT)
+endif
+
+ifneq ($(TEST_SLICES_EXT),)
+SERVER_SLICES	:= $(SERVER_SLICES) \
+		   $(TEST_SLICES_EXT)
+endif
+
+ifeq ($(SERVER_SRCS),)
+SERVER_SRCS	= Server.cpp \
+		  TestI.cpp
+endif
+
+ifneq ($(SERVER_SRCS_EXT),)
+SERVER_SRCS	:= $(SERVER_SRCS) \
+		   $(SERVER_SRCS_EXT)
+endif
+
+ifneq ($(TEST_SRCS_EXT),)
+SERVER_SRCS	:= $(SERVER_SRCS) \
+		   $(TEST_SRCS_EXT)
+endif
+
+include $(CLEAR_RULES)
+
+LOCAL_EXE	= server
+LOCAL_PATH	= $(TEST_LOCAL_PATH)
+
+LOCAL_SLICES	= $(filter-out $(SERVER_SLICES_EXCLUDE),$(sort $(SERVER_SLICES)))
+
+LOCAL_SRCS      = $(filter-out $(SERVER_SRCS_EXCLUDE),$(sort $(SERVER_SRCS)))
+
+include $(TEST_APPLICATION_RULES)
+
+#
+# Colloc test
+#
+ifneq ($(findstring colloc,$(TEST_TARGET_EXT)),)
+
+ifeq ($(COLLOC_SLICES),)
+COLLOC_SLICES	= Test.ice
+endif
+
+ifneq ($(COLLOC_SLICES_EXT),)
+COLLOC_SLICES	:= $(COLLOC_SLICES) \
+		   $(COLLOC_SLICES_EXT)
+endif
+
+ifneq ($(TEST_SLICES_EXT),)
+COLLOC_SLICES	:= $(COLLOC_SLICES) \
+		   $(TEST_SLICES_EXT)
+endif
+
+ifneq ($(CLIENT_SLICES_EXT),)
+COLLOC_SLICES	:= $(COLLOC_SLICES) \
+		   $(CLIENT_SLICES_EXT)
+endif
+
+ifneq ($(SERVER_SLICES_EXT),)
+COLLOC_SLICES	:= $(COLLOC_SLICES) \
+		   $(SERVER_SLICES_EXT)
+endif
+
+ifeq ($(COLLOC_SRCS),)
+COLLOC_SRCS	= Collocated.cpp \
+		  TestI.cpp \
+		  AllTests.cpp
+endif
+
+ifneq ($(COLLOC_SRCS_EXT),)
+COLLOC_SRCS	:= $(COLLOC_SRCS) \
+		   $(COLLOC_SRCS_EXT)
+endif
+
+ifneq ($(SERVER_SRCS_EXT),)
+COLLOC_SRCS	:= $(COLLOC_SRCS) \
+		   $(SERVER_SRCS_EXT)
+endif
+
+ifneq ($(CLIENT_SRCS_EXT),)
+COLLOC_SRCS	:= $(COLLOC_SRCS) \
+		   $(CLIENT_SRCS_EXT)
+endif
+
+ifneq ($(TEST_SRCS_EXT),)
+COLLOC_SRCS	:= $(COLLOC_SRCS) \
+		   $(TEST_SRCS_EXT)
+endif
+
+include $(CLEAR_RULES)
+
+LOCAL_EXE	= collocated
+LOCAL_PATH	= $(TEST_LOCAL_PATH)
+
+LOCAL_SLICES	= $(filter-out $(COLLOC_SLICES_EXCLUDE),$(sort $(COLLOC_SLICES)))
+
+LOCAL_SRCS	= $(filter-out $(COLLOC_SRCS_EXCLUDE),$(sort $(COLLOC_SRCS)))
+
+include $(TEST_APPLICATION_RULES)
+
+endif
+
+#
+# ServerAMD test
+#
+ifneq ($(findstring serveramd,$(TEST_TARGET_EXT)),)
+
+ifeq ($(AMD_SLICES),)
+AMD_SLICES	= TestAMD.ice
+endif
+
+ifneq ($(AMD_SLICES_EXT),)
+AMD_SLICES	:= $(AMD_SLICES) \
+		   $(AMD_SLICES_EXT)
+endif
+
+ifneq ($(TEST_SLICES_EXT),)
+AMD_SLICES	:= $(AMD_SLICES) \
+		   $(TEST_SLICES_EXT)
+endif
+
+ifeq ($(AMD_SRCS),)
+AMD_SRCS	= TestAMDI.cpp \
+		  ServerAMD.cpp
+endif
+
+ifneq ($(AMD_SRCS_EXT),)
+AMD_SRCS	:= $(AMD_SRCS) \
+		   $(AMD_SRCS_EXT)
+endif
+
+ifneq ($(TEST_SRCS_EXT),)
+AMD_SRCS	:= $(AMD_SRCS) \
+		   $(TEST_SRCS_EXT)
+endif
+
+include $(CLEAR_RULES)
+
+LOCAL_EXE	= serveramd
+LOCAL_PATH	= $(TEST_LOCAL_PATH)
+
+LOCAL_SLICES	= $(filter-out $(AMD_SLICES_EXCLUDE),$(sort $(AMD_SLICES)))
+
+LOCAL_SRCS	= $(filter-out $(AMD_SRCS_EXCLUDE),$(sort $(AMD_SRCS)))
+
+include $(TEST_APPLICATION_RULES)
+
+endif
+
+#
+# Clear local variables
+#
+CLIENT_SLICES		=
+CLIENT_SLICES_EXT	=
+CLIENT_SLICES_EXCLUDE	=
+CLIENT_SRCS		=
+CLIENT_SRCS_EXT		=
+CLIENT_SRCS_EXCLUDE	=
+
+SERVER_SLICES		=
+SERVER_SLICES_EXT	=
+SERVER_SLICES_EXCLUDE	=
+SERVER_SRCS		=
+SERVER_SRCS_EXT		=
+SERVER_SRCS_EXCLUDE	=
+
+COLLOC_SLICES		=
+COLLOC_SLICES_EXT	=
+COLLOC_SLICES_EXCLUDE	=
+COLLOC_SRCS		=
+COLLOC_SRCS_EXT		=
+COLLOC_SRCS_EXCLUDE	=
+
+AMD_SLICES		=
+AMD_SLICES_EXT		=
+AMD_SLICES_EXCLUDE	=
+AMD_SRCS		=
+AMD_SRCS_EXT		=
+AMD_SRCS_EXCLUDE	=
+
+TEST_TARGET_EXT		=
+TEST_SLICES_EXT		=
+TEST_SRCS_EXT		=
+TEST_LOCAL_PATH		=

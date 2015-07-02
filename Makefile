@@ -45,7 +45,9 @@ OBJECT_RULES 		= $(CURDIR)/config/Make.object.rules
 SUBMODULE_RULES		= $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES 	= $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES 	= $(CURDIR)/config/Make.test.application.rules
-LIBRARY_RULES 		= $(CURDIR)/config/Make.library.rules
+CLIENTSERVERTEST_RULES	= $(CURDIR)/config/Make.clientservertest.rules
+STATICLIBRARY_RULES 	= $(CURDIR)/config/Make.staticlibrary.rules
+DYNAMICLIBRARY_RULES 	= $(CURDIR)/config/Make.dynamiclibrary.rules
 
 #
 # Include all .mk files
@@ -58,7 +60,12 @@ all:: $(TARGETS)
 
 clean:: $(CLEAN_TARGETS)
 
-.PHONY: $(CLEAN_TARGETS)
+.PHONY: $(CLEAN_TARGETS) deploy_test
+
+test_deploy:
+	rsync -aczv --exclude="*.d" --exclude="*.h" --exclude="*.cpp" --exclude="*.mk" --exclude="*.o" --prune-empty-dirs cpp debian@192.168.7.2:/home/debian
+	rsync -aczv --include="*/test/Ice/" --include="*/test/IceUtil/" --include="*.py" --exclude="*" --prune-empty-dirs ice/cpp debian@192.168.7.2:/home/debian
+	rsync -aczv --include="*/" --include="*.py" --exclude="*" --prune-empty-dirs ice/scripts debian@192.168.7.2:/home/debian
 
 #
 # Include depend rules

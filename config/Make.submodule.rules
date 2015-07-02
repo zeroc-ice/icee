@@ -1,10 +1,20 @@
-LOCAL_PATH	= cpp/src/$(LOCAL_MODULE)
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
 
-LOCAL_SLICEDIR	= ice/slice/$(LOCAL_MODULE)
-LOCAL_SLICES	= $(wildcard $(LOCAL_SLICEDIR)/*.ice)
+LOCAL_PATH		= cpp/src/$(LOCAL_MODULE)
 
-LOCAL_SRCDIR	= ice/cpp/src/$(LOCAL_MODULE)
-LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp)
-LOCAL_CPPFLAGS	= -Icpp/src/$(LOCAL_MODULE)
+LOCAL_SLICEDIR		= ice/slice/$(LOCAL_MODULE)
+LOCAL_SLICES		= $(wildcard $(LOCAL_SLICEDIR)/*.ice)
+
+LOCAL_SRCDIR		= ice/cpp/src/$(LOCAL_MODULE)
+LOCAL_SRCS 		= $(wildcard $(LOCAL_SRCDIR)/*.cpp)
+LOCAL_CPPFLAGS		= -Icpp/src/$(LOCAL_MODULE)
+LOCAL_SLICE2CPPFLAGS	= --ice -Iice/slice
 
 include $(OBJECT_RULES)

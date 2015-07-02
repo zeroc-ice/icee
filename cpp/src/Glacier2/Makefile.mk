@@ -14,7 +14,7 @@ LOCAL_SRCDIR	= ice/cpp/src/$(LOCAL_MODULE)Lib
 LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp)
 LOCAL_CPPFLAGS	= -Icpp/src/$(LOCAL_MODULE)
 
-include $(LIBRARY_RULES)
+include $(STATICLIBRARY_RULES)
 
 include $(CLEAR_RULES)
 LOCAL_MODULE	= glacier2router

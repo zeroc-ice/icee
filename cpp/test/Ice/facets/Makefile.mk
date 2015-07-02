@@ -9,37 +9,8 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE	= client
 LOCAL_PATH	= cpp/test/Ice/facets
+TEST_TARGET_EXT	= colloc
 
-LOCAL_SLICES	= Test.ice
+include $(CLIENTSERVERTEST_RULES)
 
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
-
-include $(TEST_APPLICATION_RULES)
-
-include $(CLEAR_RULES)
-
-LOCAL_EXE	= server
-LOCAL_PATH	= cpp/test/Ice/facets
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-		  Server.cpp
-
-include $(TEST_APPLICATION_RULES)
-
-include $(CLEAR_RULES)
-
-LOCAL_EXE	= colloc
-LOCAL_PATH	= cpp/test/Ice/facets
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-		  Collocated.cpp \
-		  AllTests.cpp
-
-include $(TEST_APPLICATION_RULES)

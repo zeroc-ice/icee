@@ -1,3 +1,11 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
 
 LOCAL_GEN_SRCS := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
 
@@ -18,6 +26,7 @@ $(LOCAL_MODULE)_clean: LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_MODULE)_clean: LOCAL_PATH := $(LOCAL_PATH)
 $(LOCAL_MODULE)_clean: LOCAL_SRCS := $(LOCAL_SRCS)
 $(LOCAL_MODULE)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
+$(LOCAL_MODULE)_clean: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
 
 $(LOCAL_OBJS): LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
 $(LOCAL_OBJS): LOCAL_PATH := $(LOCAL_PATH)
@@ -43,13 +52,13 @@ $(LOCAL_PATH)/%.cpp $(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
 	$(Q)slice2cpp --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
 	@slice2cpp --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
-$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_SRCDIR)/%.cpp
+$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_PATH)/%.cpp
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)$(CXX) $(CPPFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 	@$(CXX) -DMAKEDEPEND -MM $(CPPFLAGS) $(LOCAL_CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).d
 
-$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_PATH)/%.cpp
+$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_SRCDIR)/%.cpp
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)$(CXX) $(CPPFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
@@ -57,7 +66,17 @@ $(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_PATH)/%.cpp
 
 $(LOCAL_MODULE)_clean::
 	$(E) "Cleaning $(LOCAL_MODULE)"
-	$(Q)rm -rf $(LOCAL_PATH)/$(OBJ_PREFIX)/*.o $(LOCAL_PATH)/*.cpp $(LOCAL_PATH)/*.h $(LOCAL_PATH)/.depend $(LOCAL_PATH)/$(OBJ_PREFIX)/.depend
+	$(Q)rm -rf $(LOCAL_PATH)/$(OBJ_PREFIX) $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) $(LOCAL_PATH)/.depend
+
+
+ifneq ($(LOCAL_GEN_SRCS),)
+$(LOCAL_MODULE)_gitignore: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
+$(LOCAL_MODULE)_gitignore::
+	@for line in $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) ; do \
+        echo $$line ; \
+    done
+gitignore:: $(LOCAL_MODULE)_gitignore
+endif
 
 ALL_OBJS	:= $(ALL_OBJS) $(LOCAL_OBJS)
 ALL_GEN_SRCS	:= $(ALL_GEN_SRCS) $(LOCAL_GEN_SRCS)

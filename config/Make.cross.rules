@@ -1,9 +1,20 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
 CC              = arm-linux-gnueabihf-gcc-4.6
 CXX             = arm-linux-gnueabihf-g++-4.6
 
 mklib		= arm-linux-gnueabihf-ar cr $(1) $(2)
 
-CPPFLAGS        += -I$(CROSS_HOME)/usr/include
+mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4)
 
-LDFLAGS         += -L$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf \
-                   -Wl,-rpath-link,$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf
+CPPFLAGS	+= -I$(CROSS_HOME)/usr/include
+
+EXELDFLAGS	+= -L$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf \
+		   -Wl,-rpath-link,$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf

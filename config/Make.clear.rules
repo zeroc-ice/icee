@@ -1,17 +1,28 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
 
 #
 # Clear local used variables
 #
 
-LOCAL_PATH	=
-LOCAL_MODULE	=
-LOCAL_SLICEDIR	=
-LOCAL_SLICES	=
-LOCAL_SRCDIR	=
-LOCAL_SRCS	=
-LOCAL_GEN_SRCS	=
-LOCAL_OBJS	=
-LOCAL_EXE	=
-LOCAL_LIB	=
-LOCAL_LINK_WITH	=
-LOCAL_BINDIR	=
+LOCAL_PATH		=
+LOCAL_MODULE		=
+LOCAL_SLICEDIR		=
+LOCAL_SLICES		=
+LOCAL_SLICE2CPPFLAGS	=
+LOCAL_SRCDIR		=
+LOCAL_SRCS		=
+LOCAL_GEN_SRCS		=
+LOCAL_OBJS		=
+LOCAL_LDFLAGS   	=
+LOCAL_LINK_WITH		=
+LOCAL_EXE		=
+LOCAL_BINDIR		=
+LOCAL_LIB		=
+LOCAL_LIBDIR		=
