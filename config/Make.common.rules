@@ -167,9 +167,12 @@ STATICLIBRARY_RULES 	= $(CURDIR)/config/Make.staticlibrary.rules
 # Include all .mk files
 #
 ifeq ($(USE_BIN_DIST),yes)
+
 include $(call rwildcard,cpp/test,*.mk)
 install::
+
 else
+
 include $(call rwildcard,,*.mk)
 dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router
 
@@ -179,6 +182,9 @@ install:: dist
 	$(Q)cp -rf $(libdir)/*.a $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
 	$(Q)mkdir -p $(DESTDIR)$(prefix)/bin
 	$(Q)cp -rf $(bindir)/glacier2router $(DESTDIR)$(prefix)/bin/
+	$(Q)mkdir -p $(DESTDIR)$(prefix)/share/man/man1/
+	$(Q)cp -rf ice/man/man1/glacier2router.1 $(DESTDIR)$(prefix)/share/man/man1/
+
 endif
 
 all:: $(TARGETS)
