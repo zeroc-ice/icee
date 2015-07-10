@@ -12,9 +12,8 @@ include $(CLEAR_RULES)
 LOCAL_EXE	= client1
 LOCAL_PATH	= cpp/test/Ice/logger
 LOCAL_SRCS	= Client1.cpp
-
+LOCAL_RESOURCES	= config.client
 include $(TEST_APPLICATION_RULES)
-
 
 include $(CLEAR_RULES)
 
@@ -24,7 +23,6 @@ LOCAL_SRCS	= Client2.cpp
 
 include $(TEST_APPLICATION_RULES)
 
-
 include $(CLEAR_RULES)
 
 LOCAL_EXE	= client3
@@ -32,7 +30,6 @@ LOCAL_PATH	= cpp/test/Ice/logger
 LOCAL_SRCS	= Client3.cpp
 
 include $(TEST_APPLICATION_RULES)
-
 
 include $(CLEAR_RULES)
 

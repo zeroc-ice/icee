@@ -36,7 +36,8 @@ tests = [
     ("Ice/proxy", ["core"]),
     ("Ice/operations", ["core"]),
     ("Ice/exceptions", ["core"]),
-    ("Ice/ami", ["core", "nocompress"]),
+    ("Ice/ami", ["core", "nocompress", "nossl"]), # This test relies on the socket send() blocking and 
+						  # doesn't work well with old OpenSSL versions.
     ("Ice/info", ["core", "noipv6", "nocompress", "nosocks"]),
     ("Ice/inheritance", ["core"]),
     ("Ice/facets", ["core"]),
@@ -55,9 +56,9 @@ tests = [
     ("Ice/hold", ["core"]),
     ("Ice/custom", ["core", "nossl", "nows"]),
     ("Ice/retry", ["core"]),
-    ("Ice/timeout", ["core", "nocompress", "nosocks"]),
+    ("Ice/timeout", ["core", "nocompress", "nosocks", "nossl"]), # This test relies on the socket send() blocking and 
+						                 # doesn't work well with old OpenSSL versions.
     ("Ice/acm", ["core"]),
-    ("Ice/background", ["core", "nomingw", "nosocks"]),
     ("Ice/servantLocator", ["core"]),
     ("Ice/interceptor", ["core"]),
     ("Ice/stringConverter", ["core"]),
@@ -65,7 +66,6 @@ tests = [
     ("Ice/defaultServant", ["core"]),
     ("Ice/defaultValue", ["core"]),
     ("Ice/invoke", ["core"]),
-    ("Ice/plugin", ["core", "nomingw"]),
     ("Ice/hash", ["once"]),
     ("Ice/admin", ["core", "noipv6"]),
     ("Ice/metrics", ["core", "nossl", "nows", "noipv6", "nocompress", "nomingw", "nosocks"]),
@@ -73,6 +73,14 @@ tests = [
     ("Ice/logger", ["once"]),
     ("Ice/networkProxy", ["core", "noipv6", "nosocks"]),
     ("Ice/services", ["once"]),
+    ("Glacier2/router", ["service", "novc100", "nomingw"]),
+    ("Glacier2/attack", ["service", "novc100", "nomingw", "nomx"]),
+    ("Glacier2/override", ["service", "novc100", "nomingw"]),
+    ("Glacier2/sessionControl", ["service", "novc100", "nomingw"]),
+    ("Glacier2/ssl", ["service", "novalgrind", "novc100", "nomingw"]), # valgrind doesn't work well with openssl
+    ("Glacier2/dynamicFiltering", ["service", "novc100", "nomingw"]),
+    ("Glacier2/staticFiltering", ["service", "noipv6", "novc100", "nomingw", "nomx"]),
+    ("Glacier2/sessionHelper", ["core", "novc100", "nomingw"]),
     ]
 
 #

@@ -7,14 +7,15 @@
 #
 # **********************************************************************
 
-CC              = arm-linux-gnueabihf-gcc-4.6
-CXX             = arm-linux-gnueabihf-g++-4.6
 
+GCC_VERSION	= 4.6
+CC		= arm-linux-gnueabihf-gcc-$(GCC_VERSION)
+CXX             = arm-linux-gnueabihf-g++-$(GCC_VERSION)
+STRIP		= arm-linux-gnueabihf-strip
 mklib		= arm-linux-gnueabihf-ar cr $(1) $(2)
 
-mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4)
-
-CPPFLAGS	+= -I$(CROSS_HOME)/usr/include
-
-EXELDFLAGS	+= -L$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf \
-		   -Wl,-rpath-link,$(CROSS_HOME)/usr/lib/arm-linux-gnueabihf
+ifneq ($(THIRDPARTY_HOME),)
+CPPFLAGS	+= -I$(THIRDPARTY_HOME)/usr/include
+LDFLAGS		+= -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
+		   -Wl,-rpath-link,$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf
+endif

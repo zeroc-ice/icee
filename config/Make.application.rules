@@ -32,10 +32,16 @@ $(LOCAL_MODULE)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
 $(LOCAL_MODULE)_clean: LOCAL_EXE := $(LOCAL_EXE)
 $(LOCAL_MODULE)_clean: LOCAL_BINDIR := $(LOCAL_BINDIR)
 
-$(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS) $(foreach lib,$(LOCAL_LINK_WITH),$(libdir)/lib$(lib).a)
+ifneq ($(USE_BIN_DIST),yes)
+$(LOCAL_BINDIR)/$(LOCAL_EXE): $(foreach lib,$(LOCAL_LINK_WITH),$(libdir)/lib$(lib).a)
+endif
+
+$(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS)
 	@mkdir -p $(@D)
+	@rm -rf $(@)
 	$(E) "Linking $(LOCAL_MODULE)"
 	$(Q)$(CXX) -o $(@) $(LOCAL_OBJS) $(LOCAL_LDFLAGS) $(LDFLAGS) $(EXELDFLAGS)
+	$(Q)$(STRIP) --strip-all $(@)
 
 $(LOCAL_MODULE): $(LOCAL_BINDIR)/$(LOCAL_EXE)
 
@@ -45,9 +51,29 @@ $(LOCAL_MODULE)_clean::
 
 TARGETS := $(TARGETS) $(LOCAL_BINDIR)/$(LOCAL_EXE)
 
+LOCAL_RESOURCES	:= $(patsubst $(LOCAL_SRCDIR)/%,$(LOCAL_PATH)/%,$(wildcard $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_RESOURCES))))
 
 $(LOCAL_MODULE)_gitignore: LOCAL_BINDIR := $(LOCAL_BINDIR)
 $(LOCAL_MODULE)_gitignore: LOCAL_EXE := $(LOCAL_EXE)
+$(LOCAL_MODULE)_gitignore: LOCAL_RESOURCES := $(LOCAL_RESOURCES)
+
 $(LOCAL_MODULE)_gitignore::
 	@echo $(LOCAL_BINDIR)/$(LOCAL_EXE)
+	@for file in $(LOCAL_RESOURCES) ; do \
+	    echo $$file ; \
+	done
+
 gitignore:: $(LOCAL_MODULE)_gitignore
+
+ifneq ($(LOCAL_RESOURCES),)
+
+TARGETS := $(TARGETS) $(LOCAL_RESOURCES)
+
+$(LOCAL_PATH)/%: $(LOCAL_SRCDIR)/%
+	@mkdir -p $(@D)
+	$(E) Copying resource $(@F)
+	$(Q)cp $< $@
+
+$(LOCAL_MODULE)_clean::
+	$(Q) rm -rf $(LOCAL_RESOURCES)
+endif

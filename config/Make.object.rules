@@ -9,6 +9,8 @@
 
 LOCAL_GEN_SRCS := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
 
+LOCAL_SRCS := $(filter-out $(addprefix $(LOCAL_SRCDIR)/,$(notdir $(LOCAL_SLICES:.ice=.cpp))), $(LOCAL_SRCS))
+
 LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(OBJ_PREFIX)/,$(notdir $(LOCAL_SRCS:.cpp=.o))) \
 	$(addprefix $(LOCAL_PATH)/$(OBJ_PREFIX)/,$(notdir $(LOCAL_GEN_SRCS:.cpp=.o)))
 
@@ -49,8 +51,8 @@ $(LOCAL_GEN_SRCS): LOCAL_SLICE2CPPFLAGS := $(LOCAL_SLICE2CPPFLAGS)
 $(LOCAL_PATH)/%.cpp $(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
-	$(Q)slice2cpp --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
-	@slice2cpp --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
+	$(Q)$(SLICE2CPP) --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
+	@$(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
 $(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_PATH)/%.cpp
 	@mkdir -p $(@D)/.depend

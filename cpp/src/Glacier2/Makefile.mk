@@ -16,6 +16,14 @@ LOCAL_CPPFLAGS	= -Icpp/src/$(LOCAL_MODULE)
 
 include $(STATICLIBRARY_RULES)
 
+#
+# Glacier2CryptPermissionsVerifier
+#
+include $(CLEAR_RULES)
+LOCAL_MODULE		= Glacier2CryptPermissionsVerifier
+include $(SUBMODULE_RULES)
+SUBMODULE_OBJS := $(LOCAL_OBJS)
+
 include $(CLEAR_RULES)
 LOCAL_MODULE	= glacier2router
 LOCAL_EXE	= $(LOCAL_MODULE)
@@ -26,7 +34,13 @@ LOCAL_SLICES	= $(wildcard $(LOCAL_SRCDIR)/*.ice)
 
 LOCAL_LINK_WITH	= Glacier2 Ice
 LOCAL_SRCDIR	= ice/$(LOCAL_PATH)
-LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp)
+LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp) \
+		  $(LOCAL_PATH)/RegisterPlugins.cpp
+
 LOCAL_CPPFLAGS	= -I$(LOCAL_PATH)
+LOCAL_OBJS	= $(SUBMODULE_OBJS)
+LOCAL_LDFLAGS	= -lcrypt
 
 include $(APPLICATION_RULES)
+
+SUBMODULE_OBJS	=

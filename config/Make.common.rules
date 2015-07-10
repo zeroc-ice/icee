@@ -12,12 +12,7 @@
 all::
 clean::
 
-VERSION_MAJOR   = 3
-VERSION_MINOR   = 6
-VERSION_PATCH   = 0
 VERSION         = 3.6.0
-SHORT_VERSION   = 3.6
-SOVERSION	= 36
 
 BUILD		= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
@@ -25,19 +20,54 @@ ifeq ($(HOST),)
 HOST		= $(BUILD)
 endif
 
+SUPPORTED_HOSTS = arm-linux-gnueabihf x86_64-linux-gnu
+
+ifeq ($(filter $(HOST),$(SUPPORTED_HOSTS)),)
+$(error Invalid HOST: `$(HOST)' supported values are: $(SUPPORTED_HOSTS))
+endif
+
 OBJ_PREFIX = $(HOST)
 
-CPPFLAGS 	= -fvisibility=hidden -Wall -Werror -pthread -fPIC
+ifeq ($(ICE_HOME),)
+ice_slicedir	= ice/slice
+SLICE2CPP	= ice/cpp/bin/slice2cpp
+CPPFLAGS 	= -Iice/cpp/include 
 
-#TODO use ICE_HOME
-CPPFLAGS 	+= -Icpp/src -Iice/cpp/src -Iice/cpp/include
+ifeq ($(wildcard $(SLICE2CPP)),)
+$(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
+endif
 
-LDFLAGS		= -Llib/$(OBJ_PREFIX) -fPIC
+else
 
-EXELDFLAGS	= -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+ifeq ($(ICE_HOME),/usr)
+ice_slicedir	= $(ICE_HOME)/share/Ice-$(VERSION)/slice/
+else
+ice_slicedir	= $(ICE_HOME)/slice/
+CPPFLAGS 	= -I$(ICE_HOME)/include 
+endif
 
-SLICE2CPPFLAGS	= -Iice/slice
+SLICE2CPP 	= $(ICE_HOME)/bin/slice2cpp
 
+endif
+
+#
+# If not using a system install set LD_LIBRARY_PATH to run slice2cpp
+# compiler.
+#
+ifneq ($(ICE_HOME),/usr)
+export LD_LIBRARY_PATH := $(ICE_HOME)/lib/$(BUILD):$(LD_LIBRARY_PATH)
+endif
+
+ifneq ($(USE_BIN_DIST),yes)
+bindir		= cpp/bin
+libdir		= cpp/lib/$(OBJ_PREFIX)
+else
+
+ifneq ($(ICEE_HOME),/usr)
+libdir		= $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+endif
+
+endif
 #
 # If host different than build we are cross compiling
 #
@@ -47,21 +77,28 @@ else
 mklib		= ar cr $(1) $(2)
 endif
 
+CPPFLAGS 	:= -fvisibility=hidden -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+OS_LIBS		:= -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+
+ifneq ($(libdir),)
+LDFLAGS		:= -L$(libdir) $(LDFLAGS) 
+endif
+
+LDFLAGS		:= $(LDFLAGS) $(OS_LIBS)
+SLICE2CPPFLAGS	= -I$(ice_slicedir)
+
 
 ifeq ($(OPTIMIZE),yes)
-	CPPFLAGS += -Os
+	CPPFLAGS += -Os -DNDEBUG -ffunction-sections -fdata-sections
+	LDFLAGS  += -Wl,--gc-sections
 else
 	CPPFLAGS += -g
 endif
-
-bindir		= bin/$(OBJ_PREFIX)
-libdir		= lib/$(OBJ_PREFIX)
 
 mklibname	= lib$(1).a
 mklibtarget	= $(libdir)/$(call mklibname,$(1))
 mkexetarget	= $(bindir)/$(1)
 
-mksoname	= $(if $(2),lib$(1).so.$(2),lib$(1).so)
 
 #
 # Recursive wildcard function
@@ -88,16 +125,84 @@ else
     E = @:
 endif
 
-GITIGNORE_DEFAULT	= scripts \
+GITIGNORE_DEFAULT	= certs \
+			  scripts \
 			  lib \
 			  bin \
 			  .depend \
 			  arm-linux-gnueabihf \
 			  x86_64-linux-gnu \
 			  *.so \
-			  *.so.*
+			  *.so.* \
+			  cpp/**/run.py
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \
 	  echo $$line ; \
 	done
 
+%/run.py: ice/%/run.py
+	$(E) "Copying test scripts"
+	$(Q)cp $< $@
+
+CLEAR_RULES 		= $(CURDIR)/config/Make.clear.rules
+OBJECT_RULES 		= $(CURDIR)/config/Make.object.rules
+SUBMODULE_RULES		= $(CURDIR)/config/Make.submodule.rules
+APPLICATION_RULES 	= $(CURDIR)/config/Make.application.rules
+TEST_APPLICATION_RULES 	= $(CURDIR)/config/Make.test.application.rules
+CLIENTSERVERTEST_RULES	= $(CURDIR)/config/Make.clientservertest.rules
+STATICLIBRARY_RULES 	= $(CURDIR)/config/Make.staticlibrary.rules
+
+#
+# Include all .mk files
+#
+ifeq ($(USE_BIN_DIST),yes)
+include $(call rwildcard,cpp/test,*.mk)
+install::
+else
+include $(call rwildcard,,*.mk)
+dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router
+
+install:: dist
+	$(E) "Installing IceE $(VERSION) to $(DESTDIR)$(prefix)"
+	$(Q)mkdir -p $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
+	$(Q)cp -rf $(libdir)/*.a $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
+	$(Q)mkdir -p $(DESTDIR)$(prefix)/bin
+	$(Q)cp -rf $(bindir)/glacier2router $(DESTDIR)$(prefix)/bin/
+endif
+
+all:: $(TARGETS)
+
+clean:: $(CLEAN_TARGETS)
+
+test_deploy: test_compile
+	rsync -aczv --prune-empty-dirs \
+		--exclude="*.d" \
+		--exclude="*.h" \
+		--exclude="*.cpp" \
+		--exclude="*.mk" \
+		--exclude="*.o" \
+		--exclude="ice" \
+		--exclude="lib" \
+		--exclude="scripts" \
+		--exclude="certs" \
+		--exclude=".git*" \
+		--exclude="Makefile" \
+		--exclude="README.md" \
+		. $(DEPLOY_TARGET)
+
+	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
+	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
+
+scripts: ice/scripts
+	@rm -rf scripts
+	ln -s ice/scripts scripts
+
+certs: ice/certs
+	@rm -rf certs
+	ln -s ice/certs certs
+
+all:: scripts certs
+#
+# Include depend rules
+#
+include $(CURDIR)/config/Make.depend.rules

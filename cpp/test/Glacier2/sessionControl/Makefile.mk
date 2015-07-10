@@ -9,12 +9,19 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_PATH	= cpp/test/Ice/plugin
-LOCAL_LIB	= TestPlugin
-LOCAL_LIBDIR	= $(LOCAL_PATH)
-LOCAL_SRCDIR	= ice/$(LOCAL_PATH)
-LOCAL_MODULE	= cpp_test_Ice_plugin_TestPlugin
-LOCAL_CPPFLAGS	= -I$(LOCAL_PATH) -Iice/cpp/test/include -Iice/$(LOCAL_PATH)
-LOCAL_SRCS	= ice/$(LOCAL_PATH)/Plugin.cpp
+LOCAL_PATH	= cpp/test/Glacier2/sessionControl
 
-include $(DYNAMICLIBRARY_RULES)
+CLIENT_SLICES	= Session.ice
+
+CLIENT_SRCS	= Client.cpp
+
+CLIENT_LINK_WITH = Glacier2
+
+SERVER_SLICES	= Session.ice
+
+SERVER_SRCS	= SessionI.cpp \
+		  Server.cpp
+
+SERVER_LINK_WITH = Glacier2
+
+include $(CLIENTSERVERTEST_RULES)

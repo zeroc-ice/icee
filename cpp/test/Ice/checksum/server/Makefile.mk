@@ -9,13 +9,15 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/checksum
+LOCAL_EXE	= server
+LOCAL_PATH	= cpp/test/Ice/checksum/server
 
 LOCAL_SLICES	= Test.ice \
 		  Types.ice
 
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
+LOCAL_SRCS      = TestI.cpp \
+		  Server.cpp
+
+LOCAL_SLICE2CPPFLAGS	= --checksum
 
 include $(TEST_APPLICATION_RULES)

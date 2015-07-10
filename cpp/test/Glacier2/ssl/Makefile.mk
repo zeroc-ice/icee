@@ -9,11 +9,18 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE		= client
-LOCAL_PATH		= cpp/test/Ice/stream
-LOCAL_SLICES		= Test.ice
-LOCAL_SRCS      	= Client.cpp
+LOCAL_EXE	= client
+LOCAL_PATH	= cpp/test/Glacier2/ssl
+LOCAL_SRCS	= Client.cpp
+LOCAL_LINK_WITH	= Ice Glacier2
 
-LOCAL_SLICE2CPPFLAGS	= --stream
+include $(TEST_APPLICATION_RULES)
+
+include $(CLEAR_RULES)
+
+LOCAL_EXE	= server
+LOCAL_PATH	= cpp/test/Glacier2/ssl
+LOCAL_SRCS	= Server.cpp
+LOCAL_LINK_WITH	= Ice Glacier2
 
 include $(TEST_APPLICATION_RULES)

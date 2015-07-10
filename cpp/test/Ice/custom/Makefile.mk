@@ -9,6 +9,7 @@
 
 include $(CLEAR_RULES)
 
+TEST_CPPFLAGS		= -DSTRING_VIEW_IGNORE_STRING_CONVERTER
 LOCAL_PATH		= cpp/test/Ice/custom
 TEST_TARGET_EXT		= colloc serveramd
 

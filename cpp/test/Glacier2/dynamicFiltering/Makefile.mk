@@ -9,11 +9,21 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE		= client
-LOCAL_PATH		= cpp/test/Ice/stream
-LOCAL_SLICES		= Test.ice
-LOCAL_SRCS      	= Client.cpp
+LOCAL_PATH	= cpp/test/Glacier2/dynamicFiltering
 
-LOCAL_SLICE2CPPFLAGS	= --stream
+CLIENT_SLICES	= Test.ice
 
-include $(TEST_APPLICATION_RULES)
+CLIENT_SRCS	= Client.cpp
+
+CLIENT_LINK_WITH = Glacier2
+
+SERVER_SLICES	= Test.ice
+
+SERVER_SRCS	= Server.cpp \
+		  SessionI.cpp \
+		  BackendI.cpp \
+		  TestControllerI.cpp
+
+SERVER_LINK_WITH = Glacier2
+
+include $(CLIENTSERVERTEST_RULES)
