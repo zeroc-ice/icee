@@ -15,7 +15,8 @@ prefix			?= /opt/IceE-$(VERSION)
 
 #
 # Define OPTIMIZE as yes if you want to build with
-# optimization. Otherwise Ice is build with debug information.
+# optimization. Otherwise Ice-E is build with debug
+# information.
 #
 #OPTIMIZE		= yes
 
@@ -37,8 +38,7 @@ THIRDPARTY_HOME  	?= /opt/IceE-3.6.0-ThirdParty
 #
 # Target to deploy the test suite.
 #
-DEPLOY_TARGET		?= debian@192.168.7.2:/home/debian/ice-e
-
+DEPLOY_TARGET		?= debian@192.168.7.2:/home/debian/icee
 
 #
 # Include common definitions

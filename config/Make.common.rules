@@ -20,10 +20,8 @@ ifeq ($(HOST),)
 HOST		= $(BUILD)
 endif
 
-SUPPORTED_HOSTS = arm-linux-gnueabihf x86_64-linux-gnu
-
-ifeq ($(filter $(HOST),$(SUPPORTED_HOSTS)),)
-$(error Invalid HOST: `$(HOST)' supported values are: $(SUPPORTED_HOSTS))
+ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu,)
+$(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
 OBJ_PREFIX = $(HOST)
@@ -78,7 +76,7 @@ mklib		= ar cr $(1) $(2)
 STRIP		= strip
 endif
 
-CPPFLAGS 	:= -fvisibility=hidden -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+CPPFLAGS 	:= -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
 OS_LIBS		:= -lcrypto -lssl -pthread -lbz2 -ldl -lrt
 
 ifneq ($(libdir),)
