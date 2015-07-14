@@ -12,6 +12,10 @@ package instead.
 Ice-E is supported on Linux, and was extensively tested using the operating
 system and compiler versions listed for our [supported platforms][1].
 
+For instructions on how to setup the cross development environment required
+to build Ice-E refer to [Setting up cross development environment][2] in 
+Ice-E release notes.
+
 ### Third-Party Libraries
 
 Ice-E depends on the bzip2 and openssl libraries. For your convenience we
@@ -66,3 +70,4 @@ you can run `allTests.py` from the cpp directory:
     $ python allTests.py
 
 [1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.0
+[2]: https://doc.zeroc.com/display/Ice36/Using+the+Ice-E+Binary+Distribution
