@@ -20,7 +20,7 @@ ifeq ($(HOST),)
 HOST		= $(BUILD)
 endif
 
-ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu,)
+ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
 $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
