@@ -14,23 +14,22 @@
 prefix			?= /opt/IceE-$(VERSION)
 
 #
-# Define OPTIMIZE as yes if you want to build with
-# optimization. Otherwise Ice-E is build with debug
-# information.
+# Define OPTIMIZE as yes if you want to build with optimization. Otherwise
+# Ice-E is built with debug information.
 #
 #OPTIMIZE		= yes
 
 #
-# Debian arch tuple of the host machine supported values are
+# Debian arch tuple of the host machine. Supported values are
 # arm-linux-gnueabihf and x86_64-linux-gnu.
 #
-# Set it to arm-linux-gnueabihf if you are cross compiling for
+# Set it to arm-linux-gnueabihf if you are cross-compiling for
 # armhf.
 #
 HOST			?= arm-linux-gnueabihf
 
 #
-# If cross compiling set it to the root directory of your
+# If cross-compiling, set this to the root directory of your
 # cross development third party libraries.
 #
 THIRDPARTY_HOME  	?= /opt/IceE-3.6.0-ThirdParty
