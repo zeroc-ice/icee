@@ -13,8 +13,8 @@ Ice-E is supported on Linux, and was extensively tested using the operating
 system and compiler versions listed for our [supported platforms][1].
 
 For instructions on how to setup the cross development environment required
-to build Ice-E refer to [Setting up cross development environment][2] in 
-Ice-E release notes.
+to build Ice-E, refer to [Setting up your cross development environment][2] in 
+the Ice-E release notes.
 
 ### Third-Party Libraries
 
@@ -56,8 +56,8 @@ This command will deploy the Ice-E test suite to the device specified by the
 Note that the ssh daemon must be running in the device.
 
 After successfully deploying the test suite, open an ssh session to the
-target, change to the deploy directory, and use the `allTests.py` script to
-run the test suite:
+target, change to the deployment directory, and use the `allTests.py` script
+to run the test suite:
 
     $ ssh debian@192.168.7.2
     $ cd icee/cpp
