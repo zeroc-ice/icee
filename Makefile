@@ -29,6 +29,12 @@ prefix			?= /opt/IceE-$(VERSION)
 HOST			?= arm-linux-gnueabihf
 
 #
+# If you want to build Ice-E using an Ice binary distribution
+# set ICE_HOME to point to your Ice install location.
+#
+#ICE_HOME		= /usr
+
+#
 # If cross-compiling, set this to the root directory of your
 # cross development third party libraries.
 #
