@@ -1,31 +1,21 @@
 # Ice-E
 
-Ice-E brings the power of Ice to Linux ARM embedded devices.
+Ice-E brings Ice for C++ and Ice for Python to embedded devices.
 
-## Languages
+Add Ice-E to your Ice installation to cross-compile C++ apps for your favorite target. Ice-E for C++ provides static libraries, just like [Ice Touch](https://github.com/zeroc-ice/icetouch).
 
-Ice-E is available for the following programming languages:
+## Tested Boards
 
-- C++
-
-## Platforms
-
-- Debian Wheezy 7.8 armhf
-- Ubuntu Vivid 15.04 amd64
-
-## Branches
-
-- `master`
-  Primary development branch
-
-- `3.6`
-  Source distribution for Ice-E 3.6.0
+We test Ice-E on the following development boards:
+<img src="http://beagleboard.org/static/uploads/Boris_Tux_PNG.png" alt="BeagleBoard width="100">
+[BeagleBone Black Rev C](http://beagleboard.org/black) with default Debian distribution and toolchain
+(more coming soon)
 
 ## Copyright and License
 
 Ice-E is a single-copyright project: all the source code in this
-[ice repository](https://github.com/zeroc-ice/icee) is Copyright
-&copy; ZeroC, Inc., with very few exceptions.
+[icee repository](https://github.com/zeroc-ice/icee) is Copyright
+&copy; ZeroC, Inc..
 
 As copyright owner, ZeroC can license Ice-E under different license
 terms, and offers the following licenses for Ice-E:
