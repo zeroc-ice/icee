@@ -7,7 +7,7 @@ Add Ice-E to your Ice installation to cross-compile C++ apps for your favorite t
 ## Tested Boards
 
 We test Ice-E on the following development boards:
-- [BeagleBoard BeagleBone Black Rev C](http://beagleboard.org/black) with its default Debian distribution and toolchain
+- [BeagleBoard BeagleBone Black](http://beagleboard.org/black)(Rev C) with its default Debian distribution and toolchain
 - (more coming soon)
 
 ## Copyright and License
