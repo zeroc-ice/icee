@@ -2,14 +2,13 @@
 
 Ice-E brings Ice for C++ and Ice for Python to embedded devices.
 
-Add Ice-E to your Ice installation to cross-compile C++ apps for your favorite target. Ice-E for C++ provides static libraries, just like [Ice Touch](https://github.com/zeroc-ice/icetouch).
+Add Ice-E to your Ice installation to cross-compile C++ apps for your favorite target.
 
 ## Tested Boards
 
 We test Ice-E on the following development boards:
-<img src="http://beagleboard.org/static/uploads/Boris_Tux_PNG.png" alt="BeagleBoard width="100">
-[BeagleBone Black Rev C](http://beagleboard.org/black) with default Debian distribution and toolchain
-(more coming soon)
+- [BeagleBoard BeagleBone Black Rev C](http://beagleboard.org/black) with default Debian distribution and toolchain
+- (more coming soon)
 
 ## Copyright and License
 
