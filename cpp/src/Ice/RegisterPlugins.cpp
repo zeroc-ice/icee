@@ -19,10 +19,6 @@ extern "C"
 
 Plugin* createIceUDP(const Ice::CommunicatorPtr&, const std::string&, const Ice::StringSeq&);
 Plugin* createIceTCP(const Ice::CommunicatorPtr&, const std::string&, const Ice::StringSeq&);
-Plugin* createStringConverter(const CommunicatorPtr&, const string&, const StringSeq&);
-Plugin* createIceSSL(const CommunicatorPtr&, const string&, const StringSeq&);
-Plugin* createIceDiscovery(const CommunicatorPtr&, const string&, const StringSeq&);
-Plugin* createIceLocatorDiscovery(const CommunicatorPtr&, const string&, const StringSeq&);
 
 }
 
@@ -30,8 +26,4 @@ RegisterPluginsInit::RegisterPluginsInit()
 {
     Ice::registerPluginFactory("IceUDP", createIceUDP, true);
     Ice::registerPluginFactory("IceTCP", createIceTCP, true);
-    Ice::registerPluginFactory("IceStringConverter", createStringConverter, false);
-    Ice::registerPluginFactory("IceSSL", createIceSSL, true);
-    Ice::registerPluginFactory("IceDiscovery", createIceDiscovery, false);
-    Ice::registerPluginFactory("IceLocatorDiscovery", createIceLocatorDiscovery, false);
 }

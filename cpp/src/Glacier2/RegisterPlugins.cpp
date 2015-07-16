@@ -17,7 +17,10 @@ using namespace IceInternal;
 extern "C"
 {
 
+Plugin* createIceSSL(const CommunicatorPtr&, const string&, const StringSeq&);
 Plugin* createCryptPermissionsVerifier(const CommunicatorPtr&, const string&, const StringSeq&);
+Plugin* createIceDiscovery(const CommunicatorPtr&, const string&, const StringSeq&);
+Plugin* createIceLocatorDiscovery(const CommunicatorPtr&, const string&, const StringSeq&);
 
 }
 namespace
@@ -29,7 +32,10 @@ public:
 
     RegisterPluginsInit()
     {
+        Ice::registerPluginFactory("IceSSL", createIceSSL, true);
         Ice::registerPluginFactory("Glacier2CryptPermissionsVerifier", createCryptPermissionsVerifier, false);
+        Ice::registerPluginFactory("IceDiscovery", createIceDiscovery, false);
+        Ice::registerPluginFactory("IceLocatorDiscovery", createIceLocatorDiscovery, false);
     }
 };
 
