@@ -41,7 +41,7 @@ $(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS)
 	@rm -rf $(@)
 	$(E) "Linking $(LOCAL_MODULE)"
 	$(Q)$(CXX) -o $(@) $(LOCAL_OBJS) $(LOCAL_LDFLAGS) $(LDFLAGS) $(EXELDFLAGS)
-	$(Q)$(STRIP) --strip-all $(@)
+	$(Q)$(STRIP) --strip-all --remove-section=.comment --remove-section=.note $(@)
 
 $(LOCAL_MODULE): $(LOCAL_BINDIR)/$(LOCAL_EXE)
 
