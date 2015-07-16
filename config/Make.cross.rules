@@ -34,5 +34,5 @@ mklib		= arm-linux-gnueabihf-ar cr $(1) $(2)
 ifneq ($(THIRDPARTY_HOME),)
 CPPFLAGS	+= -I$(THIRDPARTY_HOME)/usr/include
 LDFLAGS		+= -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
-		   -Wl,-rpath-link,$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf
+		   -Wl,-rpath-link,$(THIRDPARTY_HOME)/lib/arm-linux-gnueabihf
 endif
