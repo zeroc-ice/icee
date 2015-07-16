@@ -81,6 +81,7 @@ tests = [
     ("Glacier2/dynamicFiltering", ["service", "novc100", "nomingw"]),
     ("Glacier2/staticFiltering", ["service", "noipv6", "novc100", "nomingw", "nomx"]),
     ("Glacier2/sessionHelper", ["core", "novc100", "nomingw"]),
+    ("IceDiscovery/simple", ["service"]),
     ]
 
 #
