@@ -8,6 +8,12 @@ x86_64-linux-gnu
 *.so
 *.so.*
 cpp/**/run.py
+cpp/test/IceDiscovery/simple/Test.cpp
+cpp/test/IceDiscovery/simple/Test.h
+cpp/test/IceDiscovery/simple/client
+cpp/test/IceDiscovery/simple/Test.cpp
+cpp/test/IceDiscovery/simple/Test.h
+cpp/test/IceDiscovery/simple/server
 cpp/test/Glacier2/staticFiltering/Backend.cpp
 cpp/test/Glacier2/staticFiltering/Backend.h
 cpp/test/Glacier2/staticFiltering/client
@@ -433,7 +439,7 @@ cpp/src/Glacier2/Session.h
 cpp/src/Glacier2/SSLInfo.h
 cpp/src/Glacier2/Instrumentation.cpp
 cpp/src/Glacier2/Instrumentation.h
-bin/arm-linux-gnueabihf/glacier2router
+cpp/bin/glacier2router
 cpp/src/IceDiscovery/IceDiscovery.cpp
 cpp/src/IceDiscovery/IceDiscovery.h
 cpp/src/IceLocatorDiscovery/IceLocatorDiscovery.cpp
