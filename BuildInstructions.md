@@ -18,10 +18,14 @@ the Ice-E release notes.
 
 ### Third-Party Libraries
 
-Ice-E depends on the bzip2 and openssl libraries. For your convenience we
-provide an archive with all of the third-party dependencies required for
-cross-compiling Ice-E for Debian Wheezy armhf. For other build configurations,
-use the bzip2 and SSL development packages provided by the OS.
+Ice-E depends on the bzip2 and openssl libraries. For your convenience we 
+provide an script that download and setup the require libraries from 
+Debian 7.8 (Wheezy) repositories:
+
+    wget -qO- https://github.com/zeroc-ice/icee/raw/v3.6.0/config/install_wheezy_thirdparty.sh | sudo bash
+
+For other build configurations, use the bzip2 and openssl development packages 
+provided by the OS.
 
 ## Building Ice-E
 
