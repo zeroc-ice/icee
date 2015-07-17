@@ -77,7 +77,7 @@ STRIP		= strip
 endif
 
 CPPFLAGS 	:= -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
-OS_LIBS		:= -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+OS_LIBS		:= -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
 
 ifneq ($(libdir),)
 LDFLAGS		:= -L$(libdir) $(LDFLAGS) 
