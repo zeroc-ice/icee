@@ -194,7 +194,7 @@ all:: $(TARGETS)
 
 clean:: $(CLEAN_TARGETS)
 
-test_deploy: test_compile
+test_deploy: test_compile test_resources
 	rsync -aczv --prune-empty-dirs \
 		--exclude="*.d" \
 		--exclude="*.h" \

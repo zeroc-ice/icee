@@ -29,3 +29,7 @@ include $(APPLICATION_RULES)
 
 test_compile: $(LOCAL_BINDIR)/$(LOCAL_EXE)
 test_clean: $(LOCAL_MODULE)_clean
+
+ifneq ($(LOCAL_RESOURCES),)
+test_resources: $(LOCAL_RESOURCES)
+endif
