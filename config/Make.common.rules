@@ -24,6 +24,11 @@ ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
 $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
+ifeq ($(USE_BIN_DIST),yes)
+ICE_HOME	?= /usr
+ICEE_HOME	?= /usr
+endif
+
 OBJ_PREFIX = $(HOST)
 
 ifeq ($(ICE_HOME),)
