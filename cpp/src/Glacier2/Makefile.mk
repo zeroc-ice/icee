@@ -35,7 +35,7 @@ LOCAL_SLICES	= $(wildcard $(LOCAL_SRCDIR)/*.ice)
 LOCAL_LINK_WITH	= Glacier2 Ice
 LOCAL_SRCDIR	= ice/$(LOCAL_PATH)
 LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp) \
-		  $(LOCAL_PATH)/RegisterPlugins.cpp
+		  $(LOCAL_PATH)/RegisterPluginsInit.cpp
 
 LOCAL_CPPFLAGS	= -I$(LOCAL_PATH)
 LOCAL_OBJS	= $(SUBMODULE_OBJS)

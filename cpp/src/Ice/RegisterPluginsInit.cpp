@@ -8,7 +8,7 @@
 // **********************************************************************
 
 #include <Ice/Initialize.h>
-#include <Ice/RegisterPlugins.h>
+#include <Ice/RegisterPluginsInit.h>
 
 using namespace std;
 using namespace Ice;
