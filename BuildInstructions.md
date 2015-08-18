@@ -22,7 +22,7 @@ Ice-E depends on the bzip2 and openssl libraries. For your convenience we
 provide an script that download and setup the require libraries from 
 Debian 7.8 (Wheezy) repositories:
 
-    wget https://github.com/zeroc-ice/icee/raw/v3.6.0/config/install_wheezy_thirdparty.sh
+    wget https://github.com/zeroc-ice/icee/raw/v3.6.1/config/install_wheezy_thirdparty.sh
     sudo bash
 
 For other build configurations, use the bzip2 and openssl development packages 
@@ -74,5 +74,5 @@ you can run `allTests.py` from the cpp directory:
     $ cd cpp
     $ python allTests.py
 
-[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.0
+[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.1
 [2]: https://doc.zeroc.com/display/Ice36/Using+the+Ice-E+Binary+Distribution
