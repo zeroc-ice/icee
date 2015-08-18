@@ -38,7 +38,7 @@ HOST			?= arm-linux-gnueabihf
 # If cross-compiling, set this to the root directory of your
 # cross development third party libraries.
 #
-THIRDPARTY_HOME  	?= /opt/IceE-3.6.0-ThirdParty
+THIRDPARTY_HOME  	?= /opt/IceE-3.6.1-ThirdParty
 
 #
 # Target to deploy the test suite.

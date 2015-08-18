@@ -28,5 +28,5 @@ agreement: you just need to comply with the GPL v2 terms and conditions. See
 
 ## Documentation
 
-- [Ice-E Release Notes](https://doc.zeroc.com/display/Rel/Ice-E+3.6.0+Release+Notes)
+- [Ice-E Release Notes](https://doc.zeroc.com/display/Rel/Ice-E+3.6.1+Release+Notes)
 - [Ice Manual](https://doc.zeroc.com/display/Ice36/Home)
