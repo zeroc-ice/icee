@@ -11,39 +11,57 @@
 # Select an installation base directory. The directory will be created
 # if it does not exist.
 #
-prefix			?= /opt/IceE-$(VERSION)
+prefix              ?= /opt/IceE-$(VERSION)
 
 #
 # Define OPTIMIZE as yes if you want to build with optimization. Otherwise
 # Ice-E is built with debug information.
 #
-#OPTIMIZE		= yes
+#OPTIMIZE           = yes
 
 #
+# The target operating system for the build, supported values are 'yocto'
+# and 'debian'.
+#
+TARGET_OS           ?= debian
+
+#
+# If you want to build Ice-E using an Ice binary distribution
+# set ICE_HOME to point to your Ice install location.
+#
+#ICE_HOME           = /usr
+
+#
+# Target to deploy the test suite.
+#
+DEPLOY_TARGET       ?= debian@192.168.7.2:/home/debian/icee
+
+
+###############################################################################
+#                                                                             #
+# Debian/Ubuntu specific options                                              #
+#                                                                             #
+###############################################################################
+
+#
+# Target distribution supported values are 'wheezy' 'trusty' and 'vivid'
+#
+TARGET_DIST         ?= wheezy
+
 # Debian arch tuple of the host machine. Supported values are
 # arm-linux-gnueabihf and x86_64-linux-gnu.
 #
 # Set it to arm-linux-gnueabihf if you are cross-compiling for
 # armhf.
 #
-HOST			?= arm-linux-gnueabihf
+HOST                ?= arm-linux-gnueabihf
 
 #
-# If you want to build Ice-E using an Ice binary distribution
-# set ICE_HOME to point to your Ice install location.
+# If cross-compiling for debian , set this to the root directory
+# of your cross development third party libraries.
 #
-#ICE_HOME		= /usr
+THIRDPARTY_HOME     ?= /opt/IceE-3.6.1-ThirdParty
 
-#
-# If cross-compiling, set this to the root directory of your
-# cross development third party libraries.
-#
-THIRDPARTY_HOME  	?= /opt/IceE-3.6.1-ThirdParty
-
-#
-# Target to deploy the test suite.
-#
-DEPLOY_TARGET		?= debian@192.168.7.2:/home/debian/icee
 
 #
 # Include common definitions

@@ -3,10 +3,13 @@ scripts
 lib
 bin
 .depend
+debian
+yocto
 arm-linux-gnueabihf
 x86_64-linux-gnu
 *.so
 *.so.*
+*~
 cpp/**/run.py
 cpp/test/IceDiscovery/simple/Test.cpp
 cpp/test/IceDiscovery/simple/Test.h

@@ -12,143 +12,128 @@
 all::
 clean::
 
-VERSION         = 3.6.1
+VERSION                     = 3.6.1
 
-BUILD		= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
-ifeq ($(HOST),)
-HOST		= $(BUILD)
-endif
-
-ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
-$(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
-endif
+BUILD                       = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 ifeq ($(USE_BIN_DIST),yes)
-ICE_HOME	?= /usr
-ICEE_HOME	?= /usr
+    ICE_HOME                ?= /usr
+    ICEE_HOME               ?= /usr
 endif
-
-OBJ_PREFIX = $(HOST)
 
 ifeq ($(ICE_HOME),)
-ice_slicedir	= ice/slice
-SLICE2CPP	= ice/cpp/bin/slice2cpp
-CPPFLAGS 	= -Iice/cpp/include 
+    ice_slicedir            = ice/slice
+    ice_includedir          = ice/cpp/include
+    ice_bindir              = ice/cpp/bin
+    ice_libdir              = ice/cpp/lib/$(BUILD)
+else
+    ifeq ($(ICE_HOME),/usr)
+        ice_slicedir        = $(ICE_HOME)/share/Ice-$(VERSION)/slice/
+    else
+        ice_slicedir        = $(ICE_HOME)/slice/
+    endif
+    ice_includedir          = $(ICE_HOME)/include
+    ice_bindir              = $(ICE_HOME)/bin
+    ice_libdir              = $(ICE_HOME)/lib/$(BUILD)
+endif
+
+SLICE2CPP                   = $(ice_bindir)/slice2cpp
+SLICE2CPPFLAGS              = -I$(ice_slicedir)
+CPPFLAGS                    = -I$(ice_includedir)
 
 ifeq ($(wildcard $(SLICE2CPP)),)
-$(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
-endif
-
-else
-
-ifeq ($(ICE_HOME),/usr)
-ice_slicedir	= $(ICE_HOME)/share/Ice-$(VERSION)/slice/
-else
-ice_slicedir	= $(ICE_HOME)/slice/
-CPPFLAGS 	= -I$(ICE_HOME)/include 
-endif
-
-SLICE2CPP 	= $(ICE_HOME)/bin/slice2cpp
-
+    $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
 endif
 
 #
-# If not using a system install set LD_LIBRARY_PATH to run slice2cpp
-# compiler.
+# Optimization flags
+#
+ifeq ($(OPTIMIZE),yes)
+    CPPFLAGS                += -Os -DNDEBUG -ffunction-sections -fdata-sections
+    LDFLAGS                 += -Wl,--gc-sections
+else
+    CPPFLAGS                += -g
+endif
+
+#
+# If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
 #
 ifneq ($(ICE_HOME),/usr)
-export LD_LIBRARY_PATH := $(ICE_HOME)/lib/$(BUILD):$(LD_LIBRARY_PATH)
+    export LD_LIBRARY_PATH := $(ice_libdir):$(LD_LIBRARY_PATH)
 endif
+
+#
+# Include the OS specific rules
+#
+ifeq ($(filter $(TARGET_OS),debian yocto),)
+    $(error Invalid TARGET_OS: '$(TARGET_OS)' supported values are: 'debian' and 'yocto'))
+endif
+
+include config/Make.$(TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
-bindir		= cpp/bin
-libdir		= cpp/lib/$(OBJ_PREFIX)
+    bindir                  = cpp/bin
+    libdir                  = cpp/lib/$(OBJ_PREFIX)
 else
-
-ifneq ($(ICEE_HOME),/usr)
-libdir		= $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+    ifneq ($(ICEE_HOME),/usr)
+        libdir              = $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+    endif
 endif
 
-endif
-#
-# If host different than build we are cross compiling
-#
-ifneq ($(HOST),$(BUILD))
-include config/Make.cross.rules
-else
-mklib		= ar cr $(1) $(2)
-STRIP		= strip
-endif
-
-CPPFLAGS 	:= -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
-OS_LIBS		:= -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+CPPFLAGS                    := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
+OS_LIBS                     := -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
 
 ifneq ($(libdir),)
-LDFLAGS		:= -L$(libdir) $(LDFLAGS) 
+    LDFLAGS                 := -L$(libdir) $(LDFLAGS)
 endif
 
-LDFLAGS		:= $(LDFLAGS) $(OS_LIBS)
-SLICE2CPPFLAGS	= -I$(ice_slicedir)
+LDFLAGS                     := $(LDFLAGS) $(OS_LIBS)
 
-
-ifeq ($(OPTIMIZE),yes)
-
-#
-# For x86_64 builds don't use -Os as this cause problems with DeprecatedStringConverter.cpp
-# see ICE-6661
-#
-ifeq ($(HOST),arm-linux-gnueabihf)
-	CPPFLAGS += -Os
-else
-	CPPFLAGS += -O2
-endif
-	CPPFLAGS += -DNDEBUG -ffunction-sections -fdata-sections
-	LDFLAGS  += -Wl,--gc-sections
-else
-	CPPFLAGS += -g
-endif
-
-mklibname	= lib$(1).a
-mklibtarget	= $(libdir)/$(call mklibname,$(1))
-mkexetarget	= $(bindir)/$(1)
+mklib                       = $(AR) cr $(1) $(2)
+mklibname                   = lib$(1).a
+mklibtarget                 = $(libdir)/$(call mklibname,$(1))
+mkexetarget                 = $(bindir)/$(1)
 
 
 #
 # Recursive wildcard function
 #
-rwildcard	= $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+rwildcard                   = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 #
 # Verbosity
 #
 ifdef V
     ifeq ("$(origin V)", "command line")
-        BUILD_VERBOSE = $(V)
+        BUILD_VERBOSE       = $(V)
     endif
 endif
 
 ifndef BUILD_VERBOSE
-    BUILD_VERBOSE = 0
+    BUILD_VERBOSE           = 0
 endif
 
 ifeq ($(BUILD_VERBOSE),0)
-    Q = @
-    E = @echo
+    Q                       = @
+    E                       = @echo
 else
-    E = @:
+    E                       = @:
 endif
 
-GITIGNORE_DEFAULT	= certs \
-			  scripts \
-			  lib \
-			  bin \
-			  .depend \
-			  arm-linux-gnueabihf \
-			  x86_64-linux-gnu \
-			  *.so \
-			  *.so.* \
-			  cpp/**/run.py
+GITIGNORE_DEFAULT           = certs \
+                              scripts \
+                              lib \
+                              bin \
+                              .depend \
+                              debian \
+                              yocto \
+                              arm-linux-gnueabihf \
+                              x86_64-linux-gnu \
+                              *.so \
+                              *.so.* \
+                              *~ \
+                              cpp/**/run.py
+
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \
 	  echo $$line ; \
@@ -158,25 +143,27 @@ gitignore::
 	$(E) "Copying test scripts"
 	$(Q)cp $< $@
 
-CLEAR_RULES 		= $(CURDIR)/config/Make.clear.rules
-OBJECT_RULES 		= $(CURDIR)/config/Make.object.rules
-SUBMODULE_RULES		= $(CURDIR)/config/Make.submodule.rules
-APPLICATION_RULES 	= $(CURDIR)/config/Make.application.rules
-TEST_APPLICATION_RULES 	= $(CURDIR)/config/Make.test.application.rules
-CLIENTSERVERTEST_RULES	= $(CURDIR)/config/Make.clientservertest.rules
-STATICLIBRARY_RULES 	= $(CURDIR)/config/Make.staticlibrary.rules
+CLEAR_RULES                 = $(CURDIR)/config/Make.clear.rules
+OBJECT_RULES                = $(CURDIR)/config/Make.object.rules
+SUBMODULE_RULES             = $(CURDIR)/config/Make.submodule.rules
+APPLICATION_RULES           = $(CURDIR)/config/Make.application.rules
+TEST_APPLICATION_RULES      = $(CURDIR)/config/Make.test.application.rules
+CLIENTSERVERTEST_RULES      = $(CURDIR)/config/Make.clientservertest.rules
+STATICLIBRARY_RULES         = $(CURDIR)/config/Make.staticlibrary.rules
 
 #
 # Include all .mk files
 #
 ifeq ($(USE_BIN_DIST),yes)
 
-include $(call rwildcard,cpp/test,*.mk)
+    include $(call rwildcard,cpp/test,*.mk)
+
 install::
 
 else
 
-include $(call rwildcard,,*.mk)
+    include $(call rwildcard,,*.mk)
+
 dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router
 
 install:: dist
@@ -222,6 +209,11 @@ certs: ice/certs
 	ln -s ice/certs certs
 
 all:: scripts certs
+
+info::
+	@echo "BUILD $(BUILD)"
+	@echo "HOST $(HOST)"
+
 #
 # Include depend rules
 #

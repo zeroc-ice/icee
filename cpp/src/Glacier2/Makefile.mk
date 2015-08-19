@@ -39,7 +39,7 @@ LOCAL_SRCS 	= $(wildcard $(LOCAL_SRCDIR)/*.cpp) \
 
 LOCAL_CPPFLAGS	= -I$(LOCAL_PATH)
 LOCAL_OBJS	= $(SUBMODULE_OBJS)
-LOCAL_LDFLAGS	= -lcrypt
+LOCAL_LDFLAGS	= -Wl,-Bdynamic -lcrypt
 
 include $(APPLICATION_RULES)
 
