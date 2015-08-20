@@ -21,14 +21,14 @@ ifeq ($(USE_BIN_DIST),yes)
     ICEE_HOME               ?= /usr
 endif
 
-ice_slicedir            = ice/slice
+ice_slicedir                = ice/slice
+ice_includedir              = ice/cpp/include
     
 ifeq ($(ICE_HOME),)
-    ice_includedir          = ice/cpp/include
+
     ice_bindir              = ice/cpp/bin
     ice_libdir              = ice/cpp/lib/$(BUILD)
 else
-    ice_includedir          = $(ICE_HOME)/include
     ice_bindir              = $(ICE_HOME)/bin
     ice_libdir              = $(ICE_HOME)/lib/$(BUILD)
 endif
