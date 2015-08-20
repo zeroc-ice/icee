@@ -65,8 +65,8 @@ endif
 #
 # Include the OS specific rules
 #
-ifeq ($(filter $(TARGET_OS),debian yocto),)
-    $(error Invalid TARGET_OS: '$(TARGET_OS)' supported values are: 'debian' and 'yocto'))
+ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
+    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'))
 endif
 
 include config/Make.$(TARGET_OS).rules
