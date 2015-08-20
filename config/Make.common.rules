@@ -21,17 +21,13 @@ ifeq ($(USE_BIN_DIST),yes)
     ICEE_HOME               ?= /usr
 endif
 
+ice_slicedir            = ice/slice
+    
 ifeq ($(ICE_HOME),)
-    ice_slicedir            = ice/slice
     ice_includedir          = ice/cpp/include
     ice_bindir              = ice/cpp/bin
     ice_libdir              = ice/cpp/lib/$(BUILD)
 else
-    ifeq ($(ICE_HOME),/usr)
-        ice_slicedir        = $(ICE_HOME)/share/Ice-$(VERSION)/slice/
-    else
-        ice_slicedir        = $(ICE_HOME)/slice/
-    endif
     ice_includedir          = $(ICE_HOME)/include
     ice_bindir              = $(ICE_HOME)/bin
     ice_libdir              = $(ICE_HOME)/lib/$(BUILD)
@@ -69,7 +65,7 @@ ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
     $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'))
 endif
 
-include config/Make.$(TARGET_OS).rules
+include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
     bindir                  = cpp/bin

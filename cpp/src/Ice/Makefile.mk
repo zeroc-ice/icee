@@ -40,7 +40,7 @@ LOCAL_PATH	= cpp/src/Ice
 
 LOCAL_SLICEDIR	= ice/slice/$(LOCAL_MODULE)
 LOCAL_SLICES	= $(wildcard $(LOCAL_SLICEDIR)/*.ice)
-LOCAL_SLICE2CPPFLAGS	= --ice -Iice/slice
+LOCAL_SLICE2CPPFLAGS	= --ice
 
 LOCAL_SRCDIR	= ice/cpp/src/$(LOCAL_MODULE)
 LOCAL_SRCS 	= $(filter-out $(LOCAL_SRCDIR)/DLLMain.cpp $(LOCAL_SRCDIR)/RegisterPluginsInit.cpp, $(wildcard $(LOCAL_SRCDIR)/*.cpp)) \
