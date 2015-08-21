@@ -18,3 +18,4 @@ LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h
 LOCAL_PUBLIC_SLICES             = $(LOCAL_SLICES)
 
 include $(STATICLIBRARY_RULES)
+include $(INSTALL_RULES)
