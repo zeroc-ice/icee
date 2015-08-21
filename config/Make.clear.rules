@@ -35,3 +35,4 @@ LOCAL_PUBLIC_HEADERS            =
 LOCAL_INSTALL_HEADERS           =
 LOCAL_PUBLIC_SLICES             =
 LOCAL_INSTALL_SLICES            =
+LOCAL_STRIP_DISABLED            =
