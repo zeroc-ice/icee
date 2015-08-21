@@ -10,11 +10,11 @@
 include $(OBJECT_RULES)
 
 ifneq ($(LOCAL_LINK_WITH),)
-LOCAL_LDFLAGS += -Wl,-Bstatic $(addprefix -l,$(LOCAL_LINK_WITH))
+    LOCAL_LDFLAGS           += -L$(icee_lib_dir) -Wl,-Bstatic $(addprefix -l,$(LOCAL_LINK_WITH))
 endif
 
 ifeq ($(LOCAL_BINDIR),)
-LOCAL_BINDIR	= $(bindir)
+    LOCAL_BINDIR            = $(icee_bin_dir)
 endif
 
 $(LOCAL_MODULE): LOCAL_BINDIR := $(LOCAL_BINDIR)
@@ -27,13 +27,14 @@ $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_EXE := $(LOCAL_EXE)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_OBJS := $(LOCAL_OBJS)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_LINK_WITH := $(LOCAL_LINK_WITH)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_LDFLAGS := $(LOCAL_LDFLAGS)
+$(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_STRIP_DISABLED := $(LOCAL_STRIP_DISABLED)
 
 $(LOCAL_MODULE)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
 $(LOCAL_MODULE)_clean: LOCAL_EXE := $(LOCAL_EXE)
 $(LOCAL_MODULE)_clean: LOCAL_BINDIR := $(LOCAL_BINDIR)
 
 ifneq ($(USE_BIN_DIST),yes)
-$(LOCAL_BINDIR)/$(LOCAL_EXE): $(foreach lib,$(LOCAL_LINK_WITH),$(libdir)/lib$(lib).a)
+    $(LOCAL_BINDIR)/$(LOCAL_EXE): $(foreach lib,$(LOCAL_LINK_WITH),$(icee_lib_dir)/lib$(lib).a)
 endif
 
 $(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS)
@@ -41,7 +42,9 @@ $(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS)
 	@rm -rf $(@)
 	$(E) "Linking $(LOCAL_MODULE)"
 	$(Q)$(CXX) -o $(@) $(LOCAL_OBJS) $(LOCAL_LDFLAGS) $(LDFLAGS) $(EXELDFLAGS)
+ifneq ($(LOCAL_STRIP_DISABLED),yes)
 	$(Q)$(STRIP) --strip-all --remove-section=.comment --remove-section=.note $(@)
+endif
 
 $(LOCAL_MODULE): $(LOCAL_BINDIR)/$(LOCAL_EXE)
 

@@ -7,21 +7,21 @@
 #
 # **********************************************************************
 
-LOCAL_TESTDIR		= ice/$(LOCAL_PATH)
-LOCAL_SLICEDIR		= $(LOCAL_TESTDIR)
-LOCAL_SRCDIR		= $(LOCAL_TESTDIR)
-LOCAL_BINDIR		= $(LOCAL_PATH)
+LOCAL_TESTDIR                   = ice/$(LOCAL_PATH)
+LOCAL_SLICEDIR                  = $(LOCAL_TESTDIR)
+LOCAL_SRCDIR                    = $(LOCAL_TESTDIR)
+LOCAL_BINDIR                    = $(LOCAL_PATH)
 
-LOCAL_SRCS		:= $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
-LOCAL_MODULE		= $(subst /,_,$(LOCAL_PATH))_$(LOCAL_EXE)
+LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
+LOCAL_MODULE                    = $(subst /,_,$(LOCAL_PATH))_$(LOCAL_EXE)
 
-LOCAL_LINK_WITH		+= Ice
-LOCAL_CPPFLAGS		+= -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
-LOCAL_SLICE2CPPFLAGS	+= -I$(LOCAL_SLICEDIR)
+LOCAL_LINK_WITH                 += Ice
+LOCAL_CPPFLAGS                  += -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
+LOCAL_SLICE2CPPFLAGS            += -I$(LOCAL_SLICEDIR)
 
 
 ifneq ($(wildcard $(LOCAL_TESTDIR)/run.py),)
-TARGETS := $(TARGETS) $(LOCAL_PATH)/run.py
+    TARGETS := $(TARGETS) $(LOCAL_PATH)/run.py
 endif
 
 include $(APPLICATION_RULES)
@@ -31,5 +31,5 @@ test_compile: $(LOCAL_BINDIR)/$(LOCAL_EXE)
 test_clean: $(LOCAL_MODULE)_clean
 
 ifneq ($(LOCAL_RESOURCES),)
-test_resources: $(LOCAL_RESOURCES)
+    test_resources: $(LOCAL_RESOURCES)
 endif

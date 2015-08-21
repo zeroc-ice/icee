@@ -9,8 +9,8 @@
 
 include $(OBJECT_RULES)
 
-LOCAL_LIBNAME	= lib$(LOCAL_MODULE).a
-LOCAL_LIB 	= $(libdir)/$(LOCAL_LIBNAME)
+LOCAL_LIBNAME                   = lib$(LOCAL_MODULE).a
+LOCAL_LIB                       = $(icee_lib_dir)/$(LOCAL_LIBNAME)
 
 $(LOCAL_LIB): LOCAL_OBJS := $(LOCAL_OBJS)
 

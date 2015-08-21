@@ -1,0 +1,52 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+include $(OBJECT_RULES)
+
+LOCAL_LIBNAME                   ?= lib$(LOCAL_MODULE).so
+LOCAL_LIBSONAME                 ?= lib$(LOCAL_MODULE).so.$(SOVERSION)
+LOCAL_FILENAME                  ?= lib$(LOCAL_MODULE).so.$(VERSION)
+LOCAL_LIBDIR                    ?= $(icee_lib_dir)
+
+$(LOCAL_LIBDIR)/$(LOCAL_LIBNAME): LOCAL_LIBSONAME := $(LOCAL_LIBSONAME)
+
+$(LOCAL_LIBDIR)/$(LOCAL_LIBNAME): $(LOCAL_LIBDIR)/$(LOCAL_LIBSONAME)
+	@mkdir -p $(@D)
+	@rm -f $@
+	$(Q)ln -s $(LOCAL_LIBSONAME) $@
+
+$(LOCAL_LIBDIR)/$(LOCAL_LIBSONAME): LOCAL_FILENAME := $(LOCAL_FILENAME)
+
+$(LOCAL_LIBDIR)/$(LOCAL_LIBSONAME): $(LOCAL_LIBDIR)/$(LOCAL_FILENAME)
+	@mkdir -p $(@D)
+	@rm -f $@
+	$(Q)ln -s $(LOCAL_FILENAME) $@
+
+$(LOCAL_LIBDIR)/$(LOCAL_LIBNAME): LOCAL_OBJS := $(LOCAL_OBJS)
+$(LOCAL_LIBDIR)/$(LOCAL_LIBNAME): LOCAL_LIBDIR := $(LOCAL_LIBDIR)
+
+$(LOCAL_LIBDIR)/$(LOCAL_FILENAME): $(LOCAL_OBJS)
+	@mkdir -p $(@D)
+	$(E) Creating library: $(@F)
+	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
+
+.PHONY: $(LOCAL_MODULE)
+
+$(LOCAL_MODULE): LOCAL_LIBNAME := $(LOCAL_LIBNAME)
+
+$(LOCAL_MODULE): $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME)
+
+$(LOCAL_MODULE)_clean: LOCAL_LIBNAME := $(LOCAL_LIBNAME)
+$(LOCAL_MODULE)_clean: LOCAL_LIBSONAME := $(LOCAL_LIBSONAME)
+$(LOCAL_MODULE)_clean: LOCAL_FILENAME := $(LOCAL_FILENAME)
+
+$(LOCAL_MODULE)_clean::
+	$(Q)rm -rf $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME) $(LOCAL_LIBDIR)/$(LOCAL_LIBSONAME) $(LOCAL_LIBDIR)/$(LOCAL_FILENAME)
+
+TARGETS := $(TARGETS) $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME)

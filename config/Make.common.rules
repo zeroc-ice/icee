@@ -12,30 +12,31 @@
 all::
 clean::
 
-VERSION                     = 3.6.1
+VERSION                         = 3.6.1
+SOVERSION                       = 36
 
-BUILD                       = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+BUILD                           = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 ifeq ($(USE_BIN_DIST),yes)
-    ICE_HOME                ?= /usr
-    ICEE_HOME               ?= /usr
+    ICE_HOME                    ?= /usr
+    ICEE_HOME                   ?= /usr
 endif
 
-ice_slicedir                = ice/slice
-ice_includedir              = ice/cpp/include
-    
+ice_slice_dir                   = ice/slice
+ice_include_dir                 = ice/cpp/include
+ice_man_dir                     = ice/man/man1
+
 ifeq ($(ICE_HOME),)
-
-    ice_bindir              = ice/cpp/bin
-    ice_libdir              = ice/cpp/lib/$(BUILD)
+    ice_bin_dir                 = ice/cpp/bin
+    ice_lib_dir                 = ice/cpp/lib/$(BUILD)
 else
-    ice_bindir              = $(ICE_HOME)/bin
-    ice_libdir              = $(ICE_HOME)/lib/$(BUILD)
+    ice_bin_dir                 = $(ICE_HOME)/bin
+    ice_lib_dir                 = $(ICE_HOME)/lib/$(BUILD)
 endif
 
-SLICE2CPP                   = $(ice_bindir)/slice2cpp
-SLICE2CPPFLAGS              = -I$(ice_slicedir)
-CPPFLAGS                    = -I$(ice_includedir)
+SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
+SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
+CPPFLAGS                        = -I$(ice_include_dir)
 
 ifeq ($(wildcard $(SLICE2CPP)),)
     $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
@@ -45,10 +46,10 @@ endif
 # Optimization flags
 #
 ifeq ($(OPTIMIZE),yes)
-    CPPFLAGS                += -Os -DNDEBUG -ffunction-sections -fdata-sections
-    LDFLAGS                 += -Wl,--gc-sections
+    CPPFLAGS                    += -Os -DNDEBUG -ffunction-sections -fdata-sections
+    LDFLAGS                     += -Wl,--gc-sections
 else
-    CPPFLAGS                += -g
+    CPPFLAGS                    += -g
 endif
 
 #
@@ -68,67 +69,67 @@ endif
 include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
-    bindir                  = cpp/bin
-    libdir                  = cpp/lib/$(OBJ_PREFIX)
+    icee_bin_dir                = cpp/bin
+    icee_lib_dir                = cpp/lib/$(OBJ_PREFIX)
 else
     ifneq ($(ICEE_HOME),/usr)
-        libdir              = $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+        icee_libdir             = $(ICEE_HOME)/lib/$(OBJ_PREFIX)
     endif
 endif
 
-CPPFLAGS                    := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
-OS_LIBS                     := -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+CPPFLAGS                        := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
+OS_LIBS                         := -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
 
 ifneq ($(libdir),)
-    LDFLAGS                 := -L$(libdir) $(LDFLAGS)
+    LDFLAGS                     := -L$(libdir) $(LDFLAGS)
 endif
 
-LDFLAGS                     := $(LDFLAGS) $(OS_LIBS)
+LDFLAGS                         := $(LDFLAGS) $(OS_LIBS)
 
-mklib                       = $(AR) cr $(1) $(2)
-mklibname                   = lib$(1).a
-mklibtarget                 = $(libdir)/$(call mklibname,$(1))
-mkexetarget                 = $(bindir)/$(1)
+mklib                           = $(AR) cr $(1) $(2)
+mklibname                       = lib$(1).a
+mklibtarget                     = $(libdir)/$(call mklibname,$(1))
+mkexetarget                     = $(bindir)/$(1)
 
 
 #
 # Recursive wildcard function
 #
-rwildcard                   = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+rwildcard                       = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 
 #
 # Verbosity
 #
 ifdef V
     ifeq ("$(origin V)", "command line")
-        BUILD_VERBOSE       = $(V)
+        BUILD_VERBOSE           = $(V)
     endif
 endif
 
 ifndef BUILD_VERBOSE
-    BUILD_VERBOSE           = 0
+    BUILD_VERBOSE               = 0
 endif
 
 ifeq ($(BUILD_VERBOSE),0)
-    Q                       = @
-    E                       = @echo
+    Q                           = @
+    E                           = @echo
 else
-    E                       = @:
+    E                           = @:
 endif
 
-GITIGNORE_DEFAULT           = certs \
-                              scripts \
-                              lib \
-                              bin \
-                              .depend \
-                              debian \
-                              yocto \
-                              arm-linux-gnueabihf \
-                              x86_64-linux-gnu \
-                              *.so \
-                              *.so.* \
-                              *~ \
-                              cpp/**/run.py
+GITIGNORE_DEFAULT               = certs \
+                                  scripts \
+                                  lib \
+                                  bin \
+                                  .depend \
+                                  debian \
+                                  yocto \
+                                  arm-linux-gnueabihf \
+                                  x86_64-linux-gnu \
+                                  *.so \
+                                  *.so.* \
+                                  *~ \
+                                  cpp/**/run.py
 
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \
@@ -139,16 +140,30 @@ gitignore::
 	$(E) "Copying test scripts"
 	$(Q)cp $< $@
 
-CLEAR_RULES                 = $(CURDIR)/config/Make.clear.rules
-OBJECT_RULES                = $(CURDIR)/config/Make.object.rules
-SUBMODULE_RULES             = $(CURDIR)/config/Make.submodule.rules
-APPLICATION_RULES           = $(CURDIR)/config/Make.application.rules
-TEST_APPLICATION_RULES      = $(CURDIR)/config/Make.test.application.rules
-CLIENTSERVERTEST_RULES      = $(CURDIR)/config/Make.clientservertest.rules
-STATICLIBRARY_RULES         = $(CURDIR)/config/Make.staticlibrary.rules
+CLEAR_RULES                     = $(CURDIR)/config/Make.clear.rules
+OBJECT_RULES                    = $(CURDIR)/config/Make.object.rules
+INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
+SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
+APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
+TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
+CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
+STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
+DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
 
 #
-# Include all .mk files
+# Install directories
+#
+ice_install_include_dir         = $(prefix)/include
+ice_install_bin_dir             = $(prefix)/bin
+ice_install_man_dir             = $(prefix)/share/man/man1
+ifeq ($(prefix),/usr)
+    ice_install_slice_dir       = $(prefix)/share/Ice-$(VERSION)/slice
+else
+    ice_install_slice_dir       = $(prefix)/slice
+endif
+
+#
+# Include required .mk files
 #
 ifeq ($(USE_BIN_DIST),yes)
 
@@ -157,19 +172,23 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
-
-    include $(call rwildcard,,*.mk)
-
-dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router
+    dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router IcePy
+    
+    ifneq ($(MAKECMDGOALS),dist)
+        include $(call rwildcard,,*.mk)
+    else
+        include $(call rwildcard,cpp/src,*.mk)
+        include $(call rwildcard,python,*.mk)
+    endif
 
 install:: dist
 	$(E) "Installing IceE $(VERSION) to $(DESTDIR)$(prefix)"
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
-	$(Q)cp -rf $(libdir)/*.a $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/bin
-	$(Q)cp -rf $(bindir)/glacier2router $(DESTDIR)$(prefix)/bin/
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/share/man/man1/
-	$(Q)cp -rf ice/man/man1/glacier2router.1 $(DESTDIR)$(prefix)/share/man/man1/
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_lib_dir)
+	$(Q)cp -rf $(icee_lib_dir)/*.a $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/glacier2router $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
 
 endif
 
@@ -213,4 +232,6 @@ info::
 #
 # Include depend rules
 #
-include $(CURDIR)/config/Make.depend.rules
+ifneq ($(MAKECMDGOALS),clean)
+    include $(CURDIR)/config/Make.depend.rules
+endif

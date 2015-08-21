@@ -9,50 +9,52 @@
 
 
 ifeq ($(HOST),)
-    HOST                    = $(BUILD)
+    HOST                        = $(BUILD)
 endif
 
 ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
     $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
-OBJ_PREFIX = $(TARGET_OS)/$(HOST)
+OBJ_PREFIX                      = $(ICEE_TARGET_OS)/$(HOST)
 
 #
 # If host different than build we are cross compiling
 #
 ifneq ($(HOST),$(BUILD))
-    TARGET_DIST             ?= wheezy
+    TARGET_DIST                 ?= wheezy
     
     ifeq ($(filter $(TARGET_DIST),wheezy trusty vivid),)
         $(error Invalid TARGET_DIST: `$(TARGET_DIST)' supported values are: `wheezy', `trusty' and `vivid'))
     endif
 
     ifeq ($(TARGET_DIST),wheezy)
-        GCC_VERSION         = 4.6
+        GCC_VERSION             = 4.6
     endif
 
     ifeq ($(TARGET_DIST),trusty)
-        GCC_VERSION         = 4.8
+        GCC_VERSION             = 4.8
     endif
 
     ifeq ($(TARGET_DIST),vivid)
-        GCC_VERSION         = 4.9
+        GCC_VERSION             = 4.9
     endif
 
-    CC                      = arm-linux-gnueabihf-gcc-$(GCC_VERSION)
-    CXX                     = arm-linux-gnueabihf-g++-$(GCC_VERSION)
-    STRIP                   = arm-linux-gnueabihf-strip
-    AR                      = arm-linux-gnueabihf-ar
+    CC                          = arm-linux-gnueabihf-gcc-$(GCC_VERSION)
+    CXX                         = arm-linux-gnueabihf-g++-$(GCC_VERSION)
+    STRIP                       = arm-linux-gnueabihf-strip
+    AR                          = arm-linux-gnueabihf-ar
 
     ifneq ($(THIRDPARTY_HOME),)
-        CPPFLAGS            += -I$(THIRDPARTY_HOME)/usr/include
-        LDFLAGS             += -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
-                               -Wl,-rpath-link,$(THIRDPARTY_HOME)/lib/arm-linux-gnueabihf
+        CPPFLAGS                += -I$(THIRDPARTY_HOME)/usr/include
+        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
+                                   -Wl,-rpath-link,$(THIRDPARTY_HOME)/lib/arm-linux-gnueabihf
     endif
 else
-    CC                      = gcc
-    CXX                     = g++
-    AR                      = ar
-    STRIP                   = strip
+    CC                          = gcc
+    CXX                         = g++
+    AR                          = ar
+    STRIP                       = strip
 endif
+
+ice_install_lib_dir = $(prefix)/lib/$(HOST)

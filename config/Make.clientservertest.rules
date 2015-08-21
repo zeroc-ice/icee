@@ -13,61 +13,54 @@ TEST_LOCAL_PATH	:= $(LOCAL_PATH)
 # Client test
 #
 ifeq ($(CLIENT_SLICES),)
-CLIENT_SLICES		= Test.ice
+    CLIENT_SLICES               = Test.ice
 endif
 
 ifneq ($(CLIENT_SLICES_EXT),)
-CLIENT_SLICES		:= $(CLIENT_SLICES) \
-			   $(CLIENT_SLICES_EXT)
+    CLIENT_SLICES               := $(CLIENT_SLICES) $(CLIENT_SLICES_EXT)
 endif
 
 ifneq ($(TEST_SLICES_EXT),)
-CLIENT_SLICES		:= $(CLIENT_SLICES) \
-			   $(TEST_SLICES_EXT)
+    CLIENT_SLICES               := $(CLIENT_SLICES) $(TEST_SLICES_EXT)
 endif
 
 ifeq ($(CLIENT_SRCS),)
-CLIENT_SRCS		= Client.cpp \
-			  AllTests.cpp
+    CLIENT_SRCS                 = Client.cpp AllTests.cpp
 endif
 
 ifneq ($(CLIENT_SRCS_EXT),)
-CLIENT_SRCS		:= $(CLIENT_SRCS) \
-			   $(CLIENT_SRCS_EXT)
+    CLIENT_SRCS                 := $(CLIENT_SRCS) $(CLIENT_SRCS_EXT)
 endif
 
 ifneq ($(TEST_SRCS_EXT),)
-CLIENT_SRCS		:= $(CLIENT_SRCS) \
-			   $(TEST_SRCS_EXT)
+    CLIENT_SRCS                 := $(CLIENT_SRCS) $(TEST_SRCS_EXT)
 endif
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE		= client
-LOCAL_PATH		= $(TEST_LOCAL_PATH)
-
-LOCAL_SLICES		= $(filter-out $(CLIENT_SLICES_EXCLUDE),$(sort $(CLIENT_SLICES)))
-
-LOCAL_SRCS		= $(filter-out $(CLIENT_SRCS_EXCLUDE),$(sort $(CLIENT_SRCS)))
+LOCAL_EXE                       = client
+LOCAL_PATH                      = $(TEST_LOCAL_PATH)
+LOCAL_SLICES                    = $(filter-out $(CLIENT_SLICES_EXCLUDE),$(sort $(CLIENT_SLICES)))
+LOCAL_SRCS                      = $(filter-out $(CLIENT_SRCS_EXCLUDE),$(sort $(CLIENT_SRCS)))
 
 ifneq ($(CLIENT_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(CLIENT_SLICES2CPPFLAGS)
+    LOCAL_SLICES2CPPFLAGS       += $(CLIENT_SLICES2CPPFLAGS)
 endif
 
 ifneq ($(TEST_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(TEST_SLICES2CPPFLAGS)
+    LOCAL_SLICES2CPPFLAGS       += $(TEST_SLICES2CPPFLAGS)
 endif
 
 ifneq ($(CLIENT_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(CLIENT_CPPFLAGS)
+    LOCAL_CPPFLAGS              += $(CLIENT_CPPFLAGS)
 endif
 
 ifneq ($(TEST_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(TEST_CPPFLAGS)
+    LOCAL_CPPFLAGS              += $(TEST_CPPFLAGS)
 endif
 
 ifneq ($(CLIENT_LINK_WITH),)
-LOCAL_LINK_WITH = $(CLIENT_LINK_WITH)
+    LOCAL_LINK_WITH             = $(CLIENT_LINK_WITH)
 endif
 
 include $(TEST_APPLICATION_RULES)
@@ -76,62 +69,55 @@ include $(TEST_APPLICATION_RULES)
 # Server test
 #
 ifeq ($(SERVER_SLICES),)
-SERVER_SLICES		= Test.ice
+    SERVER_SLICES               = Test.ice
 endif
 
 ifneq ($(SERVER_SLICES_EXT),)
-SERVER_SLICES		:= $(SERVER_SLICES) \
-			   $(SERVER_SLICES_EXT)
+    SERVER_SLICES               := $(SERVER_SLICES) $(SERVER_SLICES_EXT)
 endif
 
 ifneq ($(TEST_SLICES_EXT),)
-SERVER_SLICES		:= $(SERVER_SLICES) \
-			   $(TEST_SLICES_EXT)
+    SERVER_SLICES               := $(SERVER_SLICES) $(TEST_SLICES_EXT)
 endif
 
 ifeq ($(SERVER_SRCS),)
-SERVER_SRCS		= Server.cpp \
-			  TestI.cpp
+    SERVER_SRCS                 = Server.cpp TestI.cpp
 endif
 
 ifneq ($(SERVER_SRCS_EXT),)
-SERVER_SRCS		:= $(SERVER_SRCS) \
-			   $(SERVER_SRCS_EXT)
+    SERVER_SRCS                 := $(SERVER_SRCS) $(SERVER_SRCS_EXT)
 endif
 
 ifneq ($(TEST_SRCS_EXT),)
-SERVER_SRCS		:= $(SERVER_SRCS) \
-			   $(TEST_SRCS_EXT)
+    SERVER_SRCS                 := $(SERVER_SRCS) $(TEST_SRCS_EXT)
 endif
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE		= server
-LOCAL_PATH		= $(TEST_LOCAL_PATH)
-
-LOCAL_SLICES		= $(filter-out $(SERVER_SLICES_EXCLUDE),$(sort $(SERVER_SLICES)))
-
-LOCAL_SRCS      	= $(filter-out $(SERVER_SRCS_EXCLUDE),$(sort $(SERVER_SRCS)))
+LOCAL_EXE                       = server
+LOCAL_PATH                      = $(TEST_LOCAL_PATH)
+LOCAL_SLICES                    = $(filter-out $(SERVER_SLICES_EXCLUDE),$(sort $(SERVER_SLICES)))
+LOCAL_SRCS                      = $(filter-out $(SERVER_SRCS_EXCLUDE),$(sort $(SERVER_SRCS)))
 
 
 ifneq ($(SERVER_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(SERVER_SLICES2CPPFLAGS)
+    LOCAL_SLICES2CPPFLAGS       += $(SERVER_SLICES2CPPFLAGS)
 endif
 
 ifneq ($(TEST_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(TEST_SLICES2CPPFLAGS)
+    LOCAL_SLICES2CPPFLAGS       += $(TEST_SLICES2CPPFLAGS)
 endif
 
 ifneq ($(SERVER_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(SERVER_CPPFLAGS)
+    LOCAL_CPPFLAGS              += $(SERVER_CPPFLAGS)
 endif
 
 ifneq ($(TEST_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(TEST_CPPFLAGS)
+    LOCAL_CPPFLAGS              += $(TEST_CPPFLAGS)
 endif
 
 ifneq ($(SERVER_LINK_WITH),)
-LOCAL_LINK_WITH = $(SERVER_LINK_WITH)
+    LOCAL_LINK_WITH             = $(SERVER_LINK_WITH)
 endif
 
 include $(TEST_APPLICATION_RULES)
@@ -141,86 +127,74 @@ include $(TEST_APPLICATION_RULES)
 #
 ifneq ($(findstring colloc,$(TEST_TARGET_EXT)),)
 
-ifeq ($(COLLOC_SLICES),)
-COLLOC_SLICES		= Test.ice
-endif
+    ifeq ($(COLLOC_SLICES),)
+        COLLOC_SLICES           = Test.ice
+    endif
 
-ifneq ($(COLLOC_SLICES_EXT),)
-COLLOC_SLICES		:= $(COLLOC_SLICES) \
-			   $(COLLOC_SLICES_EXT)
-endif
+    ifneq ($(COLLOC_SLICES_EXT),)
+        COLLOC_SLICES           := $(COLLOC_SLICES $(COLLOC_SLICES_EXT)
+    endif
 
-ifneq ($(TEST_SLICES_EXT),)
-COLLOC_SLICES		:= $(COLLOC_SLICES) \
-			   $(TEST_SLICES_EXT)
-endif
+    ifneq ($(TEST_SLICES_EXT),)
+        COLLOC_SLICES           := $(COLLOC_SLICES) $(TEST_SLICES_EXT)
+    endif
 
-ifneq ($(CLIENT_SLICES_EXT),)
-COLLOC_SLICES	:= $(COLLOC_SLICES) \
-		   $(CLIENT_SLICES_EXT)
-endif
+    ifneq ($(CLIENT_SLICES_EXT),)
+        COLLOC_SLICES           := $(COLLOC_SLICES) $(CLIENT_SLICES_EXT)
+    endif
 
-ifneq ($(SERVER_SLICES_EXT),)
-COLLOC_SLICES		:= $(COLLOC_SLICES) \
-			   $(SERVER_SLICES_EXT)
-endif
+    ifneq ($(SERVER_SLICES_EXT),)
+        COLLOC_SLICES           := $(COLLOC_SLICES) $(SERVER_SLICES_EXT)
+    endif
 
-ifeq ($(COLLOC_SRCS),)
-COLLOC_SRCS		= Collocated.cpp \
-			  TestI.cpp \
-			  AllTests.cpp
-endif
+    ifeq ($(COLLOC_SRCS),)
+    COLLOC_SRCS                 = Collocated.cpp TestI.cpp AllTests.cpp
+    endif
 
-ifneq ($(COLLOC_SRCS_EXT),)
-COLLOC_SRCS		:= $(COLLOC_SRCS) \
-			   $(COLLOC_SRCS_EXT)
-endif
+    ifneq ($(COLLOC_SRCS_EXT),)
+        COLLOC_SRCS             := $(COLLOC_SRCS) $(COLLOC_SRCS_EXT)
+    endif
 
-ifneq ($(SERVER_SRCS_EXT),)
-COLLOC_SRCS		:= $(COLLOC_SRCS) \
-			   $(SERVER_SRCS_EXT)
-endif
+    ifneq ($(SERVER_SRCS_EXT),)
+        COLLOC_SRCS             := $(COLLOC_SRCS) $(SERVER_SRCS_EXT)
+    endif
 
-ifneq ($(CLIENT_SRCS_EXT),)
-COLLOC_SRCS		:= $(COLLOC_SRCS) \
-			   $(CLIENT_SRCS_EXT)
-endif
+    ifneq ($(CLIENT_SRCS_EXT),)
+        COLLOC_SRCS             := $(COLLOC_SRCS) $(CLIENT_SRCS_EXT)
+    endif
 
-ifneq ($(TEST_SRCS_EXT),)
-COLLOC_SRCS		:= $(COLLOC_SRCS) \
-			   $(TEST_SRCS_EXT)
-endif
+    ifneq ($(TEST_SRCS_EXT),)
+        COLLOC_SRCS             := $(COLLOC_SRCS) $(TEST_SRCS_EXT)
+    endif
 
-include $(CLEAR_RULES)
+    include $(CLEAR_RULES)
 
-LOCAL_EXE		= collocated
-LOCAL_PATH		= $(TEST_LOCAL_PATH)
+    LOCAL_EXE                   = collocated
+    LOCAL_PATH                  = $(TEST_LOCAL_PATH)
+    LOCAL_SLICES                = $(filter-out $(COLLOC_SLICES_EXCLUDE),$(sort $(COLLOC_SLICES)))
+    LOCAL_SRCS                  = $(filter-out $(COLLOC_SRCS_EXCLUDE),$(sort $(COLLOC_SRCS)))
 
-LOCAL_SLICES		= $(filter-out $(COLLOC_SLICES_EXCLUDE),$(sort $(COLLOC_SLICES)))
+    ifneq ($(COLLOC_SLICES2CPPFLAGS),)
+        LOCAL_SLICES2CPPFLAGS   += $(COLLOC_SLICES2CPPFLAGS)
+    endif
 
-LOCAL_SRCS		= $(filter-out $(COLLOC_SRCS_EXCLUDE),$(sort $(COLLOC_SRCS)))
+    ifneq ($(TEST_SLICES2CPPFLAGS),)
+        LOCAL_SLICES2CPPFLAGS   += $(TEST_SLICES2CPPFLAGS)
+    endif
 
-ifneq ($(COLLOC_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(COLLOC_SLICES2CPPFLAGS)
-endif
+    ifneq ($(COLLOC_CPPFLAGS),)
+        LOCAL_CPPFLAGS          += $(COLLOC_CPPFLAGS)
+    endif
 
-ifneq ($(TEST_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(TEST_SLICES2CPPFLAGS)
-endif
+    ifneq ($(TEST_CPPFLAGS),)
+        LOCAL_CPPFLAGS          += $(TEST_CPPFLAGS)
+    endif
 
-ifneq ($(COLLOC_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(COLLOC_CPPFLAGS)
-endif
+    ifneq ($(COLLOC_LINK_WITH),)
+        LOCAL_LINK_WITH         = $(COLLOC_LINK_WITH)
+    endif
 
-ifneq ($(TEST_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(TEST_CPPFLAGS)
-endif
-
-ifneq ($(COLLOC_LINK_WITH),)
-LOCAL_LINK_WITH = $(COLLOC_LINK_WITH)
-endif
-
-include $(TEST_APPLICATION_RULES)
+    include $(TEST_APPLICATION_RULES)
 
 endif
 
@@ -229,117 +203,110 @@ endif
 #
 ifneq ($(findstring serveramd,$(TEST_TARGET_EXT)),)
 
-ifeq ($(AMD_SLICES),)
-AMD_SLICES		= TestAMD.ice
-endif
+    ifeq ($(AMD_SLICES),)
+        AMD_SLICES              = TestAMD.ice
+    endif
 
-ifneq ($(AMD_SLICES_EXT),)
-AMD_SLICES		:= $(AMD_SLICES) \
-			   $(AMD_SLICES_EXT)
-endif
+    ifneq ($(AMD_SLICES_EXT),)
+        AMD_SLICES              := $(AMD_SLICES) $(AMD_SLICES_EXT)
+    endif
 
-ifneq ($(TEST_SLICES_EXT),)
-AMD_SLICES		:= $(AMD_SLICES) \
-			   $(TEST_SLICES_EXT)
-endif
+    ifneq ($(TEST_SLICES_EXT),)
+        AMD_SLICES              := $(AMD_SLICES) $(TEST_SLICES_EXT)
+    endif
 
-ifeq ($(AMD_SRCS),)
-AMD_SRCS		= TestAMDI.cpp \
-			  ServerAMD.cpp
-endif
+    ifeq ($(AMD_SRCS),)
+        AMD_SRCS                = TestAMDI.cpp ServerAMD.cpp
+    endif
 
-ifneq ($(AMD_SRCS_EXT),)
-AMD_SRCS		:= $(AMD_SRCS) \
-			   $(AMD_SRCS_EXT)
-endif
+    ifneq ($(AMD_SRCS_EXT),)
+        AMD_SRCS                := $(AMD_SRCS) $(AMD_SRCS_EXT)
+    endif
 
-ifneq ($(TEST_SRCS_EXT),)
-AMD_SRCS		:= $(AMD_SRCS) \
-			   $(TEST_SRCS_EXT)
-endif
+    ifneq ($(TEST_SRCS_EXT),)
+        AMD_SRCS                := $(AMD_SRCS) $(TEST_SRCS_EXT)
+    endif
 
-include $(CLEAR_RULES)
+    include $(CLEAR_RULES)
 
-LOCAL_EXE		= serveramd
-LOCAL_PATH		= $(TEST_LOCAL_PATH)
-
-LOCAL_SLICES		= $(filter-out $(AMD_SLICES_EXCLUDE),$(sort $(AMD_SLICES)))
-
-LOCAL_SRCS		= $(filter-out $(AMD_SRCS_EXCLUDE),$(sort $(AMD_SRCS)))
+    LOCAL_EXE                   = serveramd
+    LOCAL_PATH                  = $(TEST_LOCAL_PATH)
+    LOCAL_SLICES                = $(filter-out $(AMD_SLICES_EXCLUDE),$(sort $(AMD_SLICES)))
+    LOCAL_SRCS                  = $(filter-out $(AMD_SRCS_EXCLUDE),$(sort $(AMD_SRCS)))
 
 
-ifneq ($(AMD_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(AMD_SLICES2CPPFLAGS)
-endif
+    ifneq ($(AMD_SLICES2CPPFLAGS),)
+        LOCAL_SLICES2CPPFLAGS   += $(AMD_SLICES2CPPFLAGS)
+    endif
 
-ifneq ($(TEST_SLICES2CPPFLAGS),)
-LOCAL_SLICES2CPPFLAGS	+= $(AMD_SLICES2CPPFLAGS)
-endif
+    ifneq ($(TEST_SLICES2CPPFLAGS),)
+        LOCAL_SLICES2CPPFLAGS   += $(AMD_SLICES2CPPFLAGS)
+    endif
 
-ifneq ($(AMD_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(AMD_CPPFLAGS)
-endif
+    ifneq ($(AMD_CPPFLAGS),)
+        LOCAL_CPPFLAGS          += $(AMD_CPPFLAGS)
+    endif
 
-ifneq ($(TEST_CPPFLAGS),)
-LOCAL_CPPFLAGS	+= $(TEST_CPPFLAGS)
-endif
+    ifneq ($(TEST_CPPFLAGS),)
+        LOCAL_CPPFLAGS          += $(TEST_CPPFLAGS)
+    endif
 
 
-ifneq ($(AMD_LINK_WITH),)
-LOCAL_LINK_WITH = $(AMD_LINK_WITH)
-endif
+    ifneq ($(AMD_LINK_WITH),)
+        LOCAL_LINK_WITH =       $(AMD_LINK_WITH)
+    endif
 
-include $(TEST_APPLICATION_RULES)
+    include $(TEST_APPLICATION_RULES)
 
 endif
 
 #
 # Clear local variables
 #
-CLIENT_SLICES		=
-CLIENT_SLICES_EXT	=
-CLIENT_SLICES_EXCLUDE	=
-CLIENT_SLICES2CPPFLAGS	=
-CLIENT_SRCS		=
-CLIENT_SRCS_EXT		=
-CLIENT_SRCS_EXCLUDE	=
-CLIENT_CPPFLAGS		=
-CLIENT_LDFLAGS		=
+CLIENT_SLICES                   =
+CLIENT_SLICES_EXT               =
+CLIENT_SLICES_EXCLUDE           =
+CLIENT_SLICES2CPPFLAGS          =
+CLIENT_SRCS                     =
+CLIENT_SRCS_EXT                 =
+CLIENT_SRCS_EXCLUDE             =
+CLIENT_CPPFLAGS                 =
+CLIENT_LDFLAGS                  =
 
-SERVER_SLICES		=
-SERVER_SLICES_EXT	=
-SERVER_SLICES_EXCLUDE	=
-SERVER_SLICES2CPPFLAGS	=
-SERVER_SRCS		=
-SERVER_SRCS_EXT		=
-SERVER_SRCS_EXCLUDE	=
-SERVER_CPPFLAGS		=
-SERVER_LDFLAGS		=
+SERVER_SLICES                   =
+SERVER_SLICES_EXT               =
+SERVER_SLICES_EXCLUDE           =
+SERVER_SLICES2CPPFLAGS          =
+SERVER_SRCS                     =
+SERVER_SRCS_EXT                 =
+SERVER_SRCS_EXCLUDE             =
+SERVER_CPPFLAGS                 =
+SERVER_LDFLAGS                  =
 
-COLLOC_SLICES		=
-COLLOC_SLICES_EXT	=
-COLLOC_SLICES_EXCLUDE	=
-COLLOC_SLICES2CPPFLAGS	=
-COLLOC_SRCS		=
-COLLOC_SRCS_EXT		=
-COLLOC_SRCS_EXCLUDE	=
-COLLOC_CPPFLAGS		=
-COLLOC_LDFLAGS		=
+COLLOC_SLICES                   =
+COLLOC_SLICES_EXT               =
+COLLOC_SLICES_EXCLUDE           =
+COLLOC_SLICES2CPPFLAGS          =
+COLLOC_SRCS                     =
+COLLOC_SRCS_EXT                 =
+COLLOC_SRCS_EXCLUDE             =
+COLLOC_CPPFLAGS                 =
+COLLOC_LDFLAGS                  =
 
-AMD_SLICES		=
-AMD_SLICES_EXT		=
-AMD_SLICES_EXCLUDE	=
-AMD_SLICES2CPPFLAGS	=
-AMD_SRCS		=
-AMD_SRCS_EXT		=
-AMD_SRCS_EXCLUDE	=
-AMD_CPPFLAGS		=
-AMD_LDFLAGS		=
+AMD_SLICES                      =
+AMD_SLICES_EXT                  =
+AMD_SLICES_EXCLUDE              =
+AMD_SLICES2CPPFLAGS             =
+AMD_SRCS                        =
+AMD_SRCS_EXT                    =
+AMD_SRCS_EXCLUDE                =
+AMD_CPPFLAGS                    =
+AMD_LDFLAGS                     =
 
-TEST_TARGET_EXT		=
-TEST_SLICES_EXT		=
-TEST_SLICES2CPPFLAGS	=
-TEST_SRCS_EXT		=
-TEST_LOCAL_PATH		=
-TEST_CPPFLAGS		=
-TEST_LDFLAGS		=
+TEST_TARGET_EXT                 =
+TEST_SLICES_EXT                 =
+TEST_SLICES2CPPFLAGS            =
+TEST_SRCS_EXT                   =
+TEST_LOCAL_PATH                 =
+TEST_CPPFLAGS                   =
+TEST_LDFLAGS                    =

@@ -11,20 +11,27 @@
 # Clear local used variables
 #
 
-LOCAL_PATH		=
-LOCAL_MODULE		=
-LOCAL_SLICEDIR		=
-LOCAL_SLICES		=
-LOCAL_SLICE2CPPFLAGS	=
-LOCAL_SRCDIR		=
-LOCAL_SRCS		=
-LOCAL_CPPFLAGS		=
-LOCAL_GEN_SRCS		=
-LOCAL_OBJS		=
-LOCAL_LDFLAGS   	=
-LOCAL_LINK_WITH		=
-LOCAL_EXE		=
-LOCAL_BINDIR		=
-LOCAL_LIB		=
-LOCAL_LIBDIR		=
-LOCAL_RESOURCES		=
+LOCAL_PATH                      =
+LOCAL_MODULE                    =
+LOCAL_SLICEDIR                  =
+LOCAL_SLICES                    =
+LOCAL_SLICE2CPPFLAGS            =
+LOCAL_SRCDIR                    =
+LOCAL_SRCS                      =
+LOCAL_CPPFLAGS                  =
+LOCAL_GEN_SRCS                  =
+LOCAL_OBJS                      =
+LOCAL_LDFLAGS                   =
+LOCAL_LINK_WITH                 =
+LOCAL_EXE                       =
+LOCAL_BINDIR                    =
+LOCAL_LIB                       =
+LOCAL_LIBDIR                    =
+LOCAL_LIBNAME                   =
+LOCAL_LIBSONAME                 =
+LOCAL_LIBFILENAME               =
+LOCAL_RESOURCES                 =
+LOCAL_PUBLIC_HEADERS            =
+LOCAL_INSTALL_HEADERS           =
+LOCAL_PUBLIC_SLICES             =
+LOCAL_INSTALL_SLICES            =

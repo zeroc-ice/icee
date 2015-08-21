@@ -7,4 +7,8 @@
 #
 # **********************************************************************
 
-OBJ_PREFIX          = $(TARGET_OS)/$(ARCH)
+OBJ_PREFIX                      = $(ICEE_TARGET_OS)/$(ARCH)
+
+ice_install_lib_dir             = $(prefix)/lib
+
+python_include_dir              = $(SDKTARGETSYSROOT)/usr/include/python2.7
