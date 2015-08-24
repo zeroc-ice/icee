@@ -69,7 +69,6 @@ HOST                            ?= arm-linux-gnueabihf
 #
 THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
 
-
 #
 # Include common definitions
 #

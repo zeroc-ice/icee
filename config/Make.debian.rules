@@ -58,3 +58,9 @@ else
 endif
 
 ice_install_lib_dir = $(prefix)/lib/$(HOST)
+
+ifeq ($(ICE_HOME),)
+    SLICE2PY                    = $(ice_bin_dir)/python/config/s2py
+else
+    SLICE2PY                    = slice2py
+endif

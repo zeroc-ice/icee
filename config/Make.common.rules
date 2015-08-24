@@ -36,7 +36,8 @@ endif
 
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
 SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
-CPPFLAGS                        = -I$(ice_include_dir)
+SLICE2PYFLAGS                   = -I$(ice_slice_dir)
+CPPFLAGS                        := $(CPPFLAGS) -I$(ice_include_dir)
 
 ifeq ($(wildcard $(SLICE2CPP)),)
     $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
@@ -151,6 +152,8 @@ CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
 LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
 STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
 DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
+PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
+ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 
 #
 # Install directories
@@ -174,22 +177,19 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
-    DIST_TARGETS = Ice_staticlib \
-                   Glacier2_staticlib \
-                   IceBox_staticlib \
-                   IceGrid_staticlib \
-                   IceStorm_staticlib \
+    DIST_TARGETS = slice2cpp \
+                   slice2py \
                    glacier2router \
-                   Slice_dynamiclib \
-                   IceUtil_dynamiclib \
-                   Ice_dynamiclib \
-                   IceSSL_dynamiclib \
-                   Glacier2_dynamiclib \
-                   IceDiscovery_dynamiclib \
-                   IceLocatorDiscovery_dynamiclib \
-                   IceGrid_dynamiclib \
-                   IceStorm_dynamiclib \
-                   IcePy_dynamiclib
+                   icebox \
+                   iceboxadmin \
+                   IceUtil \
+                   Ice \
+                   Glacier2 \
+                   IceBox \
+                   IceGrid \
+                   IceStorm \
+                   Slice \
+                   IcePy
                    
     dist:: $(DIST_TARGETS)
     
@@ -209,21 +209,20 @@ install:: dist
 	$(Q)cp -rf $(icee_lib_dir)/*.a $(DESTDIR)/$(ice_install_lib_dir)
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/glacier2router $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/icebox $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/iceboxadmin $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/icebox.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/iceboxadmin.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)mkdir -p $(DESTDIR)$(python_install_dir)
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/*.py  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IcePy.so.$(VERSION)  $(DESTDIR)$(python_install_dir)/IcePy.so
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceBox  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
 
-nativesdk_install:: slice2cpp \
-                    IceUtil_install_headers \
-                    Ice_install_headers \
-                    IceSSL_install_headers \
-                    Glacier2_install_headers \
-                    IceGrid_install_headers \
-                    IceStorm_install_headers \
-                    Ice_install_slices \
-                    IceSSL_install_slices \
-                    Glacier2_install_slices \
-                    IceGrid_install_slices \
-                    IceStorm_install_slices
 endif
 
 all:: $(TARGETS)
