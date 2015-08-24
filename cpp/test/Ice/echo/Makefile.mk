@@ -8,13 +8,11 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
+LOCAL_EXE                       = server
+LOCAL_PATH                      = cpp/test/Ice/echo
 
-LOCAL_EXE	= server
-LOCAL_PATH	= cpp/test/Ice/echo
+LOCAL_SLICES                    = Test.ice
 
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = BlobjectI.cpp \
-		  Server.cpp
-
+LOCAL_SRCS                      = BlobjectI.cpp \
+                                  Server.cpp
 include $(TEST_APPLICATION_RULES)

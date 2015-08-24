@@ -8,9 +8,6 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/proxy
-
-TEST_TARGET_EXT	= colloc serveramd
-
+LOCAL_PATH                      = cpp/test/Ice/proxy
+TEST_TARGET_EXT                 = colloc serveramd
 include $(CLIENTSERVERTEST_RULES)

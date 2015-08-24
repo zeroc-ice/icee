@@ -8,7 +8,5 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/udp
-
+LOCAL_PATH                      = cpp/test/Ice/udp
 include $(CLIENTSERVERTEST_RULES)

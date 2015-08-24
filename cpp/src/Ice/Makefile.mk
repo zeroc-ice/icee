@@ -60,5 +60,6 @@ LOCAL_PUBLIC_SLICES             = $(LOCAL_SLICES)
 
 
 include $(STATICLIBRARY_RULES)
-
+LOCAL_OBJS                      = 
+include $(DYNAMICLIBRARY_RULES)
 include $(INSTALL_RULES)

@@ -8,16 +8,12 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/interceptor
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = TestI.cpp \
-                  Client.cpp \
-                  InterceptorI.cpp \
-                  AMDInterceptorI.cpp \
-                  MyObjectI.cpp
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/interceptor
+LOCAL_SLICES                    = Test.ice
+LOCAL_SRCS                      = TestI.cpp \
+                                  Client.cpp \
+                                  InterceptorI.cpp \
+                                  AMDInterceptorI.cpp \
+                                  MyObjectI.cpp
 include $(TEST_APPLICATION_RULES)

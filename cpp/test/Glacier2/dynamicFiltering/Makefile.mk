@@ -8,22 +8,13 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Glacier2/dynamicFiltering
-
-CLIENT_SLICES	= Test.ice
-
-CLIENT_SRCS	= Client.cpp
-
-CLIENT_LINK_WITH = Glacier2
-
-SERVER_SLICES	= Test.ice
-
-SERVER_SRCS	= Server.cpp \
-		  SessionI.cpp \
-		  BackendI.cpp \
-		  TestControllerI.cpp
-
-SERVER_LINK_WITH = Glacier2
-
+LOCAL_PATH                      = cpp/test/Glacier2/dynamicFiltering
+CLIENT_SLICES                   = Test.ice
+CLIENT_SRCS                     = Client.cpp
+SERVER_SLICES                   = Test.ice
+SERVER_SRCS                     = Server.cpp \
+                                  SessionI.cpp \
+                                  BackendI.cpp \
+                                  TestControllerI.cpp
+TEST_DEPENDENT_MODULES          = Glacier2
 include $(CLIENTSERVERTEST_RULES)

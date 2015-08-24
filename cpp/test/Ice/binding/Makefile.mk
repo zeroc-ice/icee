@@ -8,7 +8,5 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/binding
-
+LOCAL_PATH                      = cpp/test/Ice/binding
 include $(CLIENTSERVERTEST_RULES)

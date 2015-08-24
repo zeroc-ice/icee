@@ -7,6 +7,7 @@
 #
 # **********************************************************************
 
+LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
 LOCAL_PATH                      = cpp/src/$(LOCAL_MODULE)
 
 LOCAL_SLICEDIR                  = ice/slice/$(LOCAL_MODULE)
@@ -18,5 +19,3 @@ LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 LOCAL_SLICE2CPPFLAGS            = --ice
 
 include $(OBJECT_RULES)
-
-include $(INSTALL_RULES)

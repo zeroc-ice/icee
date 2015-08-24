@@ -7,31 +7,32 @@
 #
 # **********************************************************************
 
+ifeq ($(filter $(LOCAL_CPPFLAGS),-fPIC),)
+    LOCAL_TARGETPREFIX          = _pic
+    LOCAL_OBJPREFIX             = $(OBJPREFIX)/non-pic
+else
+    LOCAL_TARGETPREFIX          = _non-pic
+    LOCAL_OBJPREFIX             = $(OBJPREFIX)/pic
+endif
+
 LOCAL_GEN_SRCS                  := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
 LOCAL_GEN_HEADERS               = $(LOCAL_GEN_SRCS:.cpp=.h)
 
 LOCAL_SRCS := $(filter-out $(addprefix $(LOCAL_SRCDIR)/,$(notdir $(LOCAL_SLICES:.ice=.cpp))), $(LOCAL_SRCS))
 
-LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(OBJ_PREFIX)/,$(notdir $(LOCAL_SRCS:.cpp=.o))) \
-	$(addprefix $(LOCAL_PATH)/$(OBJ_PREFIX)/,$(notdir $(LOCAL_GEN_SRCS:.cpp=.o)))
+LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_SRCS:.cpp=.o))) \
+	$(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_GEN_SRCS:.cpp=.o)))
 
 ifneq ($(LOCAL_C_SRCS),)
-LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(OBJ_PREFIX)/,$(notdir $(LOCAL_C_SRCS:.c=.o)))
+LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_C_SRCS:.c=.o)))
 endif
 
-LOCAL_LINK_WITH := $(LOCAL_LINK_WITH) $(addprefix -l,$(LOCAL_LIBS))
-
-$(LOCAL_MODULE): LOCAL_MODULE := $(LOCAL_MODULE)
-$(LOCAL_MODULE): LOCAL_PATH := $(LOCAL_PATH)
-$(LOCAL_MODULE): LOCAL_OBJS := $(LOCAL_OBJS)
-$(LOCAL_MODULE): LOCAL_LIBS := $(LOCAL_LIBS)
-$(LOCAL_MODULE): LOCAL_CPPFLAGS := $(LOCAL_CPPFLAGS)
-$(LOCAL_MODULE): LOCAL_LINK_WITH := $(LOCAL_LINK_WITH)
-
-$(LOCAL_MODULE)_clean: LOCAL_MODULE := $(LOCAL_MODULE)
-$(LOCAL_MODULE)_clean: LOCAL_PATH := $(LOCAL_PATH)
-$(LOCAL_MODULE)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
-$(LOCAL_MODULE)_clean: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_MODULE := $(LOCAL_MODULE)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_PATH := $(LOCAL_PATH)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_OBJPREFIX := $(LOCAL_OBJPREFIX)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_TARGETPREFIX := $(LOCAL_TARGETPREFIX)
 
 $(LOCAL_OBJS): LOCAL_GEN_HEADERS := $(LOCAL_GEN_HEADERS)
 $(LOCAL_OBJS): LOCAL_PATH := $(LOCAL_PATH)
@@ -40,6 +41,7 @@ $(LOCAL_OBJS): LOCAL_CPPFLAGS := $(LOCAL_CPPFLAGS)
 $(LOCAL_OBJS): LOCAL_SRCDIR := $(LOCAL_SRCDIR)
 $(LOCAL_OBJS): LOCAL_SLICEDIR := $(LOCAL_SLICEDIR)
 $(LOCAL_OBJS): LOCAL_SLICES := $(LOCAL_SLICES)
+$(LOCAL_OBJS): LOCAL_OBJPREFIX := $(LOCAL_OBJPREFIX)
 
 $(LOCAL_GEN_HEADERS): LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_GEN_HEADERS): LOCAL_PATH := $(LOCAL_PATH)
@@ -48,7 +50,7 @@ $(LOCAL_GEN_HEADERS): LOCAL_SLICES := $(LOCAL_SLICES)
 $(LOCAL_GEN_HEADERS): LOCAL_SLICE2CPPFLAGS := $(LOCAL_SLICE2CPPFLAGS)
 
 -include $(wildcard $(LOCAL_PATH).depend/*.d)
--include $(wildcard $(LOCAL_PATH)$(OBJ_PREFIX)/.depend/*.d)
+-include $(wildcard $(LOCAL_PATH)$(LOCAL_OBJPREFIX)/.depend/*.d)
 
 
 $(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
@@ -60,27 +62,27 @@ $(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
 $(LOCAL_PATH)/%.cpp: $(LOCAL_PATH)/%.h
 	
 
-$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_PATH)/%.cpp
+$(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/%.o: $(LOCAL_PATH)/%.cpp
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)$(CXX) $(CPPFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 	@$(CXX) -DMAKEDEPEND -MM $(CPPFLAGS) $(LOCAL_CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).d
 
-$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_SRCDIR)/%.cpp
+$(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/%.o: $(LOCAL_SRCDIR)/%.cpp
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)$(CXX) $(CPPFLAGS) $(LOCAL_CPPFLAGS) -c $< -o $@
 	@$(CXX) -DMAKEDEPEND -MM $(CPPFLAGS) $(LOCAL_CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).d
 
-$(LOCAL_PATH)/$(OBJ_PREFIX)/%.o: $(LOCAL_SRCDIR)/%.c
+$(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/%.o: $(LOCAL_SRCDIR)/%.c
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)$(CC) $(CFLAGS) $(LOCAL_CFLAGS) -c $< -o $@
 	@$(CC) -DMAKEDEPEND -MM $(CFLAGS) $(LOCAL_CFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).d
 
-$(LOCAL_MODULE)_clean::
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean:
 	$(E) "Cleaning $(LOCAL_MODULE)"
-	$(Q)rm -rf $(LOCAL_PATH)/$(OBJ_PREFIX) $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) $(LOCAL_PATH)/.depend
+	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_OBJPREFIX) $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) $(LOCAL_PATH)/.depend
 
 
 ifneq ($(LOCAL_GEN_SRCS),)
@@ -97,4 +99,4 @@ ALL_GEN_SRCS	:= $(ALL_GEN_SRCS) $(LOCAL_GEN_SRCS)
 
 TARGETS := $(TARGETS) $(LOCAL_GEN_SRCS) $(LOCAL_OBJS)
 
-CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_clean
+CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean

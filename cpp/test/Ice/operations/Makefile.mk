@@ -8,16 +8,12 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/operations
-
-TEST_TARGET_EXT	= colloc serveramd
-
-CLIENT_SRCS_EXT	= Twoways.cpp \
-		  Oneways.cpp \
-		  TwowaysAMI.cpp \
-		  OnewaysAMI.cpp \
-		  BatchOneways.cpp \
-		  BatchOnewaysAMI.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/operations
+TEST_TARGET_EXT                 = colloc serveramd
+CLIENT_SRCS_EXT                 = Twoways.cpp \
+                                  Oneways.cpp \
+                                  TwowaysAMI.cpp \
+                                  OnewaysAMI.cpp \
+                                  BatchOneways.cpp \
+                                  BatchOnewaysAMI.cpp
 include $(CLIENTSERVERTEST_RULES)

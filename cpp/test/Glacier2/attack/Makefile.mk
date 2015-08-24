@@ -8,19 +8,13 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Glacier2/attack
-
-CLIENT_SLICES	= Backend.ice
-
-CLIENT_SRCS	= BackendI.cpp \
-		  Client.cpp
-
-CLIENT_LINK_WITH = Glacier2
-
-SERVER_SLICES	= Backend.ice
-
-SERVER_SRCS	= BackendI.cpp \
-		  Server.cpp
+LOCAL_PATH                      = cpp/test/Glacier2/attack
+CLIENT_SLICES                   = Backend.ice
+CLIENT_SRCS                     = BackendI.cpp \
+                                  Client.cpp
+SERVER_SLICES                   = Backend.ice
+SERVER_SRCS                     = BackendI.cpp \
+                                  Server.cpp
+TEST_DEPENDENT_MODULES          = Glacier2
 
 include $(CLIENTSERVERTEST_RULES)

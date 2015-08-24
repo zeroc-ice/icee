@@ -7,6 +7,9 @@
 #
 # **********************************************************************
 
+LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
+LOCAL_CPPFLAGS                  := -DICE_STATIC_LIBS $(LOCAL_CPPFLAGS)
+
 include $(OBJECT_RULES)
 
 LOCAL_LIBNAME                   = lib$(LOCAL_MODULE).a
@@ -19,13 +22,17 @@ $(LOCAL_LIB): $(LOCAL_OBJS)
 	$(E) Creating library: $(@F)
 	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
 
-.PHONY: $(LOCAL_MODULE)
 
-$(LOCAL_MODULE): LOCAL_LIB := $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib: LOCAL_LIB := $(LOCAL_LIB)
 
-$(LOCAL_MODULE): $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib: $(LOCAL_LIB)
 
-$(LOCAL_MODULE)_clean::
+$(LOCAL_MODULE)_non-pic_clean: LOCAL_LIB := $(LOCAL_LIB)
+
+$(LOCAL_MODULE)_staticlib_clean:
 	$(Q)rm -rf $(LOCAL_LIB)
 
+CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
+
 TARGETS := $(TARGETS) $(LOCAL_LIB)
+

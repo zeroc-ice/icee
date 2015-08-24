@@ -8,7 +8,5 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/IceDiscovery/simple
-
+LOCAL_PATH                      = cpp/test/IceDiscovery/simple
 include $(CLIENTSERVERTEST_RULES)

@@ -8,20 +8,18 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/IceUtil/thread
-LOCAL_SRCS	= TestBase.cpp \
-		  CreateTest.cpp \
-		  AliveTest.cpp \
-		  StartTest.cpp \
-		  SleepTest.cpp \
-		  RecMutexTest.cpp \
-		  MutexTest.cpp \
-		  MonitorMutexTest.cpp \
-		  MonitorRecMutexTest.cpp \
-		  CountDownLatchTest.cpp \
-		  TestSuite.cpp \
-		  Client.cpp
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/IceUtil/thread
+LOCAL_SRCS                      = TestBase.cpp \
+                                  CreateTest.cpp \
+                                  AliveTest.cpp \
+                                  StartTest.cpp \
+                                  SleepTest.cpp \
+                                  RecMutexTest.cpp \
+                                  MutexTest.cpp \
+                                  MonitorMutexTest.cpp \
+                                  MonitorRecMutexTest.cpp \
+                                  CountDownLatchTest.cpp \
+                                  TestSuite.cpp \
+                                  Client.cpp
 include $(TEST_APPLICATION_RULES)

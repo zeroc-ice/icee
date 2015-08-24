@@ -70,21 +70,21 @@ include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
     icee_bin_dir                = cpp/bin
-    icee_lib_dir                = cpp/lib/$(OBJ_PREFIX)
+    icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
     ifneq ($(ICEE_HOME),/usr)
-        icee_libdir             = $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+        icee_libdir             = $(ICEE_HOME)/lib/$(OBJPREFIX)
     endif
 endif
 
-CPPFLAGS                        := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
-OS_LIBS                         := -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
+CPPFLAGS                        := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+LDFLAGS                         := $(LDFLAGS) -pthread
+LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
 ifneq ($(libdir),)
     LDFLAGS                     := -L$(libdir) $(LDFLAGS)
 endif
 
-LDFLAGS                         := $(LDFLAGS) $(OS_LIBS)
 
 mklib                           = $(AR) cr $(1) $(2)
 mklibname                       = lib$(1).a
@@ -142,11 +142,13 @@ gitignore::
 
 CLEAR_RULES                     = $(CURDIR)/config/Make.clear.rules
 OBJECT_RULES                    = $(CURDIR)/config/Make.object.rules
+LINK_RULES                      = $(CURDIR)/config/Make.link.rules
 INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
 SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
 CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
+LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
 STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
 DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
 
@@ -172,9 +174,29 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
-    dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router IcePy
+    DIST_TARGETS = Ice_staticlib \
+                   Glacier2_staticlib \
+                   IceBox_staticlib \
+                   IceGrid_staticlib \
+                   IceStorm_staticlib \
+                   glacier2router \
+                   Slice_dynamiclib \
+                   IceUtil_dynamiclib \
+                   Ice_dynamiclib \
+                   IceSSL_dynamiclib \
+                   Glacier2_dynamiclib \
+                   IceDiscovery_dynamiclib \
+                   IceLocatorDiscovery_dynamiclib \
+                   IceGrid_dynamiclib \
+                   IceStorm_dynamiclib \
+                   IcePy_dynamiclib
+                   
+    dist:: $(DIST_TARGETS)
     
-    ifneq ($(MAKECMDGOALS),dist)
+    #
+    # If building a dist target only include dist targets.
+    #
+    ifeq ($(filter $(MAKECMDGOALS),dist $(DIST_TARGETS)),)
         include $(call rwildcard,,*.mk)
     else
         include $(call rwildcard,cpp/src,*.mk)
@@ -190,6 +212,18 @@ install:: dist
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
 
+nativesdk_install:: slice2cpp \
+                    IceUtil_install_headers \
+                    Ice_install_headers \
+                    IceSSL_install_headers \
+                    Glacier2_install_headers \
+                    IceGrid_install_headers \
+                    IceStorm_install_headers \
+                    Ice_install_slices \
+                    IceSSL_install_slices \
+                    Glacier2_install_slices \
+                    IceGrid_install_slices \
+                    IceStorm_install_slices
 endif
 
 all:: $(TARGETS)

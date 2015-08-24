@@ -8,8 +8,6 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/location
-SERVER_SRCS_EXT	= ServerLocator.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/location
+SERVER_SRCS_EXT                 = ServerLocator.cpp
 include $(CLIENTSERVERTEST_RULES)

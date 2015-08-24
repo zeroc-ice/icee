@@ -8,14 +8,12 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/IceUtil/priority
-LOCAL_SRCS	= TestBase.cpp \
-		  ThreadPriority.cpp \
-		  TimerPriority.cpp \
-		  PriorityInversion.cpp \
-		  TestSuite.cpp \
-		  Client.cpp
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/IceUtil/priority
+LOCAL_SRCS                      = TestBase.cpp \
+                                  ThreadPriority.cpp \
+                                  TimerPriority.cpp \
+                                  PriorityInversion.cpp \
+                                  TestSuite.cpp \
+                                  Client.cpp
 include $(TEST_APPLICATION_RULES)

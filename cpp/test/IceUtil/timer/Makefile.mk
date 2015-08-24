@@ -8,9 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/IceUtil/timer
-LOCAL_SRCS	= Client.cpp
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/IceUtil/timer
+LOCAL_SRCS                      = Client.cpp
 include $(TEST_APPLICATION_RULES)

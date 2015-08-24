@@ -8,10 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/stringConverter
-
-CLIENT_SRCS	= Client.cpp
-SERVER_SRCS	= Server.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/stringConverter
+CLIENT_SRCS                     = Client.cpp
+SERVER_SRCS                     = Server.cpp
 include $(CLIENTSERVERTEST_RULES)

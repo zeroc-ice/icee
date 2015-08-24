@@ -8,17 +8,13 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= workqueue
-LOCAL_PATH	= cpp/test/IceUtil/condvar
-LOCAL_SRCS	= WorkQueue.cpp
-
+LOCAL_EXE                       = workqueue
+LOCAL_PATH                      = cpp/test/IceUtil/condvar
+LOCAL_SRCS                      = WorkQueue.cpp
 include $(TEST_APPLICATION_RULES)
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= match
-LOCAL_PATH	= cpp/test/IceUtil/condvar
-LOCAL_SRCS	= Match.cpp
-
+LOCAL_EXE                       = match
+LOCAL_PATH                      = cpp/test/IceUtil/condvar
+LOCAL_SRCS                      = Match.cpp
 include $(TEST_APPLICATION_RULES)

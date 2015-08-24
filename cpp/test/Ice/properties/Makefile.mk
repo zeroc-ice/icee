@@ -8,10 +8,8 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/properties
-LOCAL_SRCS	= Client.cpp
-LOCAL_RESOURCES	= config/*
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/properties
+LOCAL_SRCS                      = Client.cpp
+LOCAL_RESOURCES                 = config/*
 include $(TEST_APPLICATION_RULES)

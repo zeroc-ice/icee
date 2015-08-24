@@ -16,7 +16,7 @@ ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
     $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
-OBJ_PREFIX                      = $(ICEE_TARGET_OS)/$(HOST)
+OBJPREFIX                       = $(ICEE_TARGET_OS)/$(HOST)
 
 #
 # If host different than build we are cross compiling

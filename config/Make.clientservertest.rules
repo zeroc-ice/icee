@@ -59,8 +59,13 @@ ifneq ($(TEST_CPPFLAGS),)
     LOCAL_CPPFLAGS              += $(TEST_CPPFLAGS)
 endif
 
-ifneq ($(CLIENT_LINK_WITH),)
-    LOCAL_LINK_WITH             = $(CLIENT_LINK_WITH)
+ifneq ($(CLIENT_DEPENDENT_MODULES),)
+    LOCAL_DEPENDENT_MODULES     = $(CLIENT_DEPENDENT_MODULES)
+endif
+
+
+ifneq ($(TEST_DEPENDENT_MODULES),)
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
 endif
 
 include $(TEST_APPLICATION_RULES)
@@ -116,8 +121,13 @@ ifneq ($(TEST_CPPFLAGS),)
     LOCAL_CPPFLAGS              += $(TEST_CPPFLAGS)
 endif
 
-ifneq ($(SERVER_LINK_WITH),)
-    LOCAL_LINK_WITH             = $(SERVER_LINK_WITH)
+ifneq ($(SERVER_DEPENDENT_MODULES),)
+    LOCAL_DEPENDENT_MODULES     = $(SERVER_DEPENDENT_MODULES)
+endif
+
+
+ifneq ($(TEST_DEPENDENT_MODULES),)
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
 endif
 
 include $(TEST_APPLICATION_RULES)
@@ -190,8 +200,12 @@ ifneq ($(findstring colloc,$(TEST_TARGET_EXT)),)
         LOCAL_CPPFLAGS          += $(TEST_CPPFLAGS)
     endif
 
-    ifneq ($(COLLOC_LINK_WITH),)
-        LOCAL_LINK_WITH         = $(COLLOC_LINK_WITH)
+    ifneq ($(COLLOC_DEPENDENT_MODULES),)
+        LOCAL_DEPENDENT_MODULES = $(COLLOC_DEPENDENT_MODULES)
+    endif
+
+    ifneq ($(TEST_DEPENDENT_MODULES),)
+        LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
     endif
 
     include $(TEST_APPLICATION_RULES)
@@ -251,9 +265,12 @@ ifneq ($(findstring serveramd,$(TEST_TARGET_EXT)),)
         LOCAL_CPPFLAGS          += $(TEST_CPPFLAGS)
     endif
 
+    ifneq ($(AMD_DEPENDENT_MODULES),)
+        LOCAL_DEPENDENT_MODULES = $(AMD_DEPENDENT_MODULES)
+    endif
 
-    ifneq ($(AMD_LINK_WITH),)
-        LOCAL_LINK_WITH =       $(AMD_LINK_WITH)
+    ifneq ($(TEST_DEPENDENT_MODULES),)
+        LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
     endif
 
     include $(TEST_APPLICATION_RULES)
@@ -272,6 +289,7 @@ CLIENT_SRCS_EXT                 =
 CLIENT_SRCS_EXCLUDE             =
 CLIENT_CPPFLAGS                 =
 CLIENT_LDFLAGS                  =
+CLIENT_DEPENDENT_MODULES        =
 
 SERVER_SLICES                   =
 SERVER_SLICES_EXT               =
@@ -282,6 +300,7 @@ SERVER_SRCS_EXT                 =
 SERVER_SRCS_EXCLUDE             =
 SERVER_CPPFLAGS                 =
 SERVER_LDFLAGS                  =
+SERVER_DEPENDENT_MODULES        =
 
 COLLOC_SLICES                   =
 COLLOC_SLICES_EXT               =
@@ -292,6 +311,7 @@ COLLOC_SRCS_EXT                 =
 COLLOC_SRCS_EXCLUDE             =
 COLLOC_CPPFLAGS                 =
 COLLOC_LDFLAGS                  =
+COLLOC_DEPENDENT_MODULES        =
 
 AMD_SLICES                      =
 AMD_SLICES_EXT                  =
@@ -302,6 +322,7 @@ AMD_SRCS_EXT                    =
 AMD_SRCS_EXCLUDE                =
 AMD_CPPFLAGS                    =
 AMD_LDFLAGS                     =
+AMD_DEPENDENT_MODULES           =
 
 TEST_TARGET_EXT                 =
 TEST_SLICES_EXT                 =
@@ -310,3 +331,4 @@ TEST_SRCS_EXT                   =
 TEST_LOCAL_PATH                 =
 TEST_CPPFLAGS                   =
 TEST_LDFLAGS                    =
+TEST_DEPENDENT_MODULES          =

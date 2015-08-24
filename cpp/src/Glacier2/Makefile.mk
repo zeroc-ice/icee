@@ -17,41 +17,22 @@ LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h)
 LOCAL_PUBLIC_SLICES             = $(LOCAL_SLICES)
 
-include $(STATICLIBRARY_RULES)
+include $(LIBRARY_RULES)
 include $(INSTALL_RULES)
-
-#
-# Glacier2CryptPermissionsVerifier
-#
-include $(CLEAR_RULES)
-LOCAL_MODULE                    = Glacier2CryptPermissionsVerifier
-include $(SUBMODULE_RULES)
-SUBMODULE_OBJS                  := $(LOCAL_OBJS)
 
 include $(CLEAR_RULES)
 LOCAL_MODULE                    = glacier2router
-LOCAL_EXE                       = $(LOCAL_MODULE)
 LOCAL_PATH                      = cpp/src/Glacier2
 
 LOCAL_SLICEDIR                  = ice/$(LOCAL_PATH)
 LOCAL_SLICES                    = $(wildcard $(LOCAL_SRCDIR)/*.ice)
 
-LOCAL_LINK_WITH                 = Glacier2 Ice
+LOCAL_DEPENDENT_DYMODULES       = Glacier2CryptPermissionsVerifier Glacier2 IceSSL Ice IceUtil
+LOCAL_LDFLAGS                   = -rdynamic
 LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)
-LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp) \
-                                  $(LOCAL_PATH)/RegisterPluginsInit.cpp
+LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
 
-LOCAL_CPPFLAGS                  = -I$(LOCAL_PATH)
-LOCAL_OBJS                      = $(SUBMODULE_OBJS)
-LOCAL_LDFLAGS                   = -Wl,-Bdynamic -lcrypt
-
-#
-# Bitbake yocto build sytem already strip its binaries.
-#
-ifeq ($(ICEE_TARGET_OS),yocto)
-    LOCAL_STRIP_DISABLED        = yes
-endif
+LOCAL_CPPFLAGS                  = -I$(LOCAL_PATH) -fPIC
 
 include $(APPLICATION_RULES)
 
-SUBMODULE_OBJS	=

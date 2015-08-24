@@ -15,7 +15,21 @@ LOCAL_BINDIR                    = $(LOCAL_PATH)
 LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
 LOCAL_MODULE                    = $(subst /,_,$(LOCAL_PATH))_$(LOCAL_EXE)
 
-LOCAL_LINK_WITH                 += Ice
+ifeq ($(BUILD_TESTSUITE),static)
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
+    LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lcrypto -lssl
+endif
+
+ifeq ($(BUILD_TESTSUITE),dynamic)
+    LOCAL_CPPFLAGS              += -fPIC
+    ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
+        LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
+    endif
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) IceUtil
+    LOCAL_DYDEPENDENT_MODULES   = $(LOCAL_DEPENDENT_MODULES)
+    LOCAL_DEPENDENT_MODULES     =
+endif
+
 LOCAL_CPPFLAGS                  += -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
 LOCAL_SLICE2CPPFLAGS            += -I$(LOCAL_SLICEDIR)
 

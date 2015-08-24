@@ -8,7 +8,5 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/faultTolerance
-
+LOCAL_PATH                      = cpp/test/Ice/faultTolerance
 include $(CLIENTSERVERTEST_RULES)

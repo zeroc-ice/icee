@@ -32,6 +32,13 @@ ICEE_TARGET_OS                  ?= debian
 #ICE_HOME                       = /usr
 
 #
+# To build test suite against static libraries define BUILD_TESTSUITE
+# as static, to build test suite against dynamic libraries define
+# BUILD_TESTSUITE as dynamic.
+#
+BUILD_TESTSUITE                 ?= static
+
+#
 # Target to deploy the test suite.
 #
 DEPLOY_TARGET                   ?= debian@192.168.7.2:/home/debian/icee

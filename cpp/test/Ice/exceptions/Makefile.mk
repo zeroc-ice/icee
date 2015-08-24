@@ -8,9 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/exceptions
-TEST_TARGET_EXT	= colloc serveramd
-TEST_SRCS_EXT	= ExceptionsI.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/exceptions
+TEST_TARGET_EXT                 = colloc serveramd
+TEST_SRCS_EXT                   = ExceptionsI.cpp
 include $(CLIENTSERVERTEST_RULES)
