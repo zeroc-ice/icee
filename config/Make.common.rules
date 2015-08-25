@@ -151,13 +151,13 @@ ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 #
 # Install directories
 #
-ice_install_include_dir         = $(prefix)/include
-ice_install_bin_dir             = $(prefix)/bin
-ice_install_man_dir             = $(prefix)/share/man/man1
-ifeq ($(prefix),/usr)
-    ice_install_slice_dir       = $(prefix)/share/Ice-$(VERSION)/slice
+ice_install_include_dir         ?= $(prefix)/include
+ice_install_bin_dir             ?= $(prefix)/bin
+ice_install_man_dir             ?= $(prefix)/share/man/man1
+ifeq ($(prefix),$(base_prefix)/usr)
+    ice_install_slice_dir       ?= $(prefix)/share/Ice-$(VERSION)/slice
 else
-    ice_install_slice_dir       = $(prefix)/slice
+    ice_install_slice_dir       ?= $(prefix)/slice
 endif
 
 #

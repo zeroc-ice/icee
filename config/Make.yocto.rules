@@ -9,17 +9,19 @@
 
 OBJPREFIX                       = $(ICEE_TARGET_OS)/$(ARCH)
 
-ice_install_lib_dir             = $(prefix)/lib
+ice_install_lib_dir             ?= $(prefix)/lib
 
 
 PYTHON_BASEVERSION              ?= 2.7
 
-python_include_dir              = $(SDKTARGETSYSROOT)/usr/include/python$(PYTHON_BASEVERSION)
+ifneq ($(SDKTARGETSYSROOT),)
+    python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/python$(PYTHON_BASEVERSION)
+endif
 
-ifeq ($(prefix),/usr)
-    python_install_dir          = /usr/lib/python$(PYTHON_BASEVERSION)/site-packages
+ifeq ($(prefix),$(base_prefix)/usr)
+    python_install_dir          ?= /usr/lib/python$(PYTHON_BASEVERSION)/site-packages
 else
-    python_install_dir          = $(prefix)/python$(PYTHON_BASEVERSION)/
+    python_install_dir          ?= $(prefix)/python$(PYTHON_BASEVERSION)/
 endif
 
 SLICE2PY                        = $(ice_bin_dir)/slice2py
