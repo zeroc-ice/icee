@@ -48,7 +48,7 @@ endif
 #
 ifeq ($(OPTIMIZE),yes)
     override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
-    LDFLAGS                     += -Wl,--gc-sections
+    LDFLAGS                     = -Wl,--gc-sections
 else
     override CPPFLAGS           := $(CPPFLAGS) -g
 endif
@@ -79,7 +79,7 @@ else
 endif
 
 override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
-LDFLAGS                         := $(LDFLAGS) -pthread
+LDFLAGS                         += -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
 
@@ -200,6 +200,7 @@ install:: dist
 	$(E) "Installing IceE $(VERSION) to $(DESTDIR)$(prefix)"
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_lib_dir)
 	$(Q)cp -rf $(icee_lib_dir)/*.a $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(icee_lib_dir)/*.so* $(DESTDIR)/$(ice_install_lib_dir)
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/slice2cpp $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/slice2py $(DESTDIR)$(ice_install_bin_dir)
