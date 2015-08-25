@@ -19,7 +19,7 @@ ifneq ($(SDKTARGETSYSROOT),)
 endif
 
 ifeq ($(prefix),$(base_prefix)/usr)
-    python_install_dir          ?= /usr/lib/python$(PYTHON_BASEVERSION)/site-packages
+    python_install_dir          ?= $(prefix)/lib/python$(PYTHON_BASEVERSION)/site-packages
 else
     python_install_dir          ?= $(prefix)/python$(PYTHON_BASEVERSION)/
 endif
