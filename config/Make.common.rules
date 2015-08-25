@@ -37,7 +37,7 @@ endif
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
 SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
 SLICE2PYFLAGS                   = -I$(ice_slice_dir)
-CPPFLAGS                        := $(CPPFLAGS) -I$(ice_include_dir)
+override CPPFLAGS               += -I$(ice_include_dir)
 
 ifeq ($(wildcard $(SLICE2CPP)),)
     $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
@@ -47,10 +47,10 @@ endif
 # Optimization flags
 #
 ifeq ($(OPTIMIZE),yes)
-    CPPFLAGS                    += -Os -DNDEBUG -ffunction-sections -fdata-sections
+    override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
     LDFLAGS                     += -Wl,--gc-sections
 else
-    CPPFLAGS                    += -g
+    override CPPFLAGS           := $(CPPFLAGS) -g
 endif
 
 #
@@ -78,7 +78,7 @@ else
     endif
 endif
 
-CPPFLAGS                        := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
 LDFLAGS                         := $(LDFLAGS) -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
@@ -237,7 +237,7 @@ test_deploy: test_compile test_resources
 		--exclude="*.mk" \
 		--exclude="*.o" \
 		--exclude="ice" \
-		--exclude="lib" \
+		--exclude="*.a" \
 		--exclude="scripts" \
 		--exclude="certs" \
 		--exclude=".git*" \
