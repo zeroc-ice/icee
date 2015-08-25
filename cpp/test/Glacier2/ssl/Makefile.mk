@@ -18,5 +18,5 @@ include $(CLEAR_RULES)
 LOCAL_EXE                       = server
 LOCAL_PATH                      = cpp/test/Glacier2/ssl
 LOCAL_SRCS                      = Server.cpp
-LOCAL_DEPENDENT_MODULES         = Glacier2 Ice
+LOCAL_DEPENDENT_MODULES         = IceSSL Glacier2 Ice
 include $(TEST_APPLICATION_RULES)

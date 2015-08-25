@@ -9,4 +9,5 @@
 
 include $(CLEAR_RULES)
 LOCAL_PATH                      = cpp/test/Ice/info
+TEST_DEPENDENT_MODULES          = IceSSL
 include $(CLIENTSERVERTEST_RULES)

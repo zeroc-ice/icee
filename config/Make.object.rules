@@ -8,10 +8,11 @@
 # **********************************************************************
 
 ifeq ($(filter $(LOCAL_CPPFLAGS),-fPIC),)
-    LOCAL_TARGETPREFIX          = _pic
-    LOCAL_OBJPREFIX             = $(OBJPREFIX)/non-pic
-else
     LOCAL_TARGETPREFIX          = _non-pic
+    LOCAL_OBJPREFIX             = $(OBJPREFIX)/non-pic
+    LOCAL_CPPFLAGS              += -DICE_STATIC_LIBS 
+else
+    LOCAL_TARGETPREFIX          = _pic
     LOCAL_OBJPREFIX             = $(OBJPREFIX)/pic
 endif
 

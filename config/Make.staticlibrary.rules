@@ -8,7 +8,6 @@
 # **********************************************************************
 
 LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
-LOCAL_CPPFLAGS                  := -DICE_STATIC_LIBS $(LOCAL_CPPFLAGS)
 
 include $(OBJECT_RULES)
 

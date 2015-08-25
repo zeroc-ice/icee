@@ -16,18 +16,23 @@ LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
 LOCAL_MODULE                    = $(subst /,_,$(LOCAL_PATH))_$(LOCAL_EXE)
 
 ifeq ($(BUILD_TESTSUITE),static)
+    #
+    # Filter out modules that are bundled with Ice static module
+    #
+    LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery, $(LOCAL_DEPENDENT_MODULES))
     LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
     LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lcrypto -lssl
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_CPPFLAGS              += -fPIC
+    LOCAL_LDFLAGS               += -rdynamic
     ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
     endif
     LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) IceUtil
-    LOCAL_DYDEPENDENT_MODULES   = $(LOCAL_DEPENDENT_MODULES)
-    LOCAL_DEPENDENT_MODULES     =
+    LOCAL_DEPENDENT_DYMODULES   := $(LOCAL_DEPENDENT_MODULES)
+    LOCAL_DEPENDENT_MODULES     :=
 endif
 
 LOCAL_CPPFLAGS                  += -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
