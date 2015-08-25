@@ -74,7 +74,7 @@ ifneq ($(USE_BIN_DIST),yes)
     icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
     ifneq ($(ICEE_HOME),/usr)
-        icee_libdir             = $(ICEE_HOME)/lib/$(OBJPREFIX)
+        icee_lib_dir            = $(ICEE_HOME)/lib/$(OBJPREFIX)
     endif
 endif
 
@@ -82,16 +82,9 @@ override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/sr
 LDFLAGS                         := $(LDFLAGS) -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
-ifneq ($(libdir),)
-    LDFLAGS                     := -L$(libdir) $(LDFLAGS)
-endif
-
 
 mklib                           = $(AR) cr $(1) $(2)
 mklibname                       = lib$(1).a
-mklibtarget                     = $(libdir)/$(call mklibname,$(1))
-mkexetarget                     = $(bindir)/$(1)
-
 
 #
 # Recursive wildcard function
