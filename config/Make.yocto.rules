@@ -13,15 +13,17 @@ ice_install_lib_dir             ?= $(prefix)/lib
 
 
 PYTHON_BASEVERSION              ?= 2.7
+PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 
 ifneq ($(SDKTARGETSYSROOT),)
-    python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/python$(PYTHON_BASEVERSION)
+    python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/$(PYTHON_DIR)
 endif
 
 ifeq ($(prefix),$(base_prefix)/usr)
-    python_install_dir          ?= $(prefix)/lib/python$(PYTHON_BASEVERSION)/site-packages
+    python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/site-packages
 else
-    python_install_dir          ?= $(prefix)/python$(PYTHON_BASEVERSION)/
+    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
 endif
 
 SLICE2PY                        = $(ice_bin_dir)/slice2py
+

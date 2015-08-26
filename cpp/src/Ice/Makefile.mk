@@ -51,15 +51,16 @@ LOCAL_SRCDIR                    = ice/cpp/src/$(LOCAL_MODULE)
 LOCAL_SRCS                      = $(filter-out $(LOCAL_SRCDIR)/DLLMain.cpp $(LOCAL_SRCDIR)/RegisterPluginsInit.cpp, $(wildcard $(LOCAL_SRCDIR)/*.cpp)) \
                                   $(LOCAL_PATH)/RegisterPluginsInit.cpp
 
-LOCAL_CPPFLAGS                  = -Icpp/src/Ice
+ICE_CPPFLAGS                    = -Icpp/src/Ice
 
 LOCAL_OBJS                      = $(LIBRARY_OBJS)
 
 LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h)
 LOCAL_PUBLIC_SLICES             = $(LOCAL_SLICES)
 
-
+LOCAL_CPPFLAGS                  = $(ICE_CPPFLAGS)
 include $(STATICLIBRARY_RULES)
 LOCAL_OBJS                      = 
+LOCAL_CPPFLAGS                  = $(ICE_CPPFLAGS)
 include $(DYNAMICLIBRARY_RULES)
 include $(INSTALL_RULES)

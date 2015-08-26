@@ -44,3 +44,4 @@ LOCAL_OBJPREFIX                 =
 LOCAL_TARGETPREFIX              =
 LOCAL_STRIP_DISABLED            =
 LOCAL_PREFIX                    =
+LOCAL_PACKAGE                   =

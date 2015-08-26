@@ -25,8 +25,8 @@ ifeq ($(BUILD_TESTSUITE),static)
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
-    LOCAL_CPPFLAGS              += -fPIC
-    LOCAL_LDFLAGS               += -rdynamic
+    LOCAL_CPPFLAGS              := -fPIC $(LOCAL_CPPFLAGS)
+    LOCAL_LDFLAGS               := -rdynamic $(LOCAL_LDFLAGS)
     ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
     endif
@@ -35,8 +35,8 @@ ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_DEPENDENT_MODULES     :=
 endif
 
-LOCAL_CPPFLAGS                  += -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
-LOCAL_SLICE2CPPFLAGS            += -I$(LOCAL_SLICEDIR)
+LOCAL_CPPFLAGS                  := $(LOCAL_CPPFLAGS) -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
+LOCAL_SLICE2CPPFLAGS            := $(LOCAL_SLICE2CPPFLAGS) -I$(LOCAL_SLICEDIR)
 
 
 ifneq ($(wildcard $(LOCAL_TESTDIR)/run.py),)

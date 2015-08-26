@@ -41,11 +41,19 @@ $(LOCAL_MODULE): LOCAL_PACKAGE := $(LOCAL_PACKAGE)
 $(LOCAL_MODULE): $(LOCAL_PATH)/$(LOCAL_PACKAGE)/__init__.py
 TARGETS                         := $(TARGETS) $(LOCAL_PATH)/$(LOCAL_PACKAGE)/__init__.py
 
+$(LOCAL_MODULE)_gitignore: LOCAL_PATH := $(LOCAL_PATH)
+$(LOCAL_MODULE)_gitignore: LOCAL_PACKAGE := $(LOCAL_PACKAGE)
+$(LOCAL_MODULE)_gitignore::
+	@echo $(LOCAL_PATH)/$(LOCAL_PACKAGE)/\*\*
+
+gitignore:: $(LOCAL_MODULE)_gitignore
+
 endif
 
 $(LOCAL_MODULE): LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
 $(LOCAL_MODULE): $(LOCAL_GEN_SRCS)
 
+$(LOCAL_MODULE)_clean: LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_MODULE)_clean: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
 $(LOCAL_MODULE)_clean: LOCAL_PATH := $(LOCAL_PATH)
 $(LOCAL_MODULE)_clean: LOCAL_PACKAGE := $(LOCAL_PACKAGE)
@@ -55,7 +63,16 @@ $(LOCAL_MODULE)_clean:
 	$(E) "Cleaning $(LOCAL_MODULE)"
 	$(Q)rm -rf $(LOCAL_GEN_SRCS) $(LOCAL_PATH)/.depend
 ifneq ($(LOCAL_PACKAGE),)
-	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_PACKAGE)/__init__.py
+	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_PACKAGE)
 endif
 
 CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_clean
+
+ifneq ($(LOCAL_GEN_SRCS),)
+$(LOCAL_MODULE)_gitignore: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
+$(LOCAL_MODULE)_gitignore::
+	@for line in $(LOCAL_GEN_SRCS) ; do \
+        echo $$line ; \
+    done
+gitignore:: $(LOCAL_MODULE)_gitignore
+endif
