@@ -32,6 +32,11 @@ ICEE_TARGET_OS                  ?= debian
 #ICE_HOME                       = /usr
 
 #
+# Default Mutex protocol: one of PrioNone or PrioInherit.
+#
+#DEFAULT_MUTEX_PROTOCOL ?= PrioNone
+
+#
 # To build test suite against static libraries define BUILD_TESTSUITE
 # as static, to build test suite against dynamic libraries define
 # BUILD_TESTSUITE as dynamic.

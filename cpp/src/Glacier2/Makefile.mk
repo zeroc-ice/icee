@@ -28,11 +28,11 @@ LOCAL_SLICEDIR                  = ice/$(LOCAL_PATH)
 LOCAL_SLICES                    = $(wildcard $(LOCAL_SRCDIR)/*.ice)
 
 LOCAL_DEPENDENT_DYMODULES       = Glacier2CryptPermissionsVerifier Glacier2 IceSSL Ice IceUtil
-LOCAL_LDFLAGS                   = -rdynamic
 LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)
 LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
 
 LOCAL_CPPFLAGS                  = -I$(LOCAL_PATH) -fPIC
+LOCAL_LINKWITH                  = -Wl,-Bdynamic -lssl
 
 include $(APPLICATION_RULES)
 

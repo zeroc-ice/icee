@@ -11,10 +11,6 @@ OBJPREFIX                       = $(ICEE_TARGET_OS)/$(ARCH)
 
 ice_install_lib_dir             ?= $(prefix)/lib
 
-
-PYTHON_BASEVERSION              ?= 2.7
-PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
-
 ifneq ($(SDKTARGETSYSROOT),)
     python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/$(PYTHON_DIR)
 endif

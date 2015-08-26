@@ -21,12 +21,11 @@ ifeq ($(BUILD_TESTSUITE),static)
     #
     LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery, $(LOCAL_DEPENDENT_MODULES))
     LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
-    LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lcrypto -lssl
+    LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lssl
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_CPPFLAGS              := -fPIC $(LOCAL_CPPFLAGS)
-    LOCAL_LDFLAGS               := -rdynamic $(LOCAL_LDFLAGS)
     ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
     endif

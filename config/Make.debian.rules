@@ -46,21 +46,29 @@ ifneq ($(HOST),$(BUILD))
     AR                          = arm-linux-gnueabihf-ar
 
     ifneq ($(THIRDPARTY_HOME),)
-        CPPFLAGS                += -I$(THIRDPARTY_HOME)/usr/include
+        override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
         LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
                                    -Wl,-rpath-link,$(THIRDPARTY_HOME)/lib/arm-linux-gnueabihf
+        python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
     endif
 else
     CC                          = gcc
     CXX                         = g++
     AR                          = ar
     STRIP                       = strip
+    python_include_dir          = /usr/include/$(PYTHON_DIR)
+endif
+
+ifeq ($(prefix),/usr)
+    python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/site-packages
+else
+    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
 endif
 
 ice_install_lib_dir = $(prefix)/lib/$(HOST)
 
 ifeq ($(ICE_HOME),)
-    SLICE2PY                    = $(ice_bin_dir)/python/config/s2py
+    SLICE2PY                    = ice/python/config/s2py.py
 else
     SLICE2PY                    = slice2py
 endif

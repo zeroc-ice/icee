@@ -39,9 +39,16 @@ SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
 SLICE2PYFLAGS                   = -I$(ice_slice_dir)
 override CPPFLAGS               += -I$(ice_include_dir)
 
+ifeq ($(DEFAULT_MUTEX_PROTOCOL),PrioInherit)
+    override CPPFLAGS           += -DICE_PRIO_INHERIT
+endif
+
 ifeq ($(wildcard $(SLICE2CPP)),)
     $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
 endif
+
+PYTHON_BASEVERSION              ?= 2.7
+PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 
 #
 # Optimization flags
@@ -52,6 +59,8 @@ ifeq ($(OPTIMIZE),yes)
 else
     override CPPFLAGS           := $(CPPFLAGS) -g
 endif
+
+EXELDFLAGS                      = -rdynamic
 
 #
 # If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
@@ -233,7 +242,17 @@ ifneq ($(USE_BIN_DIST),yes)
     test_deploy: glacier2router icebox iceboxadmin IcePy
 endif
 
+.PHONY: test_deploy
+
+DEPLOYDIR                       := $(shell mktemp -d)
+
 test_deploy: test_compile test_resources
+	mkdir -p $(DEPLOYDIR)
+	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
+	mkdir -p $(DEPLOYDIR)/python/python
+	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
+	rm -rf $(DEPLOYDIR)
+	
 	rsync -aczv --prune-empty-dirs \
 		--exclude="*.d" \
 		--exclude="*.h" \

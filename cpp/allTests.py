@@ -32,7 +32,8 @@ tests = [
     ("IceUtil/uuid", ["once", "noappverifier"]), # This test is very slow with appverifier.
     ("IceUtil/timer", ["once"]),
     ("IceUtil/sha1", ["once"]),
-    ("Ice/properties", ["once", "nomingw"]),
+    ("Ice/properties", ["once", "nomingw", "noyocto"]),    # This test requires a UTF-8 locale this isn't
+                                                           # supported with yocto core images.
     ("Ice/proxy", ["core"]),
     ("Ice/operations", ["core"]),
     ("Ice/exceptions", ["core"]),
