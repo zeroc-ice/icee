@@ -60,7 +60,10 @@ else
     override CPPFLAGS           := $(CPPFLAGS) -g
 endif
 
-LDEXEFLAGS                      = -rdynamic
+#
+# Don't use -rdynamic as it cause problems with exceptions stack traces in ARMv7
+#
+#LDEXEFLAGS                      = -rdynamic
 
 #
 # Add RPATH to LDEXEFLAGS if EMBEDDED_RUNPATH is set to yes
