@@ -32,6 +32,26 @@ ICEE_TARGET_OS                  ?= debian
 #ICE_HOME                       = /usr
 
 #
+# The "root directory" for runpath embedded in executables. Can be set
+# to change the runpath added to Ice executables. The default is
+# platform dependent.
+#
+#EMBEDDED_RUNPATH_PREFIX        ?= /opt/IceE-3.6
+
+#
+# Define EMBEDDED_RUNPATH as no if you don't want any RPATH added to
+# the executables.
+#
+EMBEDDED_RUNPATH                ?= yes
+
+#
+# Define NEW_DTAGS as yes if you want the linker to enable the new style
+# dtags, this will cause the linker to add a runpath entry instead of
+# a rpath entry. This only aplly to gcc builds on linux
+#
+NEW_DTAGS                       ?= no
+
+#
 # Default Mutex protocol: one of PrioNone or PrioInherit.
 #
 #DEFAULT_MUTEX_PROTOCOL ?= PrioNone

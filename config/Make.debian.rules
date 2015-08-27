@@ -39,6 +39,8 @@ ifneq ($(HOST),$(BUILD))
     ifeq ($(TARGET_DIST),vivid)
         GCC_VERSION             = 4.9
     endif
+    
+    ice_libsubdir               = lib/arm-linux-gnueabihf
 
     CC                          = arm-linux-gnueabihf-gcc-$(GCC_VERSION)
     CXX                         = arm-linux-gnueabihf-g++-$(GCC_VERSION)
@@ -47,11 +49,12 @@ ifneq ($(HOST),$(BUILD))
 
     ifneq ($(THIRDPARTY_HOME),)
         override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
-        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/lib/arm-linux-gnueabihf \
-                                   -Wl,-rpath-link,$(THIRDPARTY_HOME)/lib/arm-linux-gnueabihf
+        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/$(ice_libsubdir) \
+                                   -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(ice_libsubdir)
         python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
     endif
 else
+    ice_libsubdir               = lib/x86_64-linux-gnu
     CC                          = gcc
     CXX                         = g++
     AR                          = ar

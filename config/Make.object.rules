@@ -58,8 +58,8 @@ $(LOCAL_GEN_HEADERS): LOCAL_SLICE2CPPFLAGS := $(LOCAL_SLICE2CPPFLAGS)
 $(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
-	$(Q)$(SLICE2CPP) --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
-	@$(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
+	$(Q)LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
+	@LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
 $(LOCAL_PATH)/%.cpp: $(LOCAL_PATH)/%.h
 	

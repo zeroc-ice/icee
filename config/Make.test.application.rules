@@ -25,6 +25,7 @@ ifeq ($(BUILD_TESTSUITE),static)
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
+    LOCAL_STRIP_DISABLED        = yes
     LOCAL_CPPFLAGS              := -fPIC $(LOCAL_CPPFLAGS)
     ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
@@ -32,11 +33,15 @@ ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) IceUtil
     LOCAL_DEPENDENT_DYMODULES   := $(LOCAL_DEPENDENT_MODULES)
     LOCAL_DEPENDENT_MODULES     :=
+    ifeq ($(EMBEDDED_RUNPATH),yes)
+        ifeq ($(RPATH_DIR),)
+            LOCAL_RPATH         := \$$ORIGIN/$(call relpath,$(CURDIR)/cpp,$(CURDIR)/$(LOCAL_PATH))/$(ice_libsubdir)
+        endif
+    endif
 endif
 
 LOCAL_CPPFLAGS                  := $(LOCAL_CPPFLAGS) -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
 LOCAL_SLICE2CPPFLAGS            := $(LOCAL_SLICE2CPPFLAGS) -I$(LOCAL_SLICEDIR)
-
 
 ifneq ($(wildcard $(LOCAL_TESTDIR)/run.py),)
     TARGETS := $(TARGETS) $(LOCAL_PATH)/run.py

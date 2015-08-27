@@ -21,8 +21,8 @@ $(LOCAL_GEN_SRCS): LOCAL_SLICE2PYFLAGS := $(LOCAL_SLICE2PYFLAGS)
 $(LOCAL_PATH)/$(LOCAL_PREFIX)%_ice.py: $(LOCAL_SLICEDIR)/%.ice
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
-	$(Q)$(SLICE2PY) --output-dir $(@D) $(LOCAL_SLICE2PYFLAGS) $(SLICE2PYFLAGS) $<
-	@$(SLICE2PY) --depend $(LOCAL_SLICE2PYFLAGS) $(SLICE2PYFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
+	$(Q)LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2PY) --output-dir $(@D) $(LOCAL_SLICE2PYFLAGS) $(SLICE2PYFLAGS) $<
+	@LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2PY) --depend $(LOCAL_SLICE2PYFLAGS) $(SLICE2PYFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 	
 TARGETS                         := $(TARGETS) $(LOCAL_GEN_SRCS)
 
@@ -34,7 +34,8 @@ $(LOCAL_PATH)/$(LOCAL_PACKAGE)/__init__.py: LOCAL_SLICE2PYFLAGS := $(LOCAL_SLICE
 
 $(LOCAL_PATH)/$(LOCAL_PACKAGE)/__init__.py: $(filter-out $(METRICS_SLICES), $(LOCAL_SLICES))
 	$(E) "Generating $(LOCAL_PACKAGE) package index"
-	$(Q)$(SLICE2PY) --output-dir $(LOCAL_PATH) --build-package $(filter-out --no-package, $(LOCAL_SLICE2PYFLAGS)) $(SLICE2PYFLAGS) $(filter-out $(METRICS_SLICES), $(LOCAL_SLICES))
+	$(Q)LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2PY) --output-dir $(LOCAL_PATH) --build-package \
+		$(filter-out --no-package, $(LOCAL_SLICE2PYFLAGS)) $(SLICE2PYFLAGS) $(filter-out $(METRICS_SLICES), $(LOCAL_SLICES))
 
 $(LOCAL_MODULE): LOCAL_PATH := $(LOCAL_PATH)
 $(LOCAL_MODULE): LOCAL_PACKAGE := $(LOCAL_PACKAGE)

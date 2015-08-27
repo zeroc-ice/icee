@@ -60,7 +60,28 @@ else
     override CPPFLAGS           := $(CPPFLAGS) -g
 endif
 
-EXELDFLAGS                      = -rdynamic
+LDEXEFLAGS                      = -rdynamic
+
+#
+# Add RPATH to LDEXEFLAGS if EMBEDDED_RUNPATH is set to yes
+#
+ifeq ($(EMBEDDED_RUNPATH),yes)
+    ifneq ($(EMBEDDED_RUNPATH_PREFIX),)
+        RPATH_DIR = $(EMBEDDED_RUNPATH_PREFIX)
+    endif
+
+    #
+    # Unless new_dtags is set to yes we use old style dtags, to add a RPATH
+    # entry instead of RUNPATH entry, this allow the plug-ins to load without
+    # need to set LD_LIBRARY_PATH
+    #
+    ifeq ($(new_dtags),yes)
+        DTAGS                   = -Wl,--enable-new-dtags
+    else
+        DTAGS                   = -Wl,--disable-new-dtags
+    endif
+    DTAGS                       := $(DTAGS)
+endif
 
 #
 # If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
@@ -83,7 +104,7 @@ ifneq ($(USE_BIN_DIST),yes)
     icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
     ifneq ($(ICEE_HOME),/usr)
-        icee_lib_dir            = $(ICEE_HOME)/lib/$(OBJPREFIX)
+        icee_lib_dir            = $(ICEE_HOME)/$(ice_libsubdir)
     endif
 endif
 
@@ -99,6 +120,11 @@ mklibname                       = lib$(1).a
 # Recursive wildcard function
 #
 rwildcard                       = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+#
+# Relative path
+#
+relpath                         = $(subst $(eval) ,/,$(patsubst %,..,$(subst /, ,$(subst $1,,$2))))
 
 #
 # Verbosity
@@ -275,7 +301,7 @@ test_deploy: test_compile test_resources
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
 	
 	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
-	rsync -aczv ice/python/allTests.py $(DEPLOY_TARGET)/python/
+	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
 	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/* $(DEPLOY_TARGET)/python/python/
 	rsync -aczv --prune-empty-dirs \
 	      --exclude="*.pyc" \

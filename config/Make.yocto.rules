@@ -9,7 +9,8 @@
 
 OBJPREFIX                       = $(ICEE_TARGET_OS)/$(ARCH)
 
-ice_install_lib_dir             ?= $(prefix)/lib
+ice_libsubdir                   ?= lib
+ice_install_lib_dir             ?= $(prefix)/$(ice_libsubdir)
 
 ifneq ($(SDKTARGETSYSROOT),)
     python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/$(PYTHON_DIR)
