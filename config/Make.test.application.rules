@@ -49,6 +49,7 @@ endif
 
 include $(APPLICATION_RULES)
 
+.PHONY: test_compile test_clean
 
 test_compile: $(LOCAL_BINDIR)/$(LOCAL_EXE)
 test_clean: $(LOCAL_MODULE)_clean

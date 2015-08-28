@@ -21,13 +21,14 @@ $(LOCAL_LIB): $(LOCAL_OBJS)
 	$(E) Creating library: $(@F)
 	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
 
-
 $(LOCAL_MODULE)_staticlib: LOCAL_LIB := $(LOCAL_LIB)
 
 $(LOCAL_MODULE)_staticlib: $(LOCAL_LIB)
 
 $(LOCAL_MODULE)_non-pic_clean: LOCAL_LIB := $(LOCAL_LIB)
 
+
+$(LOCAL_MODULE)_staticlib_clean: LOCAL_LIB := $(LOCAL_LIB)
 $(LOCAL_MODULE)_staticlib_clean:
 	$(Q)rm -rf $(LOCAL_LIB)
 

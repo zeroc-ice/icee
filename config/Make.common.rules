@@ -15,7 +15,14 @@ clean::
 VERSION                         = 3.6.1
 SOVERSION                       = 36
 
-BUILD                           = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
+    ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+else
+    ifeq ($(shell -m uname),x86_64)
+        ice_libprefix           = 64
+    endif
+endif
+ice_libsubdir                   = lib$(ice_libprefix)
 
 ifeq ($(USE_BIN_DIST),yes)
     ICE_HOME                    ?= /usr
@@ -28,10 +35,10 @@ ice_man_dir                     = ice/man/man1
 
 ifeq ($(ICE_HOME),)
     ice_bin_dir                 = ice/cpp/bin
-    ice_lib_dir                 = ice/cpp/lib/$(BUILD)
+    ice_lib_dir                 = ice/cpp/$(ice_libsubdir)
 else
     ice_bin_dir                 = $(ICE_HOME)/bin
-    ice_lib_dir                 = $(ICE_HOME)/lib/$(BUILD)
+    ice_lib_dir                 = $(ICE_HOME)/lib$(ice_libprefix)
 endif
 
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
@@ -58,16 +65,9 @@ ifeq ($(OPTIMIZE),yes)
     LDFLAGS                     = -Wl,--gc-sections
 else
     override CPPFLAGS           := $(CPPFLAGS) -g
+    LDFLAGS                     =
 endif
 
-#
-# Don't use -rdynamic as it cause problems with exceptions stack traces in ARMv7
-#
-#LDEXEFLAGS                      = -rdynamic
-
-#
-# Add RPATH to LDEXEFLAGS if EMBEDDED_RUNPATH is set to yes
-#
 ifeq ($(EMBEDDED_RUNPATH),yes)
     ifneq ($(EMBEDDED_RUNPATH_PREFIX),)
         RPATH_DIR = $(EMBEDDED_RUNPATH_PREFIX)
@@ -107,7 +107,7 @@ ifneq ($(USE_BIN_DIST),yes)
     icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
     ifneq ($(ICEE_HOME),/usr)
-        icee_lib_dir            = $(ICEE_HOME)/$(ice_libsubdir)
+        icee_lib_dir            = $(ICEE_HOME)/$(icee_libsubdir)
     endif
 endif
 
@@ -265,7 +265,7 @@ endif
 
 all:: $(TARGETS)
 
-clean:: $(CLEAN_TARGETS)
+clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
     test_deploy: glacier2router icebox iceboxadmin IcePy

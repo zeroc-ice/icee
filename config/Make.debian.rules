@@ -7,6 +7,7 @@
 #
 # **********************************************************************
 
+BUILD                           = $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 ifeq ($(HOST),)
     HOST                        = $(BUILD)
@@ -16,7 +17,8 @@ ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
     $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
-OBJPREFIX                       = $(ICEE_TARGET_OS)/$(HOST)
+OBJPREFIX                       = $(HOST)
+icee_libsubdir                  = lib/$(HOST)
 
 #
 # If host different than build we are cross compiling
@@ -39,22 +41,19 @@ ifneq ($(HOST),$(BUILD))
     ifeq ($(TARGET_DIST),vivid)
         GCC_VERSION             = 4.9
     endif
-    
-    ice_libsubdir               = lib/arm-linux-gnueabihf
 
-    CC                          = arm-linux-gnueabihf-gcc-$(GCC_VERSION)
-    CXX                         = arm-linux-gnueabihf-g++-$(GCC_VERSION)
-    STRIP                       = arm-linux-gnueabihf-strip
-    AR                          = arm-linux-gnueabihf-ar
+    CC                          = $(HOST)-gcc-$(GCC_VERSION)
+    CXX                         = $(HOST)-g++-$(GCC_VERSION)
+    STRIP                       = $(HOST)-strip
+    AR                          = $(HOST)-ar
 
     ifneq ($(THIRDPARTY_HOME),)
         override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
-        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/$(ice_libsubdir) \
-                                   -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(ice_libsubdir)
+        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
+                                   -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(icee_libsubdir)
         python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
     endif
 else
-    ice_libsubdir               = lib/x86_64-linux-gnu
     CC                          = gcc
     CXX                         = g++
     AR                          = ar
@@ -63,7 +62,7 @@ else
 endif
 
 ifeq ($(prefix),/usr)
-    python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/site-packages
+    python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/dist-packages
 else
     python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
 endif

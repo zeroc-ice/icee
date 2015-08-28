@@ -26,13 +26,9 @@ endif
 $(LOCAL_MODULE): LOCAL_BINDIR := $(LOCAL_BINDIR)
 $(LOCAL_MODULE): LOCAL_EXE := $(LOCAL_EXE)
 
-ifneq ($(LOCAL_RPATH),)
-    LOCAL_LDFLAGS               = $(DTAGS) -Wl,-rpath,$(LOCAL_RPATH)
-endif
-
 ifeq ($(EMBEDDED_RUNPATH),yes)
     ifeq ($(RPATH_DIR),)
-        LOCAL_RPATH             := \$$ORIGIN/$(call relpath,$(CURDIR)/cpp,$(CURDIR)/$(LOCAL_BINDIR))/$(ice_libsubdir)
+        LOCAL_RPATH             := \$$ORIGIN/$(call relpath,$(CURDIR)/cpp,$(CURDIR)/$(LOCAL_BINDIR))/$(icee_libsubdir)
     else
         LOCAL_RPATH             := $(RPATH_DIR)
     endif
@@ -50,6 +46,10 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
     ifeq ($(ICE_HOME),$(base_prefix)/usr)
         LOCAL_RPATH             =
     endif
+endif
+
+ifneq ($(LOCAL_RPATH),)
+    LOCAL_LDFLAGS               = $(DTAGS) -Wl,-rpath,$(LOCAL_RPATH)
 endif
 
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_MODULE := $(LOCAL_MODULE)

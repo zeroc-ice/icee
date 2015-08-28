@@ -38,8 +38,8 @@ tests = [
     ("Ice/location", ["core"]),
     ("Ice/objects", ["core"]),
     ("Ice/proxy", ["core"]),
-    "Ice/properties", ["once", "noyocto"]),    # This test requires a UTF-8 locale this isn't
-                                               # supported with yocto core images.
+    ("Ice/properties", ["once", "noyocto"]),    # This test requires a UTF-8 locale this isn't
+                                                # supported with yocto core images.
     ("Ice/operations", ["core"]),
     ("Ice/slicing/exceptions", ["core"]),
     ("Ice/slicing/objects", ["core"]),
