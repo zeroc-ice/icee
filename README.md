@@ -12,9 +12,9 @@ For download and installation instructions refer to the [Ice-E release notes](ht
 
 Ice-E has been tested on the following development boards:
 - [BeagleBoard BeagleBone Black](http://beagleboard.org/black) (Rev C)
-  - Default Debian distribution and toolchain
+  - Debian 7.8 for BeagleBone 2015-03-01
   - Yocto 1.8
-- [SABRE SD](http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=RDIMX6SABREBRD)
+- [Freescale SABRE SD](http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=RDIMX6SABREBRD)
   - Yocto 1.7 & 1.8 using [Freescale Community BSP](https://freescale.github.io/#header-section)
 
 ## Copyright and License
