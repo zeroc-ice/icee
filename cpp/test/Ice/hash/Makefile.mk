@@ -8,12 +8,8 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/hash
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = Client.cpp
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/hash
+LOCAL_SLICES                    = Test.ice
+LOCAL_SRCS                      = Client.cpp
 include $(TEST_APPLICATION_RULES)

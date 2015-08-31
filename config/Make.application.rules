@@ -9,39 +9,71 @@
 
 include $(OBJECT_RULES)
 
-ifneq ($(LOCAL_LINK_WITH),)
-LOCAL_LDFLAGS += $(addprefix -l,$(LOCAL_LINK_WITH))
+ifeq ($(LOCAL_BINDIR),)
+    LOCAL_BINDIR                = $(icee_bin_dir)
+    #
+    # Bitbake yocto build sytem already strip its binaries.
+    #
+    ifeq ($(ICEE_TARGET_OS),yocto)
+        LOCAL_STRIP_DISABLED        = yes
+    endif
 endif
 
-ifeq ($(LOCAL_BINDIR),)
-LOCAL_BINDIR	= $(bindir)
+ifeq ($(LOCAL_EXE),)
+    LOCAL_EXE                       = $(LOCAL_MODULE)
 endif
 
 $(LOCAL_MODULE): LOCAL_BINDIR := $(LOCAL_BINDIR)
 $(LOCAL_MODULE): LOCAL_EXE := $(LOCAL_EXE)
 
+ifeq ($(EMBEDDED_RUNPATH),yes)
+    ifeq ($(RPATH_DIR),)
+        LOCAL_RPATH             := \$$ORIGIN/$(call relpath,$(CURDIR)/cpp,$(CURDIR)/$(LOCAL_BINDIR))/$(icee_libsubdir)
+    else
+        LOCAL_RPATH             := $(RPATH_DIR)
+    endif
+    
+    #
+    # Clear the rpath dir when doing a system install.
+    #
+    ifeq ($(prefix),$(base_prefix)$(usr))
+        LOCAL_RPATH             =
+    endif
+
+    #
+    # Clear the rpath dir when building agains system install.
+    #
+    ifeq ($(ICE_HOME),$(base_prefix)/usr)
+        LOCAL_RPATH             =
+    endif
+endif
+
+ifneq ($(LOCAL_RPATH),)
+    LOCAL_LDFLAGS               = $(DTAGS) -Wl,-rpath,$(LOCAL_RPATH)
+endif
 
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_BINDIR := $(LOCAL_BINDIR)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_EXE := $(LOCAL_EXE)
 $(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_OBJS := $(LOCAL_OBJS)
-$(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_LINK_WITH := $(LOCAL_LINK_WITH)
-$(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_LDFLAGS := $(LOCAL_LDFLAGS)
+$(LOCAL_BINDIR)/$(LOCAL_EXE): LOCAL_STRIP_DISABLED := $(LOCAL_STRIP_DISABLED)
+
+LOCAL_TARGET = $(LOCAL_BINDIR)/$(LOCAL_EXE)
+
+include $(LINK_RULES)
 
 $(LOCAL_MODULE)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
 $(LOCAL_MODULE)_clean: LOCAL_EXE := $(LOCAL_EXE)
 $(LOCAL_MODULE)_clean: LOCAL_BINDIR := $(LOCAL_BINDIR)
 
-ifneq ($(USE_BIN_DIST),yes)
-$(LOCAL_BINDIR)/$(LOCAL_EXE): $(foreach lib,$(LOCAL_LINK_WITH),$(libdir)/lib$(lib).a)
-endif
-
 $(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_OBJS)
 	@mkdir -p $(@D)
 	@rm -rf $(@)
 	$(E) "Linking $(LOCAL_MODULE)"
-	$(Q)$(CXX) -o $(@) $(LOCAL_OBJS) -Wl,-Bstatic $(LOCAL_LDFLAGS) $(LDFLAGS) $(EXELDFLAGS)
+	$(Q)$(CXX) -o $(@) $(LOCAL_LDFLAGS) $(LDFLAGS) $(LDEXEFLAGS) $(LOCAL_OBJS) $(LOCAL_MY_LINKWITH) $(LOCAL_LINKWITH) $(LINKWITH)
+ifneq ($(LOCAL_STRIP_DISABLED),yes)
 	$(Q)$(STRIP) --strip-all --remove-section=.comment --remove-section=.note $(@)
+endif
 
 $(LOCAL_MODULE): $(LOCAL_BINDIR)/$(LOCAL_EXE)
 

@@ -8,8 +8,6 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/timeout
-CLIENT_SRCS_EXT	= TestI.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/timeout
+CLIENT_SRCS_EXT                 = TestI.cpp
 include $(CLIENTSERVERTEST_RULES)

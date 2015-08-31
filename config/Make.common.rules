@@ -12,143 +12,158 @@
 all::
 clean::
 
-VERSION         = 3.6.1
+VERSION                         = 3.6.1
+SOVERSION                       = 36
 
-BUILD		= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
-ifeq ($(HOST),)
-HOST		= $(BUILD)
+ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
+    ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+else
+    ifeq ($(shell -m uname),x86_64)
+        ice_libprefix           = 64
+    endif
 endif
-
-ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
-$(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
-endif
+ice_libsubdir                   = lib$(ice_libprefix)
 
 ifeq ($(USE_BIN_DIST),yes)
-ICE_HOME	?= /usr
-ICEE_HOME	?= /usr
+    ICE_HOME                    ?= /usr
+    ICEE_HOME                   ?= /usr
 endif
 
-OBJ_PREFIX = $(HOST)
+ice_slice_dir                   = ice/slice
+ice_include_dir                 = ice/cpp/include
+ice_man_dir                     = ice/man/man1
 
 ifeq ($(ICE_HOME),)
-ice_slicedir	= ice/slice
-SLICE2CPP	= ice/cpp/bin/slice2cpp
-CPPFLAGS 	= -Iice/cpp/include 
+    ice_bin_dir                 = ice/cpp/bin
+    ice_lib_dir                 = ice/cpp/$(ice_libsubdir)
+else
+    ice_bin_dir                 = $(ICE_HOME)/bin
+    ice_lib_dir                 = $(ICE_HOME)/lib$(ice_libprefix)
+endif
+
+SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
+SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
+SLICE2PYFLAGS                   = -I$(ice_slice_dir)
+override CPPFLAGS               += -I$(ice_include_dir)
+
+ifeq ($(DEFAULT_MUTEX_PROTOCOL),PrioInherit)
+    override CPPFLAGS           += -DICE_PRIO_INHERIT
+endif
 
 ifeq ($(wildcard $(SLICE2CPP)),)
-$(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
+    $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
 endif
 
-else
+PYTHON_BASEVERSION              ?= 2.7
+PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 
-ifeq ($(ICE_HOME),/usr)
-ice_slicedir	= $(ICE_HOME)/share/Ice-$(VERSION)/slice/
+#
+# Optimization flags
+#
+ifeq ($(OPTIMIZE),yes)
+    override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
+    LDFLAGS                     = -Wl,--gc-sections
 else
-ice_slicedir	= $(ICE_HOME)/slice/
-CPPFLAGS 	= -I$(ICE_HOME)/include 
+    override CPPFLAGS           := $(CPPFLAGS) -g
+    LDFLAGS                     =
 endif
 
-SLICE2CPP 	= $(ICE_HOME)/bin/slice2cpp
+ifeq ($(EMBEDDED_RUNPATH),yes)
+    ifneq ($(EMBEDDED_RUNPATH_PREFIX),)
+        RPATH_DIR = $(EMBEDDED_RUNPATH_PREFIX)
+    endif
 
+    #
+    # Unless new_dtags is set to yes we use old style dtags, to add a RPATH
+    # entry instead of RUNPATH entry, this allow the plug-ins to load without
+    # need to set LD_LIBRARY_PATH
+    #
+    ifeq ($(new_dtags),yes)
+        DTAGS                   = -Wl,--enable-new-dtags
+    else
+        DTAGS                   = -Wl,--disable-new-dtags
+    endif
+    DTAGS                       := $(DTAGS)
 endif
 
 #
-# If not using a system install set LD_LIBRARY_PATH to run slice2cpp
-# compiler.
+# If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
 #
 ifneq ($(ICE_HOME),/usr)
-export LD_LIBRARY_PATH := $(ICE_HOME)/lib/$(BUILD):$(LD_LIBRARY_PATH)
+    export LD_LIBRARY_PATH := $(ice_libdir):$(LD_LIBRARY_PATH)
 endif
+
+#
+# Include the OS specific rules
+#
+ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
+    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'))
+endif
+
+include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
-bindir		= cpp/bin
-libdir		= cpp/lib/$(OBJ_PREFIX)
+    icee_bin_dir                = cpp/bin
+    icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
-
-ifneq ($(ICEE_HOME),/usr)
-libdir		= $(ICEE_HOME)/lib/$(OBJ_PREFIX)
+    ifneq ($(ICEE_HOME),/usr)
+        icee_lib_dir            = $(ICEE_HOME)/$(icee_libsubdir)
+    endif
 endif
 
-endif
-#
-# If host different than build we are cross compiling
-#
-ifneq ($(HOST),$(BUILD))
-include config/Make.cross.rules
-else
-mklib		= ar cr $(1) $(2)
-STRIP		= strip
-endif
-
-CPPFLAGS 	:= -Wall -Werror -pthread -Icpp/src -Iice/cpp/src -DICE_STATIC_LIBS $(CPPFLAGS)
-OS_LIBS		:= -Wl,-Bdynamic -lcrypto -lssl -pthread -lbz2 -ldl -lrt
-
-ifneq ($(libdir),)
-LDFLAGS		:= -L$(libdir) $(LDFLAGS) 
-endif
-
-LDFLAGS		:= $(LDFLAGS) $(OS_LIBS)
-SLICE2CPPFLAGS	= -I$(ice_slicedir)
+override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+LDFLAGS                         += -pthread
+LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
 
-ifeq ($(OPTIMIZE),yes)
-
-#
-# For x86_64 builds don't use -Os as this cause problems with DeprecatedStringConverter.cpp
-# see ICE-6661
-#
-ifeq ($(HOST),arm-linux-gnueabihf)
-	CPPFLAGS += -Os
-else
-	CPPFLAGS += -O2
-endif
-	CPPFLAGS += -DNDEBUG -ffunction-sections -fdata-sections
-	LDFLAGS  += -Wl,--gc-sections
-else
-	CPPFLAGS += -g
-endif
-
-mklibname	= lib$(1).a
-mklibtarget	= $(libdir)/$(call mklibname,$(1))
-mkexetarget	= $(bindir)/$(1)
-
+mklib                           = $(AR) cr $(1) $(2)
+mklibname                       = lib$(1).a
 
 #
 # Recursive wildcard function
 #
-rwildcard	= $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+rwildcard                       = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+
+#
+# Relative path
+#
+relpath                         = $(subst $(eval) ,/,$(patsubst %,..,$(subst /, ,$(subst $1,,$2))))
 
 #
 # Verbosity
 #
 ifdef V
     ifeq ("$(origin V)", "command line")
-        BUILD_VERBOSE = $(V)
+        BUILD_VERBOSE           = $(V)
     endif
 endif
 
 ifndef BUILD_VERBOSE
-    BUILD_VERBOSE = 0
+    BUILD_VERBOSE               = 0
 endif
 
 ifeq ($(BUILD_VERBOSE),0)
-    Q = @
-    E = @echo
+    Q                           = @
+    E                           = @echo
 else
-    E = @:
+    E                           = @:
 endif
 
-GITIGNORE_DEFAULT	= certs \
-			  scripts \
-			  lib \
-			  bin \
-			  .depend \
-			  arm-linux-gnueabihf \
-			  x86_64-linux-gnu \
-			  *.so \
-			  *.so.* \
-			  cpp/**/run.py
+GITIGNORE_DEFAULT               = certs \
+                                  scripts \
+                                  lib \
+                                  bin \
+                                  .depend \
+                                  debian \
+                                  yocto \
+                                  arm-linux-gnueabihf \
+                                  x86_64-linux-gnu \
+                                  *.so \
+                                  *.so.* \
+                                  *~ \
+                                  cpp/**/run.py \
+                                  python/python**/
+
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \
 	  echo $$line ; \
@@ -158,43 +173,115 @@ gitignore::
 	$(E) "Copying test scripts"
 	$(Q)cp $< $@
 
-CLEAR_RULES 		= $(CURDIR)/config/Make.clear.rules
-OBJECT_RULES 		= $(CURDIR)/config/Make.object.rules
-SUBMODULE_RULES		= $(CURDIR)/config/Make.submodule.rules
-APPLICATION_RULES 	= $(CURDIR)/config/Make.application.rules
-TEST_APPLICATION_RULES 	= $(CURDIR)/config/Make.test.application.rules
-CLIENTSERVERTEST_RULES	= $(CURDIR)/config/Make.clientservertest.rules
-STATICLIBRARY_RULES 	= $(CURDIR)/config/Make.staticlibrary.rules
+CLEAR_RULES                     = $(CURDIR)/config/Make.clear.rules
+OBJECT_RULES                    = $(CURDIR)/config/Make.object.rules
+LINK_RULES                      = $(CURDIR)/config/Make.link.rules
+INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
+SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
+APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
+TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
+CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
+LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
+STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
+DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
+PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
+ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 
 #
-# Include all .mk files
+# Install directories
+#
+ice_install_include_dir         ?= $(prefix)/include
+ice_install_bin_dir             ?= $(prefix)/bin
+ice_install_man_dir             ?= $(prefix)/share/man/man1
+ifeq ($(prefix),$(base_prefix)/usr)
+    ice_install_slice_dir       ?= $(prefix)/share/Ice-$(VERSION)/slice
+else
+    ice_install_slice_dir       ?= $(prefix)/slice
+endif
+
+#
+# Include required .mk files
 #
 ifeq ($(USE_BIN_DIST),yes)
 
-include $(call rwildcard,cpp/test,*.mk)
+    include $(call rwildcard,cpp/test,*.mk)
+    include $(call rwildcard,python/test,*.mk)
+     
 install::
 
 else
-
-include $(call rwildcard,,*.mk)
-dist:: Ice Glacier2 IceBox IceGrid IceStorm glacier2router
+    DIST_TARGETS = slice2cpp \
+                   slice2py \
+                   glacier2router \
+                   icebox \
+                   iceboxadmin \
+                   IceUtil \
+                   Ice \
+                   Glacier2 \
+                   IceBox \
+                   IceGrid \
+                   IceStorm \
+                   Slice \
+                   IcePy
+                   
+    dist:: $(DIST_TARGETS)
+    
+    #
+    # If building a dist target only include dist targets.
+    #
+    ifeq ($(filter $(MAKECMDGOALS),dist $(DIST_TARGETS)),)
+        include $(call rwildcard,,*.mk)
+    else
+        include $(call rwildcard,cpp/src,*.mk)
+        include $(call rwildcard,python,*.mk)
+    endif
 
 install:: dist
 	$(E) "Installing IceE $(VERSION) to $(DESTDIR)$(prefix)"
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
-	$(Q)cp -rf $(libdir)/*.a $(DESTDIR)$(prefix)/lib/$(OBJ_PREFIX)
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/bin
-	$(Q)cp -rf $(bindir)/glacier2router $(DESTDIR)$(prefix)/bin/
-	$(Q)mkdir -p $(DESTDIR)$(prefix)/share/man/man1/
-	$(Q)cp -rf ice/man/man1/glacier2router.1 $(DESTDIR)$(prefix)/share/man/man1/
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_lib_dir)
+	$(Q)cp -rf $(icee_lib_dir)/*.a $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(icee_lib_dir)/*.so* $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/slice2cpp $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/slice2py $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/glacier2router $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/icebox $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/iceboxadmin $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/slice2cpp.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/slice2py.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/icebox.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/iceboxadmin.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)mkdir -p $(DESTDIR)$(python_install_dir)
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/*.py  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IcePy.so.$(VERSION)  $(DESTDIR)$(python_install_dir)/IcePy.so
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceBox  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
 
 endif
 
 all:: $(TARGETS)
 
-clean:: $(CLEAN_TARGETS)
+clean:: $(CLEAN_TARGETS) test_clean
+
+ifneq ($(USE_BIN_DIST),yes)
+    test_deploy: glacier2router icebox iceboxadmin IcePy
+endif
+
+.PHONY: test_deploy
+
+DEPLOYDIR                       := $(shell mktemp -d)
 
 test_deploy: test_compile test_resources
+	mkdir -p $(DEPLOYDIR)
+	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
+	mkdir -p $(DEPLOYDIR)/python/python
+	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
+	rm -rf $(DEPLOYDIR)
+	
 	rsync -aczv --prune-empty-dirs \
 		--exclude="*.d" \
 		--exclude="*.h" \
@@ -208,10 +295,26 @@ test_deploy: test_compile test_resources
 		--exclude=".git*" \
 		--exclude="Makefile" \
 		--exclude="README.md" \
+		--exclude="python" \
+		--exclude="mcpp" \
+		--exclude="*~" \
 		. $(DEPLOY_TARGET)
 
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
+	
+	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
+	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
+	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/* $(DEPLOY_TARGET)/python/python/
+	rsync -aczv --prune-empty-dirs \
+	      --exclude="*.pyc" \
+	      --exclude="Make*" \
+	      --exclude="*.d" \
+	      --exclude="test/Slice/import/Test/*" \
+	      --exclude="test/Slice/import/*_ice.py" \
+	      ice/python/test $(DEPLOY_TARGET)/python/
+	rsync -aczv --prune-empty-dirs --exclude="Make*" ice/slice $(DEPLOY_TARGET)/
+	rsync -aczv --prune-empty-dirs --exclude="Make*" --exclude="*.d" python/test/* $(DEPLOY_TARGET)/python/test/
 
 scripts: ice/scripts
 	@rm -rf scripts
@@ -222,7 +325,14 @@ certs: ice/certs
 	ln -s ice/certs certs
 
 all:: scripts certs
+
+info::
+	@echo "BUILD $(BUILD)"
+	@echo "HOST $(HOST)"
+
 #
 # Include depend rules
 #
-include $(CURDIR)/config/Make.depend.rules
+ifneq ($(MAKECMDGOALS),clean)
+    include $(CURDIR)/config/Make.depend.rules
+endif

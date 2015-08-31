@@ -7,10 +7,12 @@
 #
 # **********************************************************************
 
+LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
+
 include $(OBJECT_RULES)
 
-LOCAL_LIBNAME	= lib$(LOCAL_MODULE).a
-LOCAL_LIB 	= $(libdir)/$(LOCAL_LIBNAME)
+LOCAL_LIBNAME                   = lib$(LOCAL_MODULE).a
+LOCAL_LIB                       = $(icee_lib_dir)/$(LOCAL_LIBNAME)
 
 $(LOCAL_LIB): LOCAL_OBJS := $(LOCAL_OBJS)
 
@@ -19,13 +21,18 @@ $(LOCAL_LIB): $(LOCAL_OBJS)
 	$(E) Creating library: $(@F)
 	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
 
-.PHONY: $(LOCAL_MODULE)
+$(LOCAL_MODULE)_staticlib: LOCAL_LIB := $(LOCAL_LIB)
 
-$(LOCAL_MODULE): LOCAL_LIB := $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib: $(LOCAL_LIB)
 
-$(LOCAL_MODULE): $(LOCAL_LIB)
+$(LOCAL_MODULE)_non-pic_clean: LOCAL_LIB := $(LOCAL_LIB)
 
-$(LOCAL_MODULE)_clean::
+
+$(LOCAL_MODULE)_staticlib_clean: LOCAL_LIB := $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib_clean:
 	$(Q)rm -rf $(LOCAL_LIB)
 
+CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
+
 TARGETS := $(TARGETS) $(LOCAL_LIB)
+

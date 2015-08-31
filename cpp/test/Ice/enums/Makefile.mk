@@ -8,7 +8,5 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/enums
-
+LOCAL_PATH                      = cpp/test/Ice/enums
 include $(CLIENTSERVERTEST_RULES)

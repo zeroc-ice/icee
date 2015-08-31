@@ -8,9 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/invoke
-SERVER_SRCS	= Server.cpp \
-		  BlobjectI.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/invoke
+SERVER_SRCS                     = Server.cpp \
+                                  BlobjectI.cpp
 include $(CLIENTSERVERTEST_RULES)

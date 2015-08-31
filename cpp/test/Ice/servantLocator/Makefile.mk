@@ -8,12 +8,8 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH		= cpp/test/Ice/servantLocator
-
-TEST_TARGET_EXT		= colloc serveramd
-
-TEST_SRCS_EXT		= ServantLocatorI.cpp
-CLIENT_SRCS_EXCLUDE	= $(TEST_SRCS_EXT)
-
+LOCAL_PATH                      = cpp/test/Ice/servantLocator
+TEST_TARGET_EXT                 = colloc serveramd
+TEST_SRCS_EXT                   = ServantLocatorI.cpp
+CLIENT_SRCS_EXCLUDE             = $(TEST_SRCS_EXT)
 include $(CLIENTSERVERTEST_RULES)

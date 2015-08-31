@@ -8,12 +8,9 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE		= client
-LOCAL_PATH		= cpp/test/Ice/stream
-LOCAL_SLICES		= Test.ice
-LOCAL_SRCS      	= Client.cpp
-
-LOCAL_SLICE2CPPFLAGS	= --stream
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/stream
+LOCAL_SLICES                    = Test.ice
+LOCAL_SRCS                      = Client.cpp
+LOCAL_SLICE2CPPFLAGS            = --stream
 include $(TEST_APPLICATION_RULES)

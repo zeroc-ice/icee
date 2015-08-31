@@ -8,33 +8,26 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client1
-LOCAL_PATH	= cpp/test/Ice/logger
-LOCAL_SRCS	= Client1.cpp
-LOCAL_RESOURCES	= config.client
+LOCAL_EXE                       = client1
+LOCAL_PATH                      = cpp/test/Ice/logger
+LOCAL_SRCS                      = Client1.cpp
+LOCAL_RESOURCES                 = config.client
 include $(TEST_APPLICATION_RULES)
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client2
-LOCAL_PATH	= cpp/test/Ice/logger
-LOCAL_SRCS	= Client2.cpp
-
+LOCAL_EXE                       = client2
+LOCAL_PATH                      = cpp/test/Ice/logger
+LOCAL_SRCS                      = Client2.cpp
 include $(TEST_APPLICATION_RULES)
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client3
-LOCAL_PATH	= cpp/test/Ice/logger
-LOCAL_SRCS	= Client3.cpp
-
+LOCAL_EXE                       = client3
+LOCAL_PATH                      = cpp/test/Ice/logger
+LOCAL_SRCS                      = Client3.cpp
 include $(TEST_APPLICATION_RULES)
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client4
-LOCAL_PATH	= cpp/test/Ice/logger
-LOCAL_SRCS	= Client4.cpp
-
+LOCAL_EXE                       = client4
+LOCAL_PATH                      = cpp/test/Ice/logger
+LOCAL_SRCS                      = Client4.cpp
 include $(TEST_APPLICATION_RULES)

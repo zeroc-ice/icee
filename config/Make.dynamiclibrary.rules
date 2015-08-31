@@ -1,0 +1,76 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+LOCAL_OBJPREFIX                 = $(OBJPREFIX)/pic
+LOCAL_CPPFLAGS                  := -fPIC $(LOCAL_CPPFLAGS)
+
+include $(OBJECT_RULES)
+
+ifeq ($(LOCAL_DYLIBNAME),)
+    LOCAL_DYLIBNAME             = lib$(LOCAL_MODULE).so
+endif
+
+ifeq ($(LOCAL_DYLIBSONAME),)
+    LOCAL_DYLIBSONAME           = lib$(LOCAL_MODULE).so.$(SOVERSION)
+endif
+
+ifeq ($(LOCAL_DYLIBFILENAME),)
+    LOCAL_DYLIBFILENAME         = lib$(LOCAL_MODULE).so.$(VERSION)
+endif
+
+ifeq ($(LOCAL_LIBDIR),)
+    LOCAL_LIBDIR                = $(icee_lib_dir)
+endif
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME): LOCAL_DYLIBSONAME := $(LOCAL_DYLIBSONAME)
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME): $(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME)
+	@mkdir -p $(@D)
+	@rm -f $@
+	$(Q)ln -s $(LOCAL_DYLIBSONAME) $@
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME): LOCAL_DYLIBFILENAME := $(LOCAL_DYLIBFILENAME)
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME): $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME)
+	@mkdir -p $(@D)
+	@rm -f $@
+	$(Q)ln -s $(LOCAL_DYLIBFILENAME) $@
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME): LOCAL_OBJS := $(LOCAL_OBJS)
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME): LOCAL_TARGET := $(LOCAL_TARGET)
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME): LOCAL_DYLIBSONAME := $(LOCAL_DYLIBSONAME)
+
+
+LOCAL_TARGET = $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME)
+
+include $(LINK_RULES)
+
+$(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME): $(LOCAL_OBJS)
+	@mkdir -p $(@D)
+	$(E) Creating library: $(@F)
+	$(Q)$(CXX) -shared $(LOCAL_LDFLAGS) $(LDFLAGS) -o $@ -Wl,-h,$(LOCAL_DYLIBSONAME) $(LOCAL_OBJS) $(LOCAL_MY_LINKWITH) $(LOCAL_LINKWITH) $(LINKWITH)
+
+$(LOCAL_MODULE)_dynamiclib: LOCAL_DYLIBNAME := $(LOCAL_DYLIBNAME)
+
+$(LOCAL_MODULE)_dynamiclib: $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME)
+
+.PHONY: $(LOCAL_MODULE)
+
+$(LOCAL_MODULE): $(LOCAL_MODULE)_dynamiclib
+
+$(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBNAME := $(LOCAL_DYLIBNAME)
+$(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBSONAME := $(LOCAL_DYLIBSONAME)
+$(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBFILENAME := $(LOCAL_DYLIBFILENAME)
+
+$(LOCAL_MODULE)_dynamiclib_clean::
+	$(Q)rm -rf $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME)
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_dynamiclib_clean
+
+TARGETS := $(TARGETS) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME)

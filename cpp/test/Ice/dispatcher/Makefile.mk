@@ -8,8 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/dispatcher
-TEST_TARGET_EXT	= colloc
-TEST_SRCS_EXT	= Dispatcher.cpp
+LOCAL_PATH                      = cpp/test/Ice/dispatcher
+TEST_TARGET_EXT                 = colloc
+TEST_SRCS_EXT                   = Dispatcher.cpp
 include $(CLIENTSERVERTEST_RULES)

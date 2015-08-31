@@ -9,18 +9,18 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_PATH	= cpp/test/Glacier2/router
+LOCAL_PATH                      = cpp/test/Glacier2/router
 
-CLIENT_SLICES	= Callback.ice
+CLIENT_SLICES                   = Callback.ice
 
-CLIENT_SRCS	= CallbackI.cpp \
-		  Client.cpp
+CLIENT_SRCS                     = CallbackI.cpp \
+                                  Client.cpp
 
-CLIENT_LINK_WITH = Glacier2
+CLIENT_DEPENDENT_MODULES        = Glacier2
 
-SERVER_SLICES	= Callback.ice
+SERVER_SLICES                   = Callback.ice
 
-SERVER_SRCS	= CallbackI.cpp \
-		  Server.cpp
+SERVER_SRCS                     = CallbackI.cpp \
+                                  Server.cpp
 
 include $(CLIENTSERVERTEST_RULES)

@@ -8,15 +8,10 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/services
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
-
-LOCAL_LINK_WITH	= Ice Glacier2 IceGrid IceStorm
-
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/services
+LOCAL_SLICES                    = Test.ice
+LOCAL_SRCS                      = Client.cpp \
+                                  AllTests.cpp
+LOCAL_DEPENDENT_MODULES         = IceStorm IceGrid Glacier2
 include $(TEST_APPLICATION_RULES)

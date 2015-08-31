@@ -9,19 +9,17 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_PATH	= cpp/test/Glacier2/sessionControl
+LOCAL_PATH                      = cpp/test/Glacier2/sessionControl
 
-CLIENT_SLICES	= Session.ice
+CLIENT_SLICES                   = Session.ice
 
-CLIENT_SRCS	= Client.cpp
+CLIENT_SRCS                     = Client.cpp
 
-CLIENT_LINK_WITH = Glacier2
+SERVER_SLICES                   = Session.ice
 
-SERVER_SLICES	= Session.ice
+SERVER_SRCS                     = SessionI.cpp \
+                                  Server.cpp
 
-SERVER_SRCS	= SessionI.cpp \
-		  Server.cpp
-
-SERVER_LINK_WITH = Glacier2
+TEST_DEPENDENT_MODULES          = Glacier2
 
 include $(CLIENTSERVERTEST_RULES)

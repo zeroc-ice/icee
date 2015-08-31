@@ -1,0 +1,41 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+ifneq ($(LOCAL_PUBLIC_HEADERS),)
+
+LOCAL_INSTALL_HEADERS := $(addprefix $(DESTDIR)$(ice_install_include_dir)/$(LOCAL_MODULE)/,$(notdir $(LOCAL_PUBLIC_HEADERS)))
+
+$(LOCAL_MODULE)_install_headers: LOCAL_MODULE := $(LOCAL_MODULE)
+$(LOCAL_MODULE)_install_headers: LOCAL_PUBLIC_HEADERS := $(LOCAL_PUBLIC_HEADERS)
+$(LOCAL_MODULE)_install_headers: LOCAL_INSTALL_HEADERS := $(LOCAL_INSTALL_HEADERS)
+
+$(LOCAL_MODULE)_install_headers:
+	$(E) Install header files for $(LOCAL_MODULE)
+	$(Q) mkdir -p $(DESTDIR)$(ice_install_include_dir)/$(LOCAL_MODULE)
+	$(Q) cp -f $(LOCAL_PUBLIC_HEADERS) $(DESTDIR)$(ice_install_include_dir)/$(LOCAL_MODULE)/
+
+install:: $(LOCAL_MODULE)_install_headers
+endif
+
+
+ifneq ($(LOCAL_PUBLIC_SLICES),)
+
+LOCAL_INSTALL_SLICES := $(addprefix $(DESTDIR)$(ice_install_slice_dir)/$(LOCAL_MODULE)/,$(notdir $(LOCAL_PUBLIC_SLICES)))
+
+$(LOCAL_MODULE)_install_slices: LOCAL_MODULE := $(LOCAL_MODULE)
+$(LOCAL_MODULE)_install_slices: LOCAL_PUBLIC_SLICES := $(LOCAL_PUBLIC_SLICES)
+$(LOCAL_MODULE)_install_slices: LOCAL_INSTALL_SLICES := $(LOCAL_INSTALL_SLICES)
+
+$(LOCAL_MODULE)_install_slices:
+	$(E) Install Slice files for $(LOCAL_MODULE)
+	$(Q) mkdir -p $(DESTDIR)$(ice_install_slice_dir)/$(LOCAL_MODULE)
+	$(Q) cp -f $(LOCAL_PUBLIC_SLICES) $(DESTDIR)$(ice_install_slice_dir)/$(LOCAL_MODULE)/
+
+install:: $(LOCAL_MODULE)_install_slices
+endif

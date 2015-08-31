@@ -93,6 +93,17 @@ installPackage "libbz2-dev_1.0.6-4_armhf.deb" \
 installPackage "zlib1g_1.2.7.dfsg-13_armhf.deb" \
     "http://ftp.us.debian.org/debian/pool/main/z/zlib/zlib1g_1.2.7.dfsg-13_armhf.deb"
 
+installPackage "libexpat1-dev_2.1.0-1+deb7u2_armhf.deb" \
+    "http://security.debian.org/debian-security/pool/updates/main/e/expat/libexpat1-dev_2.1.0-1+deb7u2_armhf.deb"
+    
+installPackage "libpython2.7_2.7.3-6+deb7u2_armhf.deb" \
+    "http://ftp.us.debian.org/debian/pool/main/p/python2.7/libpython2.7_2.7.3-6+deb7u2_armhf.deb"
+
+installPackage "python2.7-dev_2.7.3-6+deb7u2_armhf.deb" \
+    "http://ftp.us.debian.org/debian/pool/main/p/python2.7/python2.7-dev_2.7.3-6+deb7u2_armhf.deb"
+
+installPackage "python2.7-minimal_2.7.3-6+deb7u2_armhf.deb" \
+    "http://ftp.us.debian.org/debian/pool/main/p/python2.7/python2.7-minimal_2.7.3-6+deb7u2_armhf.deb"
 
 #
 # Fix libbz2 symlink

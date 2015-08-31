@@ -1,0 +1,35 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2015 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+ifneq ($(TARGET_PREFIX),)
+    #
+    # String trailing and leading - in TARGET_PREFIX
+    #
+    OBJPREFIX                   = $(subst $(eval) ,-,$(strip $(subst -, ,$(TARGET_PREFIX))))
+else
+    #
+    # For native builds TARGET_PREFIX is not set
+    #
+    OBJPREFIX                   = $(shel uname -m)-pokynative-linux
+endif
+
+icee_libsubdir                  = lib
+ice_install_lib_dir             ?= $(prefix)/lib
+
+ifneq ($(SDKTARGETSYSROOT),)
+    python_include_dir          = $(SDKTARGETSYSROOT)/usr/include/$(PYTHON_DIR)
+endif
+
+ifeq ($(prefix),$(base_prefix)/usr)
+    python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/site-packages
+else
+    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
+endif
+
+SLICE2PY                        = $(ice_bin_dir)/slice2py

@@ -8,11 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/adapterDeactivation
-
-TEST_TARGET_EXT	= colloc
-
-SERVER_SRCS_EXT	= ServantLocatorI.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/adapterDeactivation
+TEST_TARGET_EXT                 = colloc
+SERVER_SRCS_EXT                 = ServantLocatorI.cpp
 include $(CLIENTSERVERTEST_RULES)

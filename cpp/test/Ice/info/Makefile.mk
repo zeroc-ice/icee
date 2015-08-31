@@ -8,7 +8,7 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/info
-
+LOCAL_PATH                      = cpp/test/Ice/info
+TEST_DEPENDENT_MODULES          = IceSSL
+TEST_LINKWITH                   = -Wl,-Bdynamic -lssl
 include $(CLIENTSERVERTEST_RULES)

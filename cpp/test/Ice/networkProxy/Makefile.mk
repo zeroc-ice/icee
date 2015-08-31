@@ -8,8 +8,6 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/networkProxy
-SERVER_SRCS	= Server.cpp
-
+LOCAL_PATH                      = cpp/test/Ice/networkProxy
+SERVER_SRCS                     = Server.cpp
 include $(CLIENTSERVERTEST_RULES)

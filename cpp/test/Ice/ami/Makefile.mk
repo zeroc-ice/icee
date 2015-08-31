@@ -8,8 +8,6 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/ami
-TEST_TARGET_EXT	= colloc
-
+LOCAL_PATH                      = cpp/test/Ice/ami
+TEST_TARGET_EXT                 = colloc
 include $(CLIENTSERVERTEST_RULES)

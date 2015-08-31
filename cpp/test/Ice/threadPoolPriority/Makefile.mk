@@ -8,20 +8,13 @@
 # **********************************************************************
 
 include $(CLEAR_RULES)
-
-LOCAL_PATH	= cpp/test/Ice/threadPoolPriority
-
+LOCAL_PATH                      = cpp/test/Ice/threadPoolPriority
 include $(CLIENTSERVERTEST_RULES)
 
-
 include $(CLEAR_RULES)
-
-LOCAL_EXE	= servercustom
-LOCAL_PATH	= cpp/test/Ice/threadPoolPriority
-
-LOCAL_SLICES	= Test.ice
-
-LOCAL_SRCS      = ServerCustomThreadPool.cpp \
-		  TestI.cpp
-
+LOCAL_EXE                       = servercustom
+LOCAL_PATH                      = cpp/test/Ice/threadPoolPriority
+LOCAL_SLICES                    = Test.ice
+LOCAL_SRCS                      = ServerCustomThreadPool.cpp \
+                                  TestI.cpp
 include $(TEST_APPLICATION_RULES)

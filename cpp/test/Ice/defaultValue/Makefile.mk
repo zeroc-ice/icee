@@ -9,12 +9,12 @@
 
 include $(CLEAR_RULES)
 
-LOCAL_EXE	= client
-LOCAL_PATH	= cpp/test/Ice/defaultValue
+LOCAL_EXE                       = client
+LOCAL_PATH                      = cpp/test/Ice/defaultValue
 
-LOCAL_SLICES	= Test.ice
+LOCAL_SLICES                    = Test.ice
 
-LOCAL_SRCS      = Client.cpp \
-		  AllTests.cpp
+LOCAL_SRCS                      = Client.cpp \
+                                  AllTests.cpp
 
 include $(TEST_APPLICATION_RULES)
