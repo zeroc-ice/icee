@@ -54,7 +54,7 @@ NEW_DTAGS                       ?= no
 #
 # Default Mutex protocol: one of PrioNone or PrioInherit.
 #
-#DEFAULT_MUTEX_PROTOCOL ?= PrioNone
+#DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
 #
 # To build test suite against static libraries define BUILD_TESTSUITE

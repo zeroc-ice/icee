@@ -11,3 +11,5 @@ LOCAL_OBJS                      =
 include $(STATICLIBRARY_RULES)
 LOCAL_OBJS                      =
 include $(DYNAMICLIBRARY_RULES)
+
+$(LOCAL_MODULE): $(LOCAL_MODULE)_staticlib $(LOCAL_MODULE)_dynamiclib
