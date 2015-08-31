@@ -18,3 +18,5 @@ LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h
 
 include $(DYNAMICLIBRARY_RULES)
 include $(INSTALL_RULES)
+
+IceDiscovery: IceDiscovery_dynamiclib
