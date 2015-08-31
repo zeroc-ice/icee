@@ -19,7 +19,7 @@ Ice-E usage page for your target platform.
 
 ### Third-Party Libraries
 
-Ice-E depends on the `bzip2` and `openssl` libraries.
+Ice-E depends on the `python`, `bzip2` and `openssl` development libraries.
 
 #### Debian
 
@@ -30,7 +30,7 @@ the Debian 7.8 (Wheezy) repositories:
 
 #### Yocto
 
-Ensure the `bzip2` and `ssl` development packages are installed on your image.
+Ensure the `python`, `bzip2` and `ssl` development packages are installed on your image.
 If you are cross compiling they must be included in your SDK.
 
 ## Building Ice-E
