@@ -54,6 +54,7 @@ LOCAL_SRCS                      = $(filter-out $(LOCAL_SRCDIR)/DLLMain.cpp $(LOC
 ICE_CPPFLAGS                    = -Icpp/src/Ice
 
 LOCAL_OBJS                      = $(LIBRARY_OBJS)
+LOCAL_DEPENDENT_DYMODULES       = IceUtil
 
 LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h)
 LOCAL_PUBLIC_SLICES             = $(LOCAL_SLICES)

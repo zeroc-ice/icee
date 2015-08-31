@@ -63,9 +63,11 @@ PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 # Optimization flags
 #
 ifeq ($(OPTIMIZE),yes)
+    CFLAGS                      = -O2 -DNDEBUG -ffunction-sections -fdata-sections
     override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
     LDFLAGS                     = -Wl,--gc-sections
 else
+    CFLAGS                      = -g
     override CPPFLAGS           := $(CPPFLAGS) -g
     LDFLAGS                     =
 endif
@@ -113,6 +115,7 @@ else
     endif
 endif
 
+CFLAGS                          += -O -w
 override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
 LDFLAGS                         += -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
