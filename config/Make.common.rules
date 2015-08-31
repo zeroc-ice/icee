@@ -50,8 +50,10 @@ ifeq ($(DEFAULT_MUTEX_PROTOCOL),PrioInherit)
     override CPPFLAGS           += -DICE_PRIO_INHERIT
 endif
 
-ifeq ($(wildcard $(SLICE2CPP)),)
-    $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
+ifeq ($(filter $(MAKECMDGOALS),clean),)
+    ifeq ($(wildcard $(SLICE2CPP)),)
+        $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution $(SLICE2CPP))
+    endif
 endif
 
 PYTHON_BASEVERSION              ?= 2.7
