@@ -16,7 +16,7 @@ else
     #
     # For native builds TARGET_PREFIX is not set
     #
-    OBJPREFIX                   = $(shel uname -m)-pokynative-linux
+    OBJPREFIX                   = $(shell uname -m)-pokynative-linux
 endif
 
 icee_libsubdir                  = lib
