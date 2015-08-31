@@ -49,7 +49,7 @@ ifneq ($(HOST),$(BUILD))
 
     ifneq ($(THIRDPARTY_HOME),)
         override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
-        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
+        override LDFLAGS        += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
                                    -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(icee_libsubdir)
         python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
     endif
