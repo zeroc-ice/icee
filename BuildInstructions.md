@@ -84,7 +84,7 @@ target, and change to the deployment directory.
 
 ### Yocto Notes
 
-To run all the string converter test it is necessary that your image
+To run the string converter test it is necessary that your image
 contain the `glibc-utils` and `glibc-gconvs` packages.
 
 To run the glacier2 tests you need to manually install `pip` and
