@@ -160,11 +160,13 @@ GITIGNORE_DEFAULT               = certs \
                                   yocto \
                                   arm-linux-gnueabihf \
                                   x86_64-linux-gnu \
+                                  arm-poky-linux-gnueabi \
                                   *.so \
                                   *.so.* \
                                   *~ \
                                   cpp/**/run.py \
-                                  python/python**/
+                                  python/python2.7/ \
+                                  python/python3.4/
 
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \

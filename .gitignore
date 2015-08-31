@@ -7,11 +7,13 @@ debian
 yocto
 arm-linux-gnueabihf
 x86_64-linux-gnu
+arm-poky-linux-gnueabi
 *.so
 *.so.*
 *~
 cpp/**/run.py
 python/python2.7/
+python/python3.4/
 python/test/Slice/import/Test/**
 python/test/Slice/import/Test1_ice.py
 python/test/Slice/import/Test2_ice.py
