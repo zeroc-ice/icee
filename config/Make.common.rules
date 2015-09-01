@@ -109,9 +109,7 @@ ifneq ($(USE_BIN_DIST),yes)
     icee_bin_dir                = cpp/bin
     icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
-    ifneq ($(ICEE_HOME),/usr)
-        icee_lib_dir            = $(ICEE_HOME)/$(icee_libsubdir)
-    endif
+    icee_lib_dir                = $(ICEE_HOME)/$(icee_libsubdir)
 endif
 
 CFLAGS                          += -O -w
@@ -186,11 +184,13 @@ INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
 SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
+TEST_DYNAMICLIBRARY_RULES       = $(CURDIR)/config/Make.test.dynamiclibrary.rules
 CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
 LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
 STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
 DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
 PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
+RESOURCES_RULES                 = $(CURDIR)/config/Make.resources.rules
 ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 
 #
@@ -282,7 +282,7 @@ endif
 
 DEPLOYDIR                       := $(shell mktemp -d)
 
-test_deploy: test_compile test_resources
+test_deploy: test_compile
 	mkdir -p $(DEPLOYDIR)
 	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
 	mkdir -p $(DEPLOYDIR)/python/python

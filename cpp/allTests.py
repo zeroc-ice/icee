@@ -85,6 +85,15 @@ tests = [
     ("IceDiscovery/simple", ["service"]),
     ]
 
+if os.path.isfile(os.path.join("test", "Ice", "plugin", "plugins", "libTestPlugin.so")):
+    tests += [("Ice/plugin", ["core"])]
+
+if os.path.isfile(os.path.join("test", "IceBox", "admin", "libTestService.so")):
+    tests += [("IceBox/admin", ["core"])]
+    
+if os.path.isfile(os.path.join("test", "IceBox", "configuration", "libTestService.so")):
+    tests += [("IceBox/configuration", ["core"])]
+
 #
 # Run priority tests only if running as root on Unix.
 #

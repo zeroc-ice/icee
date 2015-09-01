@@ -10,19 +10,16 @@
 LOCAL_TESTDIR                   = ice/$(LOCAL_PATH)
 LOCAL_SLICEDIR                  = $(LOCAL_TESTDIR)
 LOCAL_SRCDIR                    = $(LOCAL_TESTDIR)
-LOCAL_BINDIR                    = $(LOCAL_PATH)
 
-LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
-LOCAL_MODULE                    = $(subst /,_,$(LOCAL_PATH))_$(LOCAL_EXE)
-
-ifeq ($(BUILD_TESTSUITE),static)
-    #
-    # Filter out modules that are bundled with Ice static module
-    #
-    LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery, $(LOCAL_DEPENDENT_MODULES))
-    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
-    LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lssl
+ifeq ($(LOCAL_LIBDIR),)
+    LOCAL_LIBDIR                = $(LOCAL_PATH)
 endif
+LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
+
+LOCAL_DYLIBNAME                 := lib$(LOCAL_MODULE).so
+LOCAL_DYLIBSONAME               := lib$(LOCAL_MODULE).so.$(SOVERSION)
+LOCAL_DYLIBFILENAME             := lib$(LOCAL_MODULE).so.$(VERSION)
+LOCAL_MODULE                    := $(subst /,_,$(LOCAL_PATH))_$(LOCAL_MODULE)
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_STRIP_DISABLED        = yes
@@ -43,15 +40,17 @@ endif
 LOCAL_CPPFLAGS                  := $(LOCAL_CPPFLAGS) -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
 LOCAL_SLICE2CPPFLAGS            := $(LOCAL_SLICE2CPPFLAGS) -I$(LOCAL_SLICEDIR)
 
-include $(APPLICATION_RULES)
+include $(DYNAMICLIBRARY_RULES)
 
 ifneq ($(wildcard $(LOCAL_TESTDIR)/run.py),)
-    $(LOCAL_BINDIR)/$(LOCAL_EXE): $(LOCAL_PATH)/run.py
+    $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME): $(LOCAL_PATH)/run.py
 endif
 
 .PHONY: test_compile test_clean $(LOCAL_MODULE)_clean
 
-test_compile: $(LOCAL_BINDIR)/$(LOCAL_EXE)
+test_compile: $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME)
 test_clean: $(LOCAL_MODULE)_clean
+
+$(LOCAL_MODULE)_clean:: $(LOCAL_MODULE)_dynamiclib_clean
 
 include $(RESOURCES_RULES)
