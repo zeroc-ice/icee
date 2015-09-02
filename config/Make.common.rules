@@ -7,6 +7,22 @@
 #
 # **********************************************************************
 
+#
+# Check if ICEE_TARGET_OS is correctly defined.
+#
+ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
+    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'. Review instructions in $(CURDIR)/Makefile)
+endif
+
+#
+# Check if DEPLOY_TARGET is set when using test_deploy.
+#
+ifeq ($(filter $(MAKECMDGOALS),test_deploy),test_deploy)
+    ifeq ($(wildcard $(DEPLOY_TARGET)),)
+        $(error You need to define DEPLOY_TARGET to use test_deploy. $(CURDIR)/Makefile)
+    endif
+endif
+
 .PHONY: all clean
 
 all::
@@ -99,10 +115,6 @@ endif
 #
 # Include the OS specific rules
 #
-ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
-    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'))
-endif
-
 include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)

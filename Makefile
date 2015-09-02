@@ -23,7 +23,7 @@ prefix                          ?= /opt/IceE-$(VERSION)
 # The target operating system for the build, supported values are 'yocto'
 # and 'debian'.
 #
-ICEE_TARGET_OS                  ?= debian
+#ICEE_TARGET_OS                 ?= debian
 
 #
 # If you want to build Ice-E using an Ice binary distribution
@@ -66,7 +66,7 @@ BUILD_TESTSUITE                 ?= static
 #
 # Target to deploy the test suite.
 #
-DEPLOY_TARGET                   ?= debian@192.168.7.2:/home/debian/icee
+#DEPLOY_TARGET                  ?= debian@192.168.7.2:/home/debian/icee
 
 
 ###############################################################################
