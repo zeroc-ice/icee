@@ -11,7 +11,7 @@
 # Check if ICEE_TARGET_OS is correctly defined.
 #
 ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
-    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'. Review instructions in $(CURDIR)/Makefile)
+    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'. See $(CURDIR)/Makefile).
 endif
 
 #
@@ -19,7 +19,7 @@ endif
 #
 ifeq ($(filter $(MAKECMDGOALS),test_deploy),test_deploy)
     ifeq ($(wildcard $(DEPLOY_TARGET)),)
-        $(error You need to define DEPLOY_TARGET to use test_deploy. $(CURDIR)/Makefile)
+        $(error You need to define DEPLOY_TARGET to use test_deploy. See $(CURDIR)/Makefile).
     endif
 endif
 
@@ -224,7 +224,7 @@ ifeq ($(USE_BIN_DIST),yes)
 
     include $(call rwildcard,cpp/test,*.mk)
     include $(call rwildcard,python/test,*.mk)
-     
+
 install::
 
 else
@@ -242,9 +242,9 @@ else
                    IceDiscovery \
                    Slice \
                    IcePy
-                   
+
     dist:: $(DIST_TARGETS)
-    
+
     #
     # If building a dist target only include dist targets.
     #
@@ -300,7 +300,7 @@ test_deploy: test_compile
 	mkdir -p $(DEPLOYDIR)/python/python
 	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
 	rm -rf $(DEPLOYDIR)
-	
+
 	rsync -aczv --prune-empty-dirs \
 		--exclude="*.d" \
 		--exclude="*.h" \
@@ -321,7 +321,7 @@ test_deploy: test_compile
 
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
-	
+
 	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
 	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
 	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/* $(DEPLOY_TARGET)/python/python/
