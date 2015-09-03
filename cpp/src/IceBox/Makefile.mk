@@ -38,7 +38,7 @@ LOCAL_MODULE                    = iceboxadmin
 LOCAL_PATH                      = cpp/src/IceBox
 LOCAL_DEPENDENT_DYMODULES       = IceBox Ice IceUtil
 LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)
-LOCAL_SRCS                      = $(LOCAL_SRCDIR)/Service.cpp $(LOCAL_SRCDIR)/ServiceManagerI.o
+LOCAL_SRCS                      = $(LOCAL_SRCDIR)/Admin.o
 LOCAL_CPPFLAGS                  = -I$(LOCAL_PATH) -fPIC
 LOCAL_LDFLAGS                   = -rdynamic
 include $(APPLICATION_RULES)
