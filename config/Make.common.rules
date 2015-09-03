@@ -18,8 +18,8 @@ endif
 # Check if DEPLOY_TARGET is set when using test_deploy.
 #
 ifeq ($(filter $(MAKECMDGOALS),test_deploy),test_deploy)
-    ifeq ($(wildcard $(DEPLOY_TARGET)),)
-        $(error You need to define DEPLOY_TARGET to use test_deploy. See $(CURDIR)/Makefile).
+    ifeq ($(DEPLOY_TARGET),)
+        $(error You need to define DEPLOY_TARGET to use test_deploy. See $(CURDIR)/Makefile $(CURDIR)/Makefile)
     endif
 endif
 
