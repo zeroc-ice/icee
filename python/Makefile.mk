@@ -89,4 +89,11 @@ IcePy: python/python$(PYTHON_BASEVERSION)/IceMX/__init__.py
 
 python/python$(PYTHON_BASEVERSION)/IceMX/__init__.py: $(METRICS_SLICES)
 	$(E) "Generating IceMX package index"
-	$(Q)$(SLICE2PY) --output-dir python/python$(PYTHON_BASEVERSION) --build-package --ice $(SLICE2PYFLAGS) $(METRICS_SLICES)
+	$(Q)$(SLICE2PY) --output-dir python/python$(PYTHON_BASEVERSION) --build-package --ice $(SLICE2PYFLAGS) --prefix Ice_ ice/slice/Ice/Metrics.ice
+	$(Q)$(SLICE2PY) --output-dir python/python$(PYTHON_BASEVERSION) --build-package --ice $(SLICE2PYFLAGS) --prefix Glacier2_ ice/slice/Glacier2/Metrics.ice
+	$(Q)$(SLICE2PY) --output-dir python/python$(PYTHON_BASEVERSION) --build-package --ice $(SLICE2PYFLAGS) --prefix IceStorm_ ice/slice/IceStorm/Metrics.ice
+
+IceMX_clean:
+	$(Q)rm -rf python/python$(PYTHON_BASEVERSION)/IceMX
+
+CLEAN_TARGETS := $(CLEAN_TARGETS) IceMX_clean
