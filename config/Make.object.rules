@@ -16,8 +16,19 @@ else
     LOCAL_OBJPREFIX             = $(OBJPREFIX)/pic
 endif
 
+ifneq ($(LOCAL_HEADERPATH),)
+    LOCAL_SLICEOUTPUTDIR        = $(LOCAL_HEADERPATH)
+    LOCAL_HEADERS               = $(wildcard ice/$(LOCAL_HEADERPATH)/*.h)
+else
+    LOCAL_SLICEOUTPUTDIR        = $(LOCAL_PATH)
+endif
+
 LOCAL_GEN_SRCS                  := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
-LOCAL_GEN_HEADERS               = $(LOCAL_GEN_SRCS:.cpp=.h)
+LOCAL_GEN_HEADERS               := $(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_SLICES:.ice=.h)))
+
+ifneq ($(LOCAL_HEADERS),)
+    LOCAL_HEADERS               := $(filter-out $(LOCAL_GEN_HEADERS),$(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_HEADERS))))
+endif
 
 LOCAL_SRCS := $(filter-out $(addprefix $(LOCAL_SRCDIR)/,$(notdir $(LOCAL_SLICES:.ice=.cpp))), $(LOCAL_SRCS))
 
@@ -25,7 +36,7 @@ LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notd
 	$(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_GEN_SRCS:.cpp=.o)))
 
 ifneq ($(LOCAL_C_SRCS),)
-LOCAL_OBJS := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_C_SRCS:.c=.o)))
+    LOCAL_OBJS                  := $(LOCAL_OBJS) $(addprefix $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/,$(notdir $(LOCAL_C_SRCS:.c=.o)))
 endif
 
 $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_MODULE := $(LOCAL_MODULE)
@@ -34,35 +45,40 @@ $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_OBJS := $(LOCAL_OBJS)
 $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
 $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_OBJPREFIX := $(LOCAL_OBJPREFIX)
 $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_TARGETPREFIX := $(LOCAL_TARGETPREFIX)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_HEADERS := $(LOCAL_HEADERS)
+$(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean: LOCAL_GEN_HEADERS := $(LOCAL_GEN_HEADERS)
 
-$(LOCAL_OBJS): LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
-$(LOCAL_OBJS): LOCAL_GEN_HEADERS := $(LOCAL_GEN_HEADERS)
 $(LOCAL_OBJS): LOCAL_PATH := $(LOCAL_PATH)
 $(LOCAL_OBJS): LOCAL_CFLAGS := $(LOCAL_CFLAGS)
 $(LOCAL_OBJS): LOCAL_CPPFLAGS := $(LOCAL_CPPFLAGS)
 $(LOCAL_OBJS): LOCAL_SRCDIR := $(LOCAL_SRCDIR)
-$(LOCAL_OBJS): LOCAL_SLICEDIR := $(LOCAL_SLICEDIR)
-$(LOCAL_OBJS): LOCAL_SLICES := $(LOCAL_SLICES)
 $(LOCAL_OBJS): LOCAL_OBJPREFIX := $(LOCAL_OBJPREFIX)
 
 $(LOCAL_GEN_HEADERS): LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_GEN_HEADERS): LOCAL_PATH := $(LOCAL_PATH)
 $(LOCAL_GEN_HEADERS): LOCAL_SLICEDIR := $(LOCAL_SLICEDIR)
-$(LOCAL_GEN_HEADERS): LOCAL_SLICES := $(LOCAL_SLICES)
 $(LOCAL_GEN_HEADERS): LOCAL_SLICE2CPPFLAGS := $(LOCAL_SLICE2CPPFLAGS)
+$(LOCAL_GEN_HEADERS): LOCAL_SLICEOUTPUTDIR := $(LOCAL_SLICEOUTPUTDIR)
 
 -include $(wildcard $(LOCAL_PATH).depend/*.d)
 -include $(wildcard $(LOCAL_PATH)$(LOCAL_OBJPREFIX)/.depend/*.d)
 
-
-$(LOCAL_PATH)/%.h: $(LOCAL_SLICEDIR)/%.ice
+$(LOCAL_SLICEOUTPUTDIR)/%.h:: $(LOCAL_SLICEDIR)/%.ice
 	@mkdir -p $(@D)/.depend
 	$(E) "Compiling $(<F) -> $(@F)"
 	$(Q)LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --output-dir $(@D) $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $<
+ifneq ($(LOCAL_SLICEOUTPUTDIR),$(LOCAL_PATH))
+	$(Q)mv $(@D)/$(basename $(@F)).cpp $(LOCAL_PATH)
+endif
 	@LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
-$(LOCAL_PATH)/%.cpp: $(LOCAL_PATH)/%.h
+$(LOCAL_PATH)/%.cpp: $(LOCAL_SLICEOUTPUTDIR)/%.h
 	
+
+cpp/%.h:: ice/cpp/%.h
+	@mkdir -p $(@D)
+	$(E) "Copying header $(@F)"
+	$(Q)cp $< $(@)
 
 $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/%.o: $(LOCAL_PATH)/%.cpp
 	@mkdir -p $(@D)/.depend
@@ -84,21 +100,27 @@ $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)/%.o: $(LOCAL_SRCDIR)/%.c
 
 $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean:
 	$(E) "Cleaning $(LOCAL_MODULE)"
-	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_OBJPREFIX) $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) $(LOCAL_PATH)/.depend
+	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_OBJPREFIX) $(LOCAL_GEN_SRCS) $(LOCAL_GEN_HEADERS) $(LOCAL_PATH)/.depend
+ifneq ($(LOCAL_HEADERS),)
+	$(Q)rm -rf $(LOCAL_HEADERS)
+endif
 
 
 ifneq ($(LOCAL_GEN_SRCS),)
 $(LOCAL_MODULE)_gitignore: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
+$(LOCAL_MODULE)_gitignore: LOCAL_GENHEADERS := $(LOCAL_GENHEADERS)
+$(LOCAL_MODULE)_gitignore: LOCAL_HEADERS := $(LOCAL_HEADERS)
 $(LOCAL_MODULE)_gitignore::
-	@for line in $(LOCAL_GEN_SRCS) $(LOCAL_GEN_SRCS:.cpp=.h) ; do \
+	@for line in $(LOCAL_GEN_SRCS) $(LOCAL_GENHEADERS) $(LOCAL_HEADERS) ; do \
         echo $$line ; \
     done
 gitignore:: $(LOCAL_MODULE)_gitignore
 endif
 
-ALL_OBJS	:= $(ALL_OBJS) $(LOCAL_OBJS)
-ALL_GEN_SRCS	:= $(ALL_GEN_SRCS) $(LOCAL_GEN_SRCS)
+ALL_OBJS                        := $(ALL_OBJS) $(LOCAL_OBJS)
+ALL_GEN_HEADERS                 := $(ALL_GEN_HEADERS) $(LOCAL_GEN_HEADERS)
+ALL_LOCAL_HEADERS               := $(ALL_LOCAL_HEADERS) $(LOCAL_HEADERS)
 
-TARGETS := $(TARGETS) $(LOCAL_GEN_SRCS) $(LOCAL_OBJS)
+TARGETS                         := $(TARGETS) $(LOCAL_GEN_SRCS) $(LOCAL_OBJS)
 
-CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean
+CLEAN_TARGETS                   := $(CLEAN_TARGETS) $(LOCAL_MODULE)$(LOCAL_TARGETPREFIX)_clean

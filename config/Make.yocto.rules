@@ -9,7 +9,7 @@
 
 ifneq ($(TARGET_PREFIX),)
     #
-    # String trailing and leading - in TARGET_PREFIX
+    # Strip trailing and leading dash (-) in TARGET_PREFIX
     #
     OBJPREFIX                   = $(subst $(eval) ,-,$(strip $(subst -, ,$(TARGET_PREFIX))))
 else
@@ -29,7 +29,7 @@ endif
 ifeq ($(prefix),$(base_prefix)/usr)
     python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/site-packages
 else
-    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
+    python_install_dir          ?= $(prefix)/python
 endif
 
 SLICE2PY                        = $(ice_bin_dir)/slice2py

@@ -46,7 +46,7 @@ ifeq ($(USE_BIN_DIST),yes)
 endif
 
 ice_slice_dir                   = ice/slice
-ice_include_dir                 = ice/cpp/include
+ice_include_dir                 = cpp/include
 ice_man_dir                     = ice/man/man1
 
 ifeq ($(ICE_HOME),)
@@ -125,7 +125,7 @@ else
 endif
 
 CFLAGS                          += -O -w
-override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+override CPPFLAGS               := -Wall -Werror -pthread -Iice/cpp/src $(CPPFLAGS)
 override LDFLAGS                += -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
@@ -192,7 +192,6 @@ gitignore::
 CLEAR_RULES                     = $(CURDIR)/config/Make.clear.rules
 OBJECT_RULES                    = $(CURDIR)/config/Make.object.rules
 LINK_RULES                      = $(CURDIR)/config/Make.link.rules
-INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
 SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
@@ -228,19 +227,13 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
+    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm IceDiscovery IceLocatorDiscovery Slice
     DIST_TARGETS = slice2cpp \
                    slice2py \
                    glacier2router \
                    icebox \
                    iceboxadmin \
-                   IceUtil \
-                   Ice \
-                   Glacier2 \
-                   IceBox \
-                   IceGrid \
-                   IceStorm \
-                   IceDiscovery \
-                   Slice \
+                   $(DIST_MODULES) \
                    IcePy
 
     dist:: $(DIST_TARGETS)
@@ -248,7 +241,7 @@ else
     #
     # If building a dist target only include dist targets.
     #
-    ifeq ($(filter $(MAKECMDGOALS),dist $(DIST_TARGETS)),)
+    ifeq ($(filter $(MAKECMDGOALS),install dist $(DIST_TARGETS)),)
         include $(call rwildcard,,*.mk)
     else
         include $(call rwildcard,cpp/src,*.mk)
@@ -279,7 +272,16 @@ install:: dist
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
-
+	@for module in $(filter-out IceUtil Slice,$(DIST_MODULES)) ; \
+	do \
+		mkdir -p $(DESTDIR)$(ice_install_slice_dir)/$$module ; \
+		cp ice/slice/$$module/*.ice $(DESTDIR)$(ice_install_slice_dir)/$$module/ ; \
+	done ;
+	@for module in $(DIST_MODULES) ; \
+	do \
+		mkdir -p $(DESTDIR)$(ice_install_include_dir)/$$module ; \
+		cp cpp/include/$$module/*.h $(DESTDIR)$(ice_install_include_dir)/$$module/ ; \
+	done ;
 endif
 
 all:: $(TARGETS)

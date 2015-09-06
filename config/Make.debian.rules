@@ -64,7 +64,7 @@ endif
 ifeq ($(prefix),/usr)
     python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/dist-packages
 else
-    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
+    python_install_dir          ?= $(prefix)/python
 endif
 
 ice_install_lib_dir = $(prefix)/lib/$(HOST)

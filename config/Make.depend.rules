@@ -14,4 +14,4 @@
 #
 ALL_OBJS_NOEXIST                = $(filter-out $(wildcard  $(ALL_OBJS)), $(ALL_OBJS))
 
-$(ALL_OBJS_NOEXIST): $(ALL_GEN_SRCS)
+$(ALL_OBJS_NOEXIST): $(ALL_GEN_SRCS) $(ALL_GEN_HEADERS) $(ALL_LOCAL_HEADERS) 

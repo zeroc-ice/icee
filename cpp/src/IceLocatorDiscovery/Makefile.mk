@@ -12,9 +12,8 @@ LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 
 LOCAL_SLICEDIR                  = ice/slice/$(LOCAL_MODULE)
 LOCAL_SLICES                    = $(wildcard $(LOCAL_SLICEDIR)/*.ice)
-LOCAL_SLICE2CPPFLAGS            = --ice
+LOCAL_SLICE2CPPFLAGS            = --ice --include-dir IceLocatorDiscovery
 LOCAL_DEPENDENT_DYMODULES       = Ice IceUtil
-LOCAL_PUBLIC_HEADERS            = $(wildcard ice/cpp/include/$(LOCAL_MODULE)/*.h)
+LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
 include $(DYNAMICLIBRARY_RULES)
-include $(INSTALL_RULES)
