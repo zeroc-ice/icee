@@ -323,10 +323,13 @@ test_deploy: test_compile
 
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
-
+ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
+endif
 	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
-	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/* $(DEPLOY_TARGET)/python/python/
+ifneq ($(USE_BIN_DIST),yes)
+	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
+endif
 	rsync -aczv --prune-empty-dirs \
 	      --exclude="*.pyc" \
 	      --exclude="Make*" \
