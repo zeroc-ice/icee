@@ -60,7 +60,6 @@ endif
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
 SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
 SLICE2PYFLAGS                   = -I$(ice_slice_dir)
-override CPPFLAGS               += -I$(ice_include_dir)
 
 ifeq ($(DEFAULT_MUTEX_PROTOCOL),PrioInherit)
     override CPPFLAGS           += -DICE_PRIO_INHERIT
@@ -106,13 +105,6 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
 endif
 
 #
-# If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
-#
-ifneq ($(ICE_HOME),/usr)
-    export LD_LIBRARY_PATH := $(ice_libdir):$(LD_LIBRARY_PATH)
-endif
-
-#
 # Include the OS specific rules
 #
 include config/Make.$(ICEE_TARGET_OS).rules
@@ -125,7 +117,7 @@ else
 endif
 
 CFLAGS                          += -O -w
-override CPPFLAGS               := -Wall -Werror -pthread -Iice/cpp/src $(CPPFLAGS)
+override CPPFLAGS               := -Wall -Werror -pthread -I$(ice_include_dir) -Icpp/src -Iice/cpp/src $(CPPFLAGS)
 override LDFLAGS                += -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 

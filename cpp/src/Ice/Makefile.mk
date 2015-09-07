@@ -52,9 +52,6 @@ LOCAL_OBJS                      = $(LIBRARY_OBJS)
 LOCAL_DEPENDENT_DYMODULES       = IceUtil
 
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
-
-LOCAL_CPPFLAGS                  = $(ICE_CPPFLAGS)
 include $(STATICLIBRARY_RULES)
-LOCAL_OBJS                      = 
-LOCAL_CPPFLAGS                  = $(ICE_CPPFLAGS)
+LOCAL_OBJS                      =
 include $(DYNAMICLIBRARY_RULES)

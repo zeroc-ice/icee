@@ -8,7 +8,6 @@ LOCAL_PATH                      = cpp/src/$(LOCAL_MODULE)
 LOCAL_DEPENDENT_MODULES         = mcpp
 LOCAL_SRCDIR                    = ice/cpp/src/$(LOCAL_MODULE)
 LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
-LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 LOCAL_OBJS                      = $(LIBRARY_OBJS)
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 LOCAL_DEPENDENT_DYMODULES       = IceUtil

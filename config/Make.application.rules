@@ -32,7 +32,7 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
     else
         LOCAL_RPATH             := $(RPATH_DIR)
     endif
-    
+
     #
     # Clear the rpath dir when doing a system install.
     #
@@ -43,7 +43,7 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
     #
     # Clear the rpath dir when building agains system install.
     #
-    ifeq ($(ICE_HOME),$(base_prefix)/usr)
+    ifeq ($(ICEE_HOME),$(base_prefix)/usr)
         LOCAL_RPATH             =
     endif
 endif

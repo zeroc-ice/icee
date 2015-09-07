@@ -25,7 +25,7 @@ icee_libsubdir                  = lib/$(HOST)
 #
 ifneq ($(HOST),$(BUILD))
     TARGET_DIST                 ?= wheezy
-    
+
     ifeq ($(filter $(TARGET_DIST),wheezy trusty vivid),)
         $(error Invalid TARGET_DIST: `$(TARGET_DIST)' supported values are: `wheezy', `trusty' and `vivid'))
     endif

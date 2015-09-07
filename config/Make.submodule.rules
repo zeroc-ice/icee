@@ -15,7 +15,6 @@ LOCAL_SLICES                    = $(wildcard $(LOCAL_SLICEDIR)/*.ice)
 
 LOCAL_SRCDIR                    = ice/cpp/src/$(LOCAL_MODULE)
 LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
-LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 LOCAL_SLICE2CPPFLAGS            := $(LOCAL_SLICE2CPPFLAGS) --ice --include-dir $(LOCAL_MODULE)
 

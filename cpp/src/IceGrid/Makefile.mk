@@ -12,7 +12,6 @@ LOCAL_SLICE2CPPFLAGS            = --ice --include-dir IceGrid --dll-export ICE_G
 
 LOCAL_SRCDIR                    = ice/cpp/src/$(LOCAL_MODULE)Lib
 LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
-LOCAL_CPPFLAGS                  = -Icpp/src/$(LOCAL_MODULE)
 LOCAL_DEPENDENT_DYMODULES       = Glacier2 Ice IceUtil
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
