@@ -321,6 +321,9 @@ endif
 	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
 ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
+else
+	# Necessary so that the tests can find the top level python directory
+	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python
 endif
 	rsync -aczv --prune-empty-dirs \
 	      --exclude="*.pyc" \
