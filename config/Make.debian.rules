@@ -25,7 +25,7 @@ icee_libsubdir                  = lib/$(HOST)
 #
 ifneq ($(HOST),$(BUILD))
     TARGET_DIST                 ?= wheezy
-    
+
     ifeq ($(filter $(TARGET_DIST),wheezy trusty vivid),)
         $(error Invalid TARGET_DIST: `$(TARGET_DIST)' supported values are: `wheezy', `trusty' and `vivid'))
     endif
@@ -49,7 +49,7 @@ ifneq ($(HOST),$(BUILD))
 
     ifneq ($(THIRDPARTY_HOME),)
         override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
-        LDFLAGS                 += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
+        override LDFLAGS        += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
                                    -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(icee_libsubdir)
         python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
     endif
@@ -64,7 +64,7 @@ endif
 ifeq ($(prefix),/usr)
     python_install_dir          ?= $(prefix)/lib/$(PYTHON_DIR)/dist-packages
 else
-    python_install_dir          ?= $(prefix)/$(PYTHON_DIR)/
+    python_install_dir          ?= $(prefix)/python
 endif
 
 ice_install_lib_dir = $(prefix)/lib/$(HOST)

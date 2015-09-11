@@ -23,7 +23,7 @@ prefix                          ?= /opt/IceE-$(VERSION)
 # The target operating system for the build, supported values are 'yocto'
 # and 'debian'.
 #
-ICEE_TARGET_OS                  ?= debian
+#ICEE_TARGET_OS                 ?= debian
 
 #
 # If you want to build Ice-E using an Ice binary distribution
@@ -47,12 +47,12 @@ EMBEDDED_RUNPATH                ?= yes
 #
 # Define NEW_DTAGS as yes if you want the linker to enable the new style
 # dtags, this will cause the linker to add a runpath entry instead of
-# a rpath entry. This only aplly to gcc builds on linux
+# a rpath entry. This only applies to gcc builds on Linux.
 #
 NEW_DTAGS                       ?= no
 
 #
-# Default Mutex protocol: one of PrioNone or PrioInherit.
+# Default mutex protocol, one of 'PrioNone' or 'PrioInherit'.
 #
 #DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
@@ -66,7 +66,7 @@ BUILD_TESTSUITE                 ?= static
 #
 # Target to deploy the test suite.
 #
-DEPLOY_TARGET                   ?= debian@192.168.7.2:/home/debian/icee
+#DEPLOY_TARGET                  ?= debian@192.168.7.2:/home/debian/icee
 
 
 ###############################################################################
@@ -76,25 +76,25 @@ DEPLOY_TARGET                   ?= debian@192.168.7.2:/home/debian/icee
 ###############################################################################
 
 #
-# Target distribution supported values are 'wheezy' 'trusty' and 'vivid'
+# Target distribution supported values are 'wheezy' 'trusty' and 'vivid'.
 #
 TARGET_DIST                     ?= wheezy
 
 # Debian arch tuple of the host machine. Supported values are
-# arm-linux-gnueabihf and x86_64-linux-gnu.
+# 'arm-linux-gnueabihf' and 'x86_64-linux-gnu'.
 #
-# Set it to arm-linux-gnueabihf if you are cross-compiling for
+# Set it to 'arm-linux-gnueabihf' if you are cross-compiling for
 # armhf.
 #
 HOST                            ?= arm-linux-gnueabihf
 
 #
-# If cross-compiling for debian , set this to the root directory
-# of your cross development third party libraries.
+# Set this to the root directory of your cross development third party
+# libraries.
 #
 THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
 
 #
-# Include common definitions
+# Include common definitions.
 #
 include $(CURDIR)/config/Make.common.rules

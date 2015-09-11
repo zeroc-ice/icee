@@ -67,7 +67,7 @@ ifneq ($(LOCAL_PACKAGE),)
 	$(Q)rm -rf $(LOCAL_PATH)/$(LOCAL_PACKAGE)
 endif
 
-CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_clean
+CLEAN_TARGETS                   := $(CLEAN_TARGETS) $(LOCAL_MODULE)_clean
 
 ifneq ($(LOCAL_GEN_SRCS),)
 $(LOCAL_MODULE)_gitignore: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)

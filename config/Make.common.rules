@@ -7,6 +7,22 @@
 #
 # **********************************************************************
 
+#
+# Check if ICEE_TARGET_OS is correctly defined.
+#
+ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
+    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'. See $(CURDIR)/Makefile).
+endif
+
+#
+# Check if DEPLOY_TARGET is set when using test_deploy.
+#
+ifeq ($(filter $(MAKECMDGOALS),test_deploy),test_deploy)
+    ifeq ($(DEPLOY_TARGET),)
+        $(error You need to define DEPLOY_TARGET to use test_deploy. See $(CURDIR)/Makefile $(CURDIR)/Makefile)
+    endif
+endif
+
 .PHONY: all clean
 
 all::
@@ -30,7 +46,7 @@ ifeq ($(USE_BIN_DIST),yes)
 endif
 
 ice_slice_dir                   = ice/slice
-ice_include_dir                 = ice/cpp/include
+ice_include_dir                 = cpp/include
 ice_man_dir                     = ice/man/man1
 
 ifeq ($(ICE_HOME),)
@@ -44,14 +60,15 @@ endif
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
 SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
 SLICE2PYFLAGS                   = -I$(ice_slice_dir)
-override CPPFLAGS               += -I$(ice_include_dir)
 
 ifeq ($(DEFAULT_MUTEX_PROTOCOL),PrioInherit)
     override CPPFLAGS           += -DICE_PRIO_INHERIT
 endif
 
-ifeq ($(wildcard $(SLICE2CPP)),)
-    $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
+ifeq ($(filter $(MAKECMDGOALS),clean),)
+    ifeq ($(wildcard $(SLICE2CPP)),)
+        $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution $(SLICE2CPP))
+    endif
 endif
 
 PYTHON_BASEVERSION              ?= 2.7
@@ -61,11 +78,12 @@ PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 # Optimization flags
 #
 ifeq ($(OPTIMIZE),yes)
+    CFLAGS                      = -O2 -DNDEBUG -ffunction-sections -fdata-sections
     override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
-    LDFLAGS                     = -Wl,--gc-sections
+    override LDFLAGS            += -Wl,--gc-sections
 else
+    CFLAGS                      = -g
     override CPPFLAGS           := $(CPPFLAGS) -g
-    LDFLAGS                     =
 endif
 
 ifeq ($(EMBEDDED_RUNPATH),yes)
@@ -87,32 +105,20 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
 endif
 
 #
-# If not using a system install set LD_LIBRARY_PATH to run slice2cpp compiler.
-#
-ifneq ($(ICE_HOME),/usr)
-    export LD_LIBRARY_PATH := $(ice_libdir):$(LD_LIBRARY_PATH)
-endif
-
-#
 # Include the OS specific rules
 #
-ifeq ($(filter $(ICEE_TARGET_OS),debian yocto),)
-    $(error Invalid ICEE_TARGET_OS: '$(ICEE_TARGET_OS)' supported values are: 'debian' and 'yocto'))
-endif
-
 include config/Make.$(ICEE_TARGET_OS).rules
 
 ifneq ($(USE_BIN_DIST),yes)
     icee_bin_dir                = cpp/bin
     icee_lib_dir                = cpp/lib/$(OBJPREFIX)
 else
-    ifneq ($(ICEE_HOME),/usr)
-        icee_lib_dir            = $(ICEE_HOME)/$(icee_libsubdir)
-    endif
+    icee_lib_dir                = $(ICEE_HOME)/$(icee_libsubdir)
 endif
 
-override CPPFLAGS               := -Wall -Werror -pthread -Icpp/src -Iice/cpp/src $(CPPFLAGS)
-LDFLAGS                         += -pthread
+CFLAGS                          += -O -w
+override CPPFLAGS               := -Wall -Werror -pthread -I$(ice_include_dir) -Icpp/src -Iice/cpp/src $(CPPFLAGS)
+override LDFLAGS                += -pthread
 LINKWITH                        = -Wl,-Bdynamic -lbz2 -ldl -lrt -lcrypto
 
 
@@ -158,11 +164,13 @@ GITIGNORE_DEFAULT               = certs \
                                   yocto \
                                   arm-linux-gnueabihf \
                                   x86_64-linux-gnu \
+                                  arm-poky-linux-gnueabi \
                                   *.so \
                                   *.so.* \
                                   *~ \
                                   cpp/**/run.py \
-                                  python/python**/
+                                  python/python2.7/ \
+                                  python/python3.4/
 
 gitignore::
 	@for line in $(GITIGNORE_DEFAULT) ; do \
@@ -176,15 +184,16 @@ gitignore::
 CLEAR_RULES                     = $(CURDIR)/config/Make.clear.rules
 OBJECT_RULES                    = $(CURDIR)/config/Make.object.rules
 LINK_RULES                      = $(CURDIR)/config/Make.link.rules
-INSTALL_RULES                   = $(CURDIR)/config/Make.install.rules
 SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
+TEST_DYNAMICLIBRARY_RULES       = $(CURDIR)/config/Make.test.dynamiclibrary.rules
 CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
 LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
 STATICLIBRARY_RULES             = $(CURDIR)/config/Make.staticlibrary.rules
 DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
 PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
+RESOURCES_RULES                 = $(CURDIR)/config/Make.resources.rules
 ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 
 #
@@ -206,30 +215,25 @@ ifeq ($(USE_BIN_DIST),yes)
 
     include $(call rwildcard,cpp/test,*.mk)
     include $(call rwildcard,python/test,*.mk)
-     
+
 install::
 
 else
+    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm IceDiscovery IceLocatorDiscovery Slice
     DIST_TARGETS = slice2cpp \
                    slice2py \
                    glacier2router \
                    icebox \
                    iceboxadmin \
-                   IceUtil \
-                   Ice \
-                   Glacier2 \
-                   IceBox \
-                   IceGrid \
-                   IceStorm \
-                   Slice \
+                   $(DIST_MODULES) \
                    IcePy
-                   
+
     dist:: $(DIST_TARGETS)
-    
+
     #
     # If building a dist target only include dist targets.
     #
-    ifeq ($(filter $(MAKECMDGOALS),dist $(DIST_TARGETS)),)
+    ifeq ($(filter $(MAKECMDGOALS),install dist $(DIST_TARGETS)),)
         include $(call rwildcard,,*.mk)
     else
         include $(call rwildcard,cpp/src,*.mk)
@@ -260,7 +264,16 @@ install:: dist
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
-
+	@for module in $(filter-out IceUtil Slice,$(DIST_MODULES)) ; \
+	do \
+		mkdir -p $(DESTDIR)$(ice_install_slice_dir)/$$module ; \
+		cp ice/slice/$$module/*.ice $(DESTDIR)$(ice_install_slice_dir)/$$module/ ; \
+	done ;
+	@for module in $(DIST_MODULES) ; \
+	do \
+		mkdir -p $(DESTDIR)$(ice_install_include_dir)/$$module ; \
+		cp cpp/include/$$module/*.h $(DESTDIR)$(ice_install_include_dir)/$$module/ ; \
+	done ;
 endif
 
 all:: $(TARGETS)
@@ -275,13 +288,13 @@ endif
 
 DEPLOYDIR                       := $(shell mktemp -d)
 
-test_deploy: test_compile test_resources
+test_deploy: test_compile
 	mkdir -p $(DEPLOYDIR)
 	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
 	mkdir -p $(DEPLOYDIR)/python/python
 	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
 	rm -rf $(DEPLOYDIR)
-	
+
 	rsync -aczv --prune-empty-dirs \
 		--exclude="*.d" \
 		--exclude="*.h" \
@@ -302,10 +315,16 @@ test_deploy: test_compile test_resources
 
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
-	
+ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
+endif
 	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
-	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/* $(DEPLOY_TARGET)/python/python/
+ifneq ($(USE_BIN_DIST),yes)
+	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
+else
+	# Necessary so that the tests can find the top level python directory
+	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python
+endif
 	rsync -aczv --prune-empty-dirs \
 	      --exclude="*.pyc" \
 	      --exclude="Make*" \

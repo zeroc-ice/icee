@@ -7,7 +7,7 @@
 #
 # **********************************************************************
 
-TEST_LOCAL_PATH	:= $(LOCAL_PATH)
+TEST_LOCAL_PATH	                := $(LOCAL_PATH)
 
 #
 # Client test
@@ -223,7 +223,7 @@ ifneq ($(findstring colloc,$(TEST_TARGET_EXT)),)
     ifneq ($(TEST_DEPENDENT_MODULES),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
     endif
-    
+
     ifneq ($(COLLOC_LINKWITH),)
         LOCAL_LINKWITH              = $(COLLOC_LINKWITH)
     endif
@@ -296,7 +296,7 @@ ifneq ($(findstring serveramd,$(TEST_TARGET_EXT)),)
     ifneq ($(TEST_DEPENDENT_MODULES),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) $(TEST_DEPENDENT_MODULES)
     endif
-    
+
     ifneq ($(AMD_LINKWITH),)
         LOCAL_LINKWITH              = $(AMD_LINKWITH)
     endif

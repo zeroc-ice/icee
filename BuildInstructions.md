@@ -80,6 +80,7 @@ target, and change to the deployment directory.
 
     ssh user@192.168.7.2
     cd icee
+    python allTests.py
 
 
 ### Yocto Notes
