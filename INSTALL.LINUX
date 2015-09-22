@@ -1,0 +1,230 @@
+This archive contains the Ice-E source code for the C++ language
+mapping (in the cppe directory) as well as the C++ source code for the
+Slice-to-Embedded-C++ translators (in the cpp directory). The sections
+below provide installation instructions for Linux platforms.
+
+======================================================================
+Requirements
+======================================================================
+
+
+Operating System
+----------------
+
+Ice-E is expected to build and run properly on any recent Linux
+distribution for x86 and x86_64. However, Ice-E is officially
+supported only on:
+
+Development Platform           | Run-time Platform
+-------------------------------|--------------------------------------
+Red Hat Enterprise Linux       | Same as development
+5 update 2 (i386 and x86_64)   |
+                               | 
+Red Hat Enterprise Linux       | Gumstix Linux buildroot revision 1364
+5 update 2 (i386) with Gumstix |
+buildroot revision 1364        | 
+
+
+C++ compiler
+------------
+
+Ice-E is expected to build properly with GCC 3.3 or later. However,
+only the following compilers are officially supported:
+
+ - GCC 4.1.2 on RHEL 5.2
+ - GCC 4.1.1 ARM cross-compiler for Gumstix
+
+
+Slice-to-Embedded-C++ translator
+--------------------------------
+
+You will need the Slice-to-Embedded-C++ translator (slice2cppe). The
+distribution includes a binary (built on RHEL 5.2) for this compiler
+as well as the source code in case you want to build it yourself.
+
+
+mcpp
+----
+
+Building the mcpp library is only necessary if you want to build the
+Ice-E Slice compiler yourself.
+
+The Ice-E Slice compiler (slice2cppe) has a dependency on mcpp 2.7.2.
+
+If you intend to build mcpp from source, you can download the source
+and get more information about mcpp from:
+
+  http://mcpp.sourceforge.net
+
+Follow these instructions for building mcpp:
+
+- Untar the mcpp archive.
+
+- Change to the mcpp base directory:
+
+  $ cd mcpp-2.7.2
+
+- Run configure to enable a library build:
+
+  $ ./configure CFLAGS=-fPIC --enable-mcpplib --disable-shared
+  (and --prefix=<dir> if you like)
+
+- Build mcpp:
+
+  $ gmake
+
+
+======================================================================
+Compilation and Testing
+======================================================================
+
+Extract the Ice-E archive in any directory you like (for example, in
+your home directory):
+
+  $ tar xvfz IceE-1.3.0.tar.gz
+
+Change the working directory to IceE-1.3.0:
+
+  $ cd IceE-1.3.0
+
+Edit cppe/config/Make.rules to establish your build configuration and
+default set of features provided by the run-time libraries. The
+comments in the file provide more information. For more information on
+optional features see the "Configuration" section in the README file.
+
+Next, you must make the "configure" target:
+
+  $ make configure
+
+The purpose of the "configure" target is to generate the header file
+include/IceE/Features.h with preprocessor macros that correspond to
+your settings in Make.rules. You must perform this step after any
+change to the configuration settings in Make.rules.
+
+Now you're ready to build Ice-E:
+
+  $ make
+
+This will build the Ice-E library, tests and examples.
+
+Python is required to run the test suite:
+
+  http://www.python.org/download
+
+After a successful build, you can run the test suite:
+
+  $ make test
+
+This is equivalent to:
+
+  $ python cppe/allTests.py
+
+If everything worked out, you should see lots of "ok" messages. In
+case of a failure, the tests abort with "failed".
+
+If you want to try out any of the demos and you did not build Ice-E
+statically, make sure to update your LD_LIBRARY_PATH environment
+variable to add the "cppe/lib" directory:
+
+  $ export LD_LIBRARY_PATH=`pwd`/cppe/lib:$LD_LIBRARY_PATH
+
+
+Cross-compiling for Gumstix
+---------------------------
+
+To build Ice-E for the Gumstix embedded environment, you must first
+build the buildroot toolchain. Ice-E has been tested with revision
+1364 of buildroot. For information on how to obtain and build the
+toolchain, please see the following link from the Gumstix Support
+Wiki:
+
+  http://docwiki.gumstix.org/Buildroot
+
+Make sure to enable C++ support in the toolchain, as discussed at
+the link below:
+
+  http://docwiki.gumstix.org/Sample_code/Cpp/Hello_World
+
+Once you have the toolchain built, add the bin directory to your path
+by executing the following command:
+
+  $ export PATH=<Buildroot install dir>/build_arm_nofpu/staging_dir/bin:$PATH
+
+Now you must set the following environment variables:
+
+  $ export CXX=arm-linux-c++
+  $ export AR=arm-linux-ar
+
+Next, edit cppe/config/Make.rules and make sure that the GUMSTIX=yes
+line is uncommented.
+
+Finally, follow the regular Ice-E build steps as described above.
+
+If you have python installed on your gumstix, you can execute the
+allTests.py script to run the test suite. First you need to copy the
+compiled tests and test suite scripts to your gumstix. From the Ice-E
+source distribution base directory, run the following commands:
+
+  $ find . -name *.o | xargs rm
+  $ scp -r allTests.py config lib test <gumstix ipaddress>:<some directory>
+
+The first command removes the object files so you don't copy them as
+well. If you built Ice-E statically, there is no need to include "lib"
+in the above command.
+
+Finally, start the test suite by changing to your chosen installation
+directory and running:
+
+  $ python allTests.py
+
+If you do not have python then you can run most tests by manually
+running the server in one window followed by the client in a separate
+window.
+
+
+Building the Slice-to-Embedded-C++ translator
+---------------------------------------------
+
+If you want to re-build the Slice-to-Embedded-C++ translator, change
+the working directory to the IceE-1.3.0/cpp directory:
+
+  $ cd IceE-1.3.0/cpp
+
+Edit config/Make.rules to establish your build configuration. The
+comments in the file provide more information. Pay particular
+attention to the variables that define the locations of the third-
+party libraries.
+
+Now you're ready to build the Slice-to-Embedded-C++ translator:
+
+  $ make
+
+This will build the slice2cppe translator in the cpp/bin directory.
+
+
+======================================================================
+32 bit builds on x86_64
+======================================================================
+
+By default, builds on x86_64 are 64-bit. To perform a 32-bit build on
+an x86_64 Linux system, set the environment variable LP64 to no, as
+shown below:
+
+  $ export LP64=no
+
+
+======================================================================
+Installation
+======================================================================
+
+Simply run "make install". This will install Ice-E in the directory
+specified by the "prefix" variable in cppe/config/Make.rules.
+
+After installation, make sure the <prefix>/lib directory is in your
+LD_LIBRARY_PATH. When compiling Ice-E programs, you must also make
+sure to pass the location of the <prefix>/include directory to the
+compiler with the -I option, and the location of the <prefix>/lib
+directory with the -L option.
+
+On an x86_64 system, the libraries are installed in <prefix>/lib64
+unless LP64 is set to no. No other changes are necessary.

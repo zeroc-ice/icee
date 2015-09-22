@@ -1,0 +1,210 @@
+This archive contains the Ice-E source code for the C++ language
+mapping (in the cppe directory) as well as the C++ source code for the
+Slice-to-Embedded-C++ translators (in the cpp directory). The sections
+below provide installation instructions for Windows platforms.
+
+======================================================================
+Requirements
+======================================================================
+
+
+Windows version
+---------------
+
+Ice-E has been extensively tested on:
+
+- Windows XP x86
+- Windows Vista x86 and x64
+- Windows Mobile 6 Professional (ARMV4I)
+
+
+C++ compiler
+------------
+
+The following C++ compilers are supported:
+
+- Microsoft Visual C++ 2008 Professional
+
+- Microsoft Visual C++ 2005 SP1 Professional
+
+  Service Pack 1 is available for download from:
+
+  http://msdn2.microsoft.com/en-us/vstudio/bb265237.aspx
+
+
+Windows Mobile 6 Professional SDK
+---------------------------------
+
+Ice-E requires the Windows Mobile 6 Professional SDK to be
+installed. It can be obtained from:
+
+  http://www.microsoft.com/downloads/details.aspx?FamilyId=06111A3A-A651-4745-88EF-3D48091A390B&displaylang=en
+
+The SDK must be installed after you install the Visual C++ compiler.
+
+
+Slice-to-Embedded-C++ translator
+--------------------------------
+
+You will need the Slice-to-Embedded-C++ translator (slice2cppe). The
+distribution includes a binary for this compiler as well as the source
+code in case you want to build it yourself.
+
+
+mcpp
+----
+
+Building the mcpp library is only necessary if you want to build the
+Ice-E Slice compiler yourself.
+
+The Ice-E Slice compiler (slice2cppe) has a dependency on mcpp 2.7.2.
+
+If you want to build the slice2cppe translator yourself, you can avoid
+building mcpp from source code by downloading ZeroC's Third-Party
+Windows installer for Visual Studio 2005 or 2008 that contains release
+and debug mcpp libraries (patched 2.7.1 version).
+
+If you intend to build mcpp from source, you can download the source
+and get more information about mcpp from:
+
+  http://mcpp.sourceforge.net
+
+Follow these instructions for building mcpp:
+
+- Unzip the mcpp source archive.
+
+- Change to the mcpp src directory:
+
+  > cd mcpp-2.7.2\src
+
+- Apply the patch for noconfig.H appropriate for your compiler from
+  the noconfig directory. For example, for VS2005 you would run:
+
+  > patch -p0 < ..\noconfig\vc2005.dif
+
+- Build the mcpp release library:
+
+  > nmake MCPP_LIB=1 /f ..\noconfig\visualc.mak mcpplib
+
+  To build the debug version of the library:
+
+  > nmake MCPP_LIB=1 DEBUG=1 /f ..\noconfig\visualc.mak mcpplib
+
+
+======================================================================
+Compilation and Testing
+======================================================================
+
+Using your favorite Zip tool, unzip the Ice-E source archive anywhere
+you like.
+
+Open a "Visual Studio Command Prompt" for your compiler and change the
+working directory to IceE-1.3.0. For example:
+
+  > cd C:\IceE-1.3.0
+
+Edit cppe\config\Make.rules.mak to establish your build configuration
+and default set of features provided by the run-time libraries. The
+comments in the file provide more information. For example for Windows
+Mobile, you must ensure that WINDOWS_MOBILE_SDK is set properly. For
+more information on optional features see the "Configuration" section
+in the README file.
+
+Next, you must make the "configure" target:
+
+  > nmake /f Makefile.mak configure
+
+The purpose of the "configure" target is to generate the header file
+include/IceE/Features.h with preprocessor macros that correspond to
+your settings in Make.rules.mak. You must perform this step after any
+change to the configuration settings in Make.rules.mak.
+
+Now you're ready to build Ice-E:
+
+  > nmake /f Makefile.mak
+
+This will build the Ice-E library, tests and examples.
+
+Python is required to run the test suite on Windows:
+
+  http://www.python.org/download
+
+After a successful build, you can run the test suite:
+
+  > nmake /f Makefile.mak test
+
+This is equivalent to:
+
+  > python cppe/allTests.py
+
+If everything worked out, you should see lots of "ok" messages. In
+case of a failure, the tests abort with "failed".
+
+If you want to try out any of the demos and you did not build Ice-E
+statically, make sure to update your PATH environment variable to add
+the "cppe/bin" directory that contains the Ice-E DLLs.
+
+For Windows Mobile, you must manually run each test by copying the
+server and client for each test to your hardware and then running the
+server, followed by the client. Any failures will be reported.
+
+For the demos there are also Visual Studio project files provided
+which can also be used to compile the demos. The project solutions
+can be found at cppe/demo/demo.sln and cppe/demo/demo_CE.sln, for
+Windows and Windows Mobile respectively.
+
+
+Building the Slice-to-Embedded-C++ translator
+---------------------------------------------
+
+If you want to re-build the Slice-to-Embedded-C++ translator, change
+the working directory to the IceE-1.3.0\cpp directory:
+
+  > cd IceE-1.3.0\cpp
+
+Edit config\Make.rules.mak to establish your build configuration. The
+comments in the file provide more information. Pay particular
+attention to the variables that define the locations of the third-
+party libraries.
+
+Now you're ready to build the Slice-to-Embedded-C++ translator:
+
+  > nmake /f Makefile.mak
+
+This will build the slice2cppe translator in the cpp\bin directory.
+
+
+======================================================================
+x64 Platform
+======================================================================
+
+Building Ice-E on x64 with the Visual Studio 2005/2008 C++ compiler is
+like building Ice-E on x86. You just need need to perform the build in
+a "Visual Studio x64 Win64 Command Prompt", and not in a regular
+"Visual Studio 2005/2008 Command Prompt".
+
+You can also use the "Visual Studio x64 Cross Tools Command Prompt" if
+you set the following environment variable:
+
+> set XTARGET=x64
+
+Note that you must be using a Windows x64 platform when compiling a
+64-bit version of Ice-E.
+
+
+======================================================================
+Installation
+======================================================================
+
+Simply run "nmake /f Makefile.mak install". This will install Ice-E in
+the directory specified by the "prefix" variable in the
+cppe\config\Make.rules.mak file.
+
+After installation, if you plan to use the Visual Studio IDE for your
+Ice-E project, make sure to add the bin directory to the Visual C++
+"Executable files", the include directory to the "Include files" and
+the lib directory to the "Library files" in the IDE
+(Tools->Options->Projects and Solutions->VC++ Directories).
+
+If you built Ice-E on x64, the binaries are installed in the bin\x64
+directory and the libraries are installed in the lib\x64 directory.

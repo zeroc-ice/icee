@@ -1,0 +1,13 @@
+This demo shows how to use classes, class factories, and the
+difference between local and remote invocations of class operations.
+Ice-E must be built with OBV support.
+
+To run the demo, first start the server:
+
+$ cd server
+$ server
+
+In a separate window, start the client:
+
+$ cd client
+$ client

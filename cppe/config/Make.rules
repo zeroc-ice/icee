@@ -1,0 +1,276 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2008 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice-E is licensed to you under the terms described in the
+# ICEE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+#
+# Select an installation base directory. The directory will be created
+# if it does not exist.
+#
+
+prefix			= /opt/IceE-$(VERSION)
+
+#
+# Define OPTIMIZE_SIZE as yes if you want to build with minimal size.
+# Define OPTIMIZE_SPEED as yes if you want to build with maximum speed.
+# These options are mutually exclusive.
+# If neither is set, IceE is built with debug information.
+#
+
+#OPTIMIZE_SIZE		= yes
+#OPTIMIZE_SPEED		= yes
+
+#
+# Define STATICLIBS as yes if you want to build with static libraries.
+# Otherwise IceE is built with dynamic libraries.
+#
+
+#STATICLIBS		= yes
+
+#
+# Define GUMSTIX as yes if building for gumstix target.
+#
+
+#GUMSTIX		= yes
+
+#
+# Define LP64 as yes or no if you want force a 32 or 64 bit. The default
+# is platform-dependent
+#
+#LP64			:= yes
+
+# ----------------------------------------------------------------------
+# Ice-E supports a number of optional features that are enabled via
+# build-time settings. To minimize the size of your executables, review
+# the features below and disable any setting that is not required by
+# your application.
+#
+# Prior to your first build, or after any subsequent change to the
+# settings below, you must run 'make configure' to generate the header
+# file include/IceE/Features.h.
+# ----------------------------------------------------------------------
+
+#
+# Compile with support for the Ice router facility.
+#
+HAS_ROUTER		= yes
+
+#
+# Compile with support for the Ice locator facility.
+#
+HAS_LOCATOR		= yes
+
+#
+# Compile with support for batch invocations.
+#
+HAS_BATCH		= yes
+
+#
+# Compile with support for wstring and string conversion.
+#
+HAS_WSTRING		= yes
+
+#
+# Compile with support for opaque endpoints.
+#
+HAS_OPAQUE_ENDPOINTS	= yes
+
+#
+# Compile with support for asynchronous method invocation (AMI).
+#
+HAS_AMI			= yes
+
+#
+# Default Mutex protocol: one of PrioNone or PrioInherit.
+#
+DEFAULT_MUTEX_PROTOCOL  ?= PrioNone
+
+# ----------------------------------------------------------------------
+# Don't change anything below this line!
+# ----------------------------------------------------------------------
+
+#
+# Common definitions
+#
+ice_language     = cppe
+slice_translator = slice2cppe
+
+ifeq ($(shell test -f $(top_srcdir)/config/Make.common.rules.icee && echo 0),0)
+    include $(top_srcdir)/config/Make.common.rules.icee
+else
+    include $(top_srcdir)/../config/Make.common.rules.icee
+endif
+
+ifeq ($(OPTIMIZE_SPEED),yes)
+    OPTIMIZE		= yes
+endif
+ifeq ($(OPTIMIZE_SIZE),yes)
+    OPTIMIZE		= yes
+endif
+
+#
+# Platform specific definitions
+#
+include	 $(top_srcdir)/config/Make.rules.$(UNAME)
+
+bindir			= $(top_srcdir)/bin
+libdir			= $(top_srcdir)/lib
+headerdir		= $(top_srcdir)/include
+
+#
+# includedir is not handled the same as bindir and libdir
+# because it is used in the .depend files
+#
+ifdef ice_src_dist
+    includedir		= $(top_srcdir)/include
+else
+    includedir		= $(ice_dir)/include
+endif
+
+install_bindir	  	= $(prefix)/$(binsubdir)
+install_libdir	  	= $(prefix)/$(libsubdir)
+install_includedir	= $(prefix)/include
+
+ICECPPFLAGS		= -I$(slicedir)
+SLICE2CPPEFLAGS		= $(ICECPPFLAGS)
+
+ifeq ($(ice_dir), /usr) 
+    CPPFLAGS		= 
+    LDFLAGS		= $(LDPLATFORMFLAGS) $(CXXFLAGS)
+else
+    CPPFLAGS	= -I$(includedir)
+    ifdef ice_src_dist
+        LDFLAGS		= $(LDPLATFORMFLAGS) $(CXXFLAGS) -L$(libdir) 
+    else
+        LDFLAGS		= $(LDPLATFORMFLAGS) $(CXXFLAGS) -L$(ice_dir)/$(libsubdir) 
+    endif
+endif
+
+ifeq ($(FLEX_NOLINE),yes)
+    FLEXFLAGS	       := -L
+else
+    FLEXFLAGS	       :=
+endif
+
+ifeq ($(BISON_NOLINE),yes)
+    BISONFLAGS		:= -dvtl
+else
+    BISONFLAGS		:= -dvt
+endif
+
+ifdef ice_src_dist
+    ifeq ($(ice_cpp_dir), $(ice_dir)/cpp)
+        SLICE2CPPE = $(ice_cpp_dir)/bin/slice2cppe
+    else
+        SLICE2CPPE = $(ice_cpp_dir)/$(binsubdir)/slice2cppe
+    endif
+else
+    SLICE2CPPE = $(ice_dir)/$(binsubdir)/slice2cppe
+endif
+
+EVERYTHING		= all depend clean install
+
+.SUFFIXES:
+.SUFFIXES:		.cpp .c .o
+
+.cpp.o:
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $<
+
+%.o: ../%.cpp
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $<
+
+.c.o:
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+%C.o: %.o %.cpp
+	$(CXX) -c -DICEE_PURE_CLIENT -o $(*F)C.o $(CPPFLAGS) $(CXXFLAGS) $(*F).cpp
+
+$(HDIR)/%F.h: $(SDIR)/%F.ice
+	rm -f $(HDIR)/$(*F)F.h $(*F)F.cpp
+	$(SLICE2CPPE) $(SLICE2CPPEFLAGS) $<
+	mv $(*F)F.h $(HDIR)
+	rm -f $(*F)F.cpp
+
+
+ifneq ($(HDIR),)
+
+$(HDIR)/%.h %.cpp: $(SDIR)/%.ice
+	rm -f $(HDIR)/$(*F).h $(*F).cpp
+	$(SLICE2CPPE) $(SLICE2CPPEFLAGS) $<
+	mv $(*F).h $(HDIR)
+
+else
+
+%.h %.cpp: $(SDIR)/%.ice
+	rm -f $(*F).h $(*F).cpp
+	$(SLICE2CPPE) $(SLICE2CPPEFLAGS) $<
+
+endif
+
+%.h %.cpp: %.ice
+	rm -f $(*F).h $(*F).cpp
+	$(SLICE2CPPE) $(SLICE2CPPEFLAGS) $(*F).ice	
+
+%.h %.cpp: %.y
+	rm -f $(*F).h $(*F).cpp
+	bison $(BISONFLAGS) $<
+	mv $(*F).tab.c $(*F).cpp
+	mv $(*F).tab.h $(*F).h
+	rm -f $(*F).output
+
+%.cpp: %.l
+	flex $(FLEXFLAGS) $<
+	rm -f $@
+	echo '#include <IceE/Config.h>' > $@
+	cat lex.yy.c >> $@
+	rm -f lex.yy.c
+
+all:: $(SRCS) $(TARGETS)
+
+depend:: $(SRCS) $(patsubst $(SDIR)/%.ice,$(HDIR)/%.h,$(wildcard $(SDIR)/*F.ice)) $(SLICE_SRCS)
+	-rm -f .depend
+	if test -n "$(SRCS)" ; then \
+	    $(CXX) -DMAKEDEPEND -M $(CXXFLAGS) $(CPPFLAGS) $(SRCS) | $(ice_dir)/config/makedepend.py >> .depend; \
+	fi
+	if test -n "$(SLICE_SRCS)" ; then \
+	    $(SLICE2CPPE) --depend $(SLICE2CPPEFLAGS) $(SLICE_SRCS) | $(ice_dir)/config/makedepend.py >> .depend; \
+	fi
+
+clean::
+	-rm -f $(TARGETS)
+	-rm -f core *.o *.bak
+
+ifneq ($(SLICE_SRCS),)
+clean::
+	rm -f $(addsuffix .cpp, $(basename $(notdir $(SLICE_SRCS))))
+	rm -f $(addsuffix .h, $(basename $(notdir $(SLICE_SRCS))))
+endif
+ifneq ($(HDIR),)
+clean::
+	rm -f $(addprefix $(HDIR), $(addsuffix .h, $(basename $(subst $(SDIR),, \
+	$(filter $(SDIR)/%.ice, $(SLICE_SRCS))))))
+endif
+
+ifneq ($(TEMPLATE_REPOSITORY),)
+clean::
+	rm -fr $(TEMPLATE_REPOSITORY)
+endif
+
+install::
+
+#
+# Generate Features.h using settings enabled above.
+#
+configure:
+	$(top_srcdir)/config/features.sh $(top_srcdir)/include/IceE/Features.h \
+	    HAS_ROUTER=$(HAS_ROUTER) \
+	    HAS_LOCATOR=$(HAS_LOCATOR) \
+	    HAS_BATCH=$(HAS_BATCH) \
+	    HAS_WSTRING=$(HAS_WSTRING) \
+	    HAS_OPAQUE_ENDPOINTS=$(HAS_OPAQUE_ENDPOINTS) \
+	    HAS_AMI=$(HAS_AMI) \
+	    DEFAULT_MUTEX_PROTOCOL=$(DEFAULT_MUTEX_PROTOCOL)

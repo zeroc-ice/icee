@@ -1,0 +1,146 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2008 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice-E is licensed to you under the terms described in the
+# ICEE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+#
+# This file is included by Make.rules when uname is Linux.
+#
+
+USE_SPARC_ASM		= irrelevant
+MACHINE			= $(shell uname -m)
+
+#
+# Default compiler is c++ (aka g++).
+#
+ifeq ($(CXX),)
+   CXX			= c++
+endif
+
+ifeq ($(CXX),g++)
+   CXX			= c++
+endif
+
+ifeq ($(AR),)
+   AR			= ar
+endif
+
+ifeq ($(MACHINE),x86_64)
+   #
+   # Default build on x86_64 is 64-bit.
+   #
+   ifeq ($(LP64),)
+      LP64      = yes
+   endif
+endif
+
+ifeq ($(MACHINE),sparc64)
+   #
+   # We are an ultra, at least, and so have the atomic instructions
+   #
+   USE_SPARC_ASM	= yes
+   CXXARCHFLAGS	= -mcpu=ultrasparc -pipe -Wno-deprecated -DUSE_SPARC_ASM
+endif
+
+ifeq ($(MACHINE),sparc)
+   #
+   # We are a sun4m or sun4c
+   # On sun4m, there is a bug in some CPU/kernel/gcc configurations which
+   # prevents us from using '-mcpu=v8'.
+   #
+   USE_SPARC_ASM	= no
+   CXXARCHFLAGS	= -mtune=v8 -pipe -Wno-deprecated -DICE_USE_MUTEX_SHARED
+endif
+
+ifeq ($(MACHINE),x86_64)
+   ifeq ($(LP64),yes)
+      CXXARCHFLAGS	= -m64
+   else
+      CXXARCHFLAGS	= -m32
+   endif
+   lp64suffix	= 64
+endif
+
+CXXFLAGS		= $(CXXARCHFLAGS) -ftemplate-depth-128 -Wall -D_REENTRANT
+
+ifneq ($(GUMSTIX),yes)
+CXXFLAGS		+= -I/usr/include/nptl
+endif
+
+ifneq ($(STATICLIBS),yes)
+   CXXFLAGS		+= -fPIC
+endif
+
+OPT_FLAGS		=
+ifeq ($(OPTIMIZE_SPEED),yes)
+  OPT_FLAGS		= -O3
+endif
+ifeq ($(OPTIMIZE_SIZE),yes)
+  OPT_FLAGS	= -Os
+  ifeq ($(STATICLIBS),yes)
+    OPT_FLAGS	+= -fdata-sections -ffunction-sections
+  endif
+endif
+
+ifeq ($(OPTIMIZE),yes)
+   CXXFLAGS		+= $(OPT_FLAGS) -DNDEBUG
+else
+   CXXFLAGS		+= -g
+endif
+
+ifeq ($(USE_SPARC_ASM),yes)
+   CFLAGS		= $(OPT_FLAGS) -mcpu=ultrasparc -pipe -DNDEBUG -DUSE_SPARC_ASM
+   ifneq ($(STATICLIBS),yes)
+      CFLAGS		+= -fPIC
+   endif
+endif
+
+ifeq ($(USE_SPARC_ASM),no)
+   CFLAGS		= $(OPT_FLAGS) -mcpu=v8 -pipe -DNDEBUG -DICE_USE_MUTEX_SHARED
+   ifneq ($(STATICLIBS),yes)
+      CFLAGS		+= -fPIC
+   endif
+endif
+
+ifeq ($(GUMSTIX),yes)
+    CXXFLAGS		+= -DGUMSTIX
+endif
+
+#
+# C++ run-time libraries, necessary for linking some shared libraries.
+#
+CXXLIBS		=
+
+mkshlib		= $(CXX) -shared $(LDFLAGS) -o $(1) -Wl,-h,$(2) $(3) $(4) -lpthread
+
+mklib		= $(AR) cr $(1) $(2)
+
+LDPLATFORMFLAGS 	= -Wl,--enable-new-dtags -Wl,-rpath,$(install_libdir)
+
+ifeq ($(OPTIMIZE_SIZE),yes)
+    ifeq ($(STATICLIBS),yes)
+        LDPLATFORMFLAGS += -Wl,-gc-sections
+    endif
+endif
+
+
+ifneq ($(GUMSTIX),yes)
+NPTL_LIB                = -L/usr/$(libsubdir)/nptl
+endif
+
+BASELIBS		= $(NPTL_LIB) -lpthread -lrt
+LIBS			= -lIceE $(BASELIBS)
+MINLIBS			= -lIceEC $(BASELIBS)
+TESTLIBS		= -lTestCommon $(LIBS)
+TESTCLIBS		= -lTestCommonC $(MINLIBS)
+
+ICEUTIL_OS_LIBS		= 
+ICE_OS_LIBS		= -ldl
+
+PLATFORM_HAS_READLINE	= yes
+
+export LD_LIBRARY_PATH	:= $(libdir):$(LD_LIBRARY_PATH)

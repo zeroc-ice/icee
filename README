@@ -1,0 +1,449 @@
+The sections below describe and document Ice-E specific features.
+
+Table of Contents
+-----------------
+
+  1. Introduction
+  2. Comparing Ice-E and Ice
+     - Concurrency Models
+     - Transports
+     - Default Servants
+     - Collocation Optimization
+     - Other Removed Features
+     - Optional Features
+     - Compatibility
+     - Customization
+  3. Real-time Features
+     - Thread API
+     - Mutex API
+     - Timer API
+     - Priority Inversion
+     - Distributed Priority Inversion
+     - Real-time Properties
+     - Tests
+  4. Run-time Libraries
+  5. Configuration
+  6. Installation
+
+
+======================================================================
+1. Introduction
+======================================================================
+
+Ice-E is a compact subset of Ice designed for embedded environments
+while retaining many of the features that have made Ice such a
+compelling alternative for distributed applications.
+
+
+======================================================================
+2. Comparing Ice-E and Ice
+======================================================================
+
+In order to reduce the size of the Ice-E run time, several Ice
+features have been removed, and others are optional. The differences
+discussed in the sections below refer to differences with Ice 3.3.
+
+
+Concurrency Models
+------------------
+
+As in Ice, Ice-E supports only the thread pool concurrency model.
+However, unlike Ice, Ice-E does not support the configuration of
+per-adapter thread pools.
+
+
+Transports
+----------
+
+Ice-E includes support for the TCP transport; UDP and SSL are not
+supported.
+
+
+Default Servants
+----------------
+
+Ice-E does not support servant locators. However, Ice-E does support
+default servants. A default servant is a regular servant that you
+implement and register with an object adapter. For each incoming
+request, the object adapter first attempts to locate a servant in its
+Active Servant Map (ASM). If no servant is found, the object adapter
+dispatches the request to a default servant. With this design, a
+default servant is the object adapter's servant of last resort if no
+match was found in the ASM.
+
+The default servant API consists of the following operations in the
+object adapter interface.
+
+module Ice {
+    interface ObjectAdapter {
+        // ...
+
+        void addDefaultServant(Object servant, string category);
+
+        Object removeDefaultServant(string category);
+
+        Object findDefaultServant(string category);
+
+        // ...
+    };
+};
+
+As you can see, the object adapter allows you to add, remove and find
+default servants. Note that, when you register a default servant, you
+must provide an argument for the category parameter. The value of the
+category parameter controls which object identities the default
+servant is responsible for: only object identities with a matching
+category member trigger a dispatch to this default servant. An
+incoming request for which no explicit entry exists in the ASM and
+with a category for which no default servant is registered returns an
+ObjectNotExistException to the client.
+
+addDefaultServant has the following semantics:
+
+ * You can register exactly one default servant for a specific
+   category.  Attempts to call addDefaultServant for the same category
+   more than once raise an AlreadyRegisteredException.
+
+ * You can register different default servants for different
+   categories, or you can register the same single default servant
+   multiple times (each time for a different category). In the former
+   case, the category is implicit in the default servant instance that
+   is called by the Ice-E run time; in the latter case, the servant
+   can find out which category the incoming request is for by
+   examining the object identity member of the Current object that is
+   passed to the dispatched operation.
+
+ * It is legal to register a default servant for the empty category.
+   Such a servant is used if a request comes in for which no entry
+   exists in the ASM, and whose category does not match the category
+   of any other registered default servant.
+
+The removeDefaultServant operation allows you to remove the default
+servant for a specific category. It returns the servant that was
+removed. If no default servant is registered for the specified
+category, removeDefaultServant throws a NotRegisteredException.
+
+The findDefaultServant operation allows you to retrieve the default
+servant for a specific category (including the empty category). If no
+default servant is registered for the specified category,
+findDefaultServant returns null.
+
+
+Collocation Optimization
+------------------------
+
+Support for collocation optimization has been removed. Note that
+Ice-E applications are still able to make invocations on collocated
+servants, but those invocations are not optimized and therefore will
+be marshaled and sent over the built-in transport.
+
+
+Other Removed Features
+----------------------
+
+Ice-E has also eliminated the following features:
+
+* Asynchronous dispatch (AMD)
+* Dynamic Ice (blobject and streaming APIs)
+* Active connection management
+* Protocol compression
+* Ice::Application and Ice::Service classes
+* Local interfaces
+* IceUtil::StaticMutex class
+* Object by Value garbage collection
+* Slice checksums
+* The Ice::Stats interface
+* The IceUtil::CtrlCHandler class
+
+
+Optional Features
+-----------------
+
+A number of Ice-E features are optional and can be omitted during
+compilation to further reduce the size of the Ice-E run time. See the
+"Configuration" section below for more information.
+
+
+Compatibility
+-------------
+
+Ice-E and Ice share the same C++ mapping and remain source-code
+compatible, given the limitations described above. Furthermore,
+since the two products also share the same protocol, a distributed
+system can use any combination of Ice and Ice-E applications.
+
+
+Customization
+-------------
+
+If the current features do not meet your requirements, ZeroC can
+customize Ice-E for commercial users. Please contact us at
+info@zeroc.com for more information.
+
+
+======================================================================
+3. Real-time Features
+======================================================================
+
+Ice-E includes support for the real-time features described below.
+
+
+Thread API
+----------
+
+The IceUtil::Thread class supports an additional start method:
+
+    ThreadControl start(size_t stackSize, int priority);
+
+The priority integer parameter represents the new thread's initial
+priority. The priority value is system-dependent; on POSIX systems the
+parameter must be a legal value for the underlying SCHED_RR scheduling
+policy. Attempting to start a thread with an invalid priority raises
+IceUtil::ThreadSyscallException.
+
+Threads that are started without a priority use the system's default
+priority, which is backward-compatible with prior Ice-E releases.
+
+On POSIX systems, root privileges are required when starting threads
+with the SCHED_RR scheduling policy.
+
+
+Mutex API
+---------
+
+Ice-E includes some real-time enhancements to the mutex API for POSIX
+systems:
+
+* IceUtil::MutexProtocol enumeration
+
+  This enumeration specifies the underlying protocol used by a mutex.
+  The enumerators are PrioNone and PrioInherit.
+
+* Constructors
+
+  The IceUtil::Mutex and IceUtil::RecMutex classes have new
+  constructors that accept an IceUtil::MutexProtocol parameter.
+
+  If an IceUtil::Mutex or IceUtil::RecMutex object is instantiated
+  using the default constructor, it uses the mutex protocol returned
+  by the function IceUtil::getDefaultMutexProtocol declared in
+  MutexProtocol.h. See the "Priority inversion" section below for more
+  information on this method.
+
+
+Timer API
+---------
+
+The IceUtil::Timer class has a constructor that accepts an integer
+parameter representing the priority to use for the internal thread
+created by the timer. The priority parameter has the same semantics as
+for starting a thread (see Thread API above).
+
+
+Priority Inversion
+------------------
+
+A priority inversion occurs when a low priority thread prevents a
+higher priority thread from running. This inversion often occurs when
+a low priority thread acquires a mutex and is pre-empted by one or
+more medium priority threads. If a high priority thread then attempts
+to acquire the mutex locked by the low priority thread, it will wait
+(potentially forever) for the medium priority threads to complete.
+
+To avoid this kind of priority inversion, applications should use
+special priority-aware mutexes. 
+
+On POSIX systems, such as Linux, Ice-E allows you to use normal
+mutexes (that are subject to priority inversion) or mutexes configured
+with the priority inheritance protocol. These latter mutexes will
+dynamically increase the priority of the thread that owns the mutex
+when a thread of higher priority is waiting for this mutex, until the
+"low priority" thread releases this mutex.
+
+Note that on gumstix the priority inheritance protocol is not
+supported. 
+
+You can build Ice-E to create by default either type of mutex by
+setting DEFAULT_MUTEX_PROTOCOL to PrioNone or PriInherit in
+config/Make.rules. This setting has no effect on Windows or Windows
+Mobile. Ice-E internally uses only mutexes created with this default
+protocol.
+
+The DEFAULT_MUTEX_PROTOCOL setting is used only in the implementation
+of the IceUtil::getDefaultMutexProtocol function, therefore you can
+also override the setting in the Ice-E library by defining this
+function in your main program and returning the desired value.
+
+Please note that while all mutexes created by Ice-E will use the
+configured mutex protocol, Ice-E also uses a number of systems calls
+and C++ calls that may lock internal mutexes. Since Ice-E has no
+control over these internal mutexes, priority inversion is still
+possible if these libraries (C++ runtime, socket library, etc.) are
+implemented or configured with regular mutexes.
+
+On Windows Mobile, all mutexes and critical sections support priority
+inheritance, with one level. Refer to the link below for more details:
+
+http://msdn.microsoft.com/en-us/library/aa450594.aspx
+
+No special Ice-E build configuration is required on Windows Mobile.
+
+Unfortunately regular Windows does not provide such mutexes and
+critical sections, and therefore there is no good solution to priority
+inversions on Windows systems.
+
+
+Distributed Priority Inversion
+------------------------------
+
+The Priority Inversion problem described above can also occur in a
+distributed setup, for example:
+
+ - a number of low priority clients and high priority clients 
+   send requests to the same Ice-E server.
+
+ - the Ice-E server treats all request the same way, and as
+   a result the processing of the requests from the low priority
+   clients will delay the high priority clients
+
+As of this release, Ice-E does not provide any solution to this type
+of distributed priority inversion.
+
+
+Real-time Properties
+--------------------
+
+* Ice.ThreadPriority
+
+  This property sets the priority of Ice's internal threads to a
+  native thread priority. The value must be expressed as an integer.
+
+  The value of this property is also used as the default priority for
+  the threads in an Ice thread pool if not otherwise specified using
+  one of the thread pool properties described below.
+
+* Ice.ThreadPool.Server.ThreadPriority
+
+  This property sets the priority for all threads in the server thread
+  pool.
+
+* Ice.ThreadPool.Client.ThreadPriority
+
+  This property sets the priority for all threads in the client thread
+  pool.
+
+
+Tests
+-----
+
+Real-time tests need to run as super user on POSIX systems, therefore
+allTests.py has been changed to only execute these tests when the user
+is root on Linux.
+
+There are two tests for real-time features:
+
+* test/IceE/priority
+* test/IceE/threadPoolPriority
+
+
+======================================================================
+4. Run-time Libraries
+======================================================================
+
+Ice-E supports building static and dynamic Ice-E run-time libraries.
+Furthermore, in order to minimize the size of Ice-E applications, two
+versions of the run-time library are provided:
+
+* The "client" library is suitable for applications requiring only
+  client-side functionality.
+
+* The "server" library supports client and server-side functionality.
+
+A simple rule of thumb is to use the server library if your program
+creates an object adapter, otherwise you can use the client library.
+
+Users of the client library must define the preprocessor macro
+ICEE_PURE_CLIENT when compiling an application and link with the
+appropriate run-time library.
+
+
+======================================================================
+5. Configuration
+======================================================================
+
+You may build the Ice-E run-time libraries with certain components
+disabled in order to further reduce the size of your applications. The
+default configuration enables all of the optional components, but you
+can selectively disable them by editing the file config/Make.rules
+(Linux) or config\Make.rules.mak (Windows) and modifying their
+corresponding settings. The optional components are described below.
+For more information on these features, please refer to the Ice
+manual.
+
+
+Router Support
+--------------
+
+If HAS_ROUTER is enabled, the Ice-E libraries will include support for
+the Ice router facility. This component is necessary in order to use
+Ice-E with the Glacier2 router.
+
+Applications that use routers often also receive callbacks from remote
+servers. These applications must use the server library, because the
+client library does not provide support for callbacks.
+
+
+Locator Support
+---------------
+
+If HAS_LOCATOR is enabled, the Ice-E libraries will include support
+for the Ice locator facility. This component is necessary in order to
+use indirect proxies in Ice-E.
+
+
+Batch Messages Support
+----------------------
+
+If HAS_BATCH is enabled, the Ice-E client library will include support
+for sending batch messages. This feature cannot be disabled in the
+server library.
+
+
+Wstring and String Converter Support
+------------------------------------
+
+If HAS_WSTRING is enabled, the Ice-E libraries will include support
+for using wide strings as well as configuring custom string
+converters.
+
+
+Opaque Endpoint Support
+-----------------------
+
+The HAS_OPAQUE_ENDPOINTS setting determines whether the Ice run time
+preserves proxy endpoints whose types are not recognized. This feature
+is unnecessary in an environment in which all clients and servers use
+Ice-E, since TCP is the only supported transport. When Ice-E programs
+communicate with Ice programs, however, it is possible for an Ice-E
+program to receive a proxy that contains unsupported endpoints, such
+as SSL or UDP. Ice-E discards these endpoints when this feature is
+disabled, but discarding the endpoints prevents an Ice-E program from
+forwarding the proxy with its original endpoints intact. Enabling
+opaque endpoints causes Ice-E to retain unknown endpoints in the proxy
+and include them if the proxy is later marshaled.
+
+
+Asynchronous Method Invocation Support
+--------------------------------------
+
+If HAS_AMI is enabled, the Ice-E client mapping and library will
+include support for issuing remote invocations asynchronously with
+guaranteed non-blocking semantics.
+
+
+======================================================================
+6. Installation
+======================================================================
+
+For installation instructions, please refer to the INSTALL.* file for
+your platform.
