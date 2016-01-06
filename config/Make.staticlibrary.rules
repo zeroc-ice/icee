@@ -35,4 +35,3 @@ $(LOCAL_MODULE)_staticlib_clean:
 CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
 
 TARGETS := $(TARGETS) $(LOCAL_LIB)
-

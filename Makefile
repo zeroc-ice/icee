@@ -57,6 +57,10 @@ NEW_DTAGS                       ?= no
 #DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
 #
+# Set this to 'yes' to build Ice for Bluetooth
+#
+BUILD_ICE_BT                    ?= no
+#
 # To build test suite against static libraries define BUILD_TESTSUITE
 # as static, to build test suite against dynamic libraries define
 # BUILD_TESTSUITE as dynamic.

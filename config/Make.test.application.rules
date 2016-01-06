@@ -19,9 +19,12 @@ ifeq ($(BUILD_TESTSUITE),static)
     #
     # Filter out modules that are bundled with Ice static module
     #
-    LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery, $(LOCAL_DEPENDENT_MODULES))
-    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
+    LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery IceBT IceXML, $(LOCAL_DEPENDENT_MODULES))
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice TestCommon
     LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lssl
+    ifeq ($(BUILD_ICE_BT),yes)
+        LOCAL_LINKWITH          := -Wl,-Bstatic -lexpat $(LOCAL_LINKWITH) `pkg-config --libs dbus-1`
+    endif
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
@@ -30,7 +33,7 @@ ifeq ($(BUILD_TESTSUITE),dynamic)
     ifeq ($(find-string cpp/test/IceUtil,$(LOCAL_BINDIR)),)
         LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES) Ice
     endif
-    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) IceUtil
+    LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) IceUtil TestCommon
     LOCAL_DEPENDENT_DYMODULES   := $(LOCAL_DEPENDENT_MODULES)
     LOCAL_DEPENDENT_MODULES     :=
     ifeq ($(EMBEDDED_RUNPATH),yes)

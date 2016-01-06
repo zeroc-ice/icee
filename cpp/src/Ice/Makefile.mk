@@ -32,6 +32,28 @@ LOCAL_SLICE2CPPFLAGS            = --dll-export ICE_SSL_API
 include $(SUBMODULE_RULES)
 LIBRARY_OBJS                    := $(LIBRARY_OBJS) $(LOCAL_OBJS)
 
+ifeq ($(BUILD_ICE_BT), yes)
+
+#
+# IceXML
+#
+include $(CLEAR_RULES)
+LOCAL_MODULE                    = IceXML
+include $(SUBMODULE_RULES)
+LIBRARY_OBJS                    := $(LIBRARY_OBJS) $(LOCAL_OBJS)
+
+#
+# IceBT
+#
+include $(CLEAR_RULES)
+LOCAL_MODULE                    = IceBT
+LOCAL_SLICE2CPPFLAGS            = --dll-export ICE_BT_API
+LOCAL_CPPFLAGS                  = `pkg-config --cflags dbus-1`
+include $(SUBMODULE_RULES)
+LIBRARY_OBJS                    := $(LIBRARY_OBJS) $(LOCAL_OBJS)
+
+endif
+
 #
 # Ice
 #

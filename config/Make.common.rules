@@ -28,8 +28,8 @@ endif
 all::
 clean::
 
-VERSION                         = 3.6.1
-SOVERSION                       = 36
+VERSION                         = 3.7.0
+SOVERSION                       = 37
 
 ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
     ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
@@ -220,6 +220,9 @@ install::
 
 else
     DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm IceDiscovery IceLocatorDiscovery Slice
+    ifeq ($(BUILD_ICE_BT), yes)
+        DIST_MODULES += IceBT IceXML
+    endif
     DIST_TARGETS = slice2cpp \
                    slice2py \
                    glacier2router \
