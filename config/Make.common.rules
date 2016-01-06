@@ -267,7 +267,7 @@ install:: dist
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
-	@for module in $(filter-out IceUtil Slice,$(DIST_MODULES)) ; \
+	@for module in $(filter-out IceUtil IceXML Slice,$(DIST_MODULES)) ; \
 	do \
 		mkdir -p $(DESTDIR)$(ice_install_slice_dir)/$$module ; \
 		cp ice/slice/$$module/*.ice $(DESTDIR)$(ice_install_slice_dir)/$$module/ ; \
