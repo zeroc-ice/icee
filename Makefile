@@ -76,9 +76,9 @@ BUILD_TESTSUITE                 ?= static
 ###############################################################################
 
 #
-# Target distribution supported values are 'wheezy' 'trusty' and 'vivid'.
+# Target distribution supported values are 'wheezy' 'jessie' 'trusty' and 'vivid'.
 #
-TARGET_DIST                     ?= wheezy
+TARGET_DIST                     ?= jessie
 
 # Debian arch tuple of the host machine. Supported values are
 # 'arm-linux-gnueabihf' and 'x86_64-linux-gnu'.

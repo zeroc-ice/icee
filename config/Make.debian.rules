@@ -24,14 +24,18 @@ icee_libsubdir                  = lib/$(HOST)
 # If host different than build we are cross compiling
 #
 ifneq ($(HOST),$(BUILD))
-    TARGET_DIST                 ?= wheezy
+    TARGET_DIST                 ?= jessie
 
-    ifeq ($(filter $(TARGET_DIST),wheezy trusty vivid),)
-        $(error Invalid TARGET_DIST: `$(TARGET_DIST)' supported values are: `wheezy', `trusty' and `vivid'))
+    ifeq ($(filter $(TARGET_DIST),wheezy jessie trusty vivid),)
+        $(error Invalid TARGET_DIST: '$(TARGET_DIST)' supported values are: 'wheezy', 'jessie', 'trusty' and 'vivid'))
     endif
 
     ifeq ($(TARGET_DIST),wheezy)
         GCC_VERSION             = 4.6
+    endif
+
+    ifeq ($(TARGET_DIST),jessie)
+        GCC_VERSION             = 4.9
     endif
 
     ifeq ($(TARGET_DIST),trusty)
@@ -70,7 +74,9 @@ endif
 ice_install_lib_dir = $(prefix)/lib/$(HOST)
 
 ifeq ($(ICE_HOME),)
-    SLICE2PY                    = ice/python/config/s2py.py
+    SLICE2PY                    = ice/cpp/bin/slice2py
+    SLICE2FREEZE                = ice/cpp/bin/slice2freeze
 else
     SLICE2PY                    = slice2py
+    SLICE2FREEZE                = slice2freeze
 endif
