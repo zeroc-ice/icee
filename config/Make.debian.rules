@@ -51,11 +51,15 @@ ifneq ($(HOST),$(BUILD))
     STRIP                       = $(HOST)-strip
     AR                          = $(HOST)-ar
 
+    ifeq ($(TARGET_DIST),jessie)
+        python_include_dir      = /usr/include/$(PYTHON_DIR)
+    else
     ifneq ($(THIRDPARTY_HOME),)
         override CPPFLAGS       += -I$(THIRDPARTY_HOME)/usr/include
         override LDFLAGS        += -L$(THIRDPARTY_HOME)/usr/$(icee_libsubdir) \
                                    -Wl,-rpath-link,$(THIRDPARTY_HOME)/$(icee_libsubdir)
         python_include_dir      = $(THIRDPARTY_HOME)/usr/include/$(PYTHON_DIR)
+    endif
     endif
 else
     CC                          = gcc

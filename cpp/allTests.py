@@ -37,7 +37,7 @@ tests = [
     ("Ice/proxy", ["core"]),
     ("Ice/operations", ["core"]),
     ("Ice/exceptions", ["core"]),
-    ("Ice/ami", ["core", "nocompress", "nossl"]), # This test relies on the socket send() blocking and 
+    ("Ice/ami", ["core", "nocompress", "nossl"]), # This test relies on the socket send() blocking and
 						  # doesn't work well with old OpenSSL versions.
     ("Ice/info", ["core", "noipv6", "nocompress", "nosocks"]),
     ("Ice/inheritance", ["core"]),
@@ -57,7 +57,7 @@ tests = [
     ("Ice/hold", ["core"]),
     ("Ice/custom", ["core", "nossl", "nows"]),
     ("Ice/retry", ["core"]),
-    ("Ice/timeout", ["core", "nocompress", "nosocks", "nossl"]), # This test relies on the socket send() blocking and 
+    ("Ice/timeout", ["core", "nocompress", "nosocks", "nossl"]), # This test relies on the socket send() blocking and
 						                 # doesn't work well with old OpenSSL versions.
     ("Ice/acm", ["core"]),
     ("Ice/servantLocator", ["core"]),
@@ -74,6 +74,16 @@ tests = [
     ("Ice/logger", ["once"]),
     ("Ice/networkProxy", ["core", "noipv6", "nosocks"]),
     ("Ice/services", ["once"]),
+    ("Freeze/dbmap", ["once", "novc100", "nomingw"]),
+    ("Freeze/complex", ["once", "novc100", "nomingw"]),
+    ("Freeze/evictor", ["once", "novc100", "nomingw"]),
+    ("Freeze/fileLock", ["once", "novc100", "nomingw"]),
+    ("IceStorm/single", ["service", "novc100", "noappverifier", "nomingw"]), # This test doesn't work with appverifier
+    ("IceStorm/federation", ["service", "novc100", "nomingw"]),
+    ("IceStorm/federation2", ["service", "novc100", "nomingw"]),
+    ("IceStorm/stress", ["service", "stress", "novc100", "nomingw"]), # Too slow with appverifier.
+    ("IceStorm/rep1", ["service", "novc100", "nomingw"]),
+    ("IceStorm/repstress", ["service", "noipv6", "stress", "novc100", "nomingw"]),
     ("Glacier2/router", ["service", "novc100", "nomingw"]),
     ("Glacier2/attack", ["service", "novc100", "nomingw", "nomx"]),
     ("Glacier2/override", ["service", "novc100", "nomingw"]),
@@ -90,7 +100,7 @@ if os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins
 
 if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "admin", "libTestService.so")):
     tests += [("IceBox/admin", ["core", "noipv6", "nomx"])]
-    
+
 if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "configuration", "libTestService.so")):
     tests += [("IceBox/configuration", ["core", "noipv6", "nomx"])]
 

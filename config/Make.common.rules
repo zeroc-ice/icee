@@ -237,8 +237,8 @@ else
                    icebox \
                    iceboxadmin \
                    icestormadmin \
-                   $(DIST_MODULES)
-                   # IcePy
+                   $(DIST_MODULES) \
+                   IcePy
 
     dist:: $(DIST_TARGETS)
 
@@ -246,12 +246,12 @@ else
     # If building a dist target only include dist targets.
     #
     ifeq ($(filter $(MAKECMDGOALS),install dist $(DIST_TARGETS)),)
-        # include $(call rwildcard,,*.mk)
-        include $(call rwildcard,cpp/src,*.mk)
-        include $(call rwildcard,cpp/test,*.mk)
+        include $(call rwildcard,,*.mk)
+        # include $(call rwildcard,cpp/src,*.mk)
+        # include $(call rwildcard,cpp/test,*.mk)
     else
         include $(call rwildcard,cpp/src,*.mk)
-        # include $(call rwildcard,python,*.mk)
+        include $(call rwildcard,python,*.mk)
     endif
 
 install:: dist
@@ -270,6 +270,7 @@ install:: dist
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/slice2cpp.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/slice2py.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/slice2freeze.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/icebox.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/iceboxadmin.1 $(DESTDIR)$(ice_install_man_dir)
@@ -298,8 +299,7 @@ all:: $(TARGETS)
 clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
-    # test_deploy: glacier2router icebox iceboxadmin icestormadmin IcePy
-    test_deploy: glacier2router icebox iceboxadmin icestormadmin
+    test_deploy: glacier2router icebox iceboxadmin icestormadmin IcePy
 endif
 
 .PHONY: test_deploy
@@ -329,6 +329,7 @@ test_deploy: test_compile
 		--exclude="python" \
 		--exclude="mcpp" \
 		--exclude="*~" \
+		--include="db 0.db 1.db 2.db 0.db2 1.db2 2.db2" \
 		. $(DEPLOY_TARGET)
 
 	# We need cpp/include/IceUtil/Config.h for IceStorm tests

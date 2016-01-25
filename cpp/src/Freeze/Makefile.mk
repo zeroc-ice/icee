@@ -45,6 +45,4 @@ LOCAL_LINKWITH                  = -Wl,-Bdynamic -ldb_cxx-5.3
 
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
-# $(error $(LOCAL_FREEZE_SRCS))
-
 include $(DYNAMICLIBRARY_RULES)

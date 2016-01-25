@@ -54,4 +54,5 @@ LOCAL_FREEZE_CLASS              =
 LOCAL_FREEZE_HEADER             =
 LOCAL_FREEZE_SRC                =
 LOCAL_FREEZE_DICT               =
+LOCAL_FREEZE_DICT_INDEX         =
 LOCAL_FREEZE_DEPS               =

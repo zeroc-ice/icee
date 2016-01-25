@@ -26,7 +26,7 @@ endif
 LOCAL_GEN_SRCS                  := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
 LOCAL_GEN_SRCS                  += $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_FREEZE_SRCS)))
 LOCAL_GEN_HEADERS               := $(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_SLICES:.ice=.h)))
-LOCAL_GEN_HEADERS               += $(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_FREEZE_HEADERS)))
+LOCAL_GEN_HEADERS               += $(LOCAL_FREEZE_HEADERS)
 
 ifneq ($(LOCAL_HEADERS),)
     LOCAL_HEADERS               := $(filter-out $(LOCAL_GEN_HEADERS),$(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_HEADERS))))
