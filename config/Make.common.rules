@@ -107,6 +107,13 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
 endif
 
 #
+# Enable C++11 features
+#
+ifeq ($(CPP11), yes)
+    override CPPFLAGS           += -std=c++11
+endif
+
+#
 # Include the OS specific rules
 #
 include config/Make.$(ICEE_TARGET_OS).rules

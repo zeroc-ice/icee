@@ -57,6 +57,12 @@ NEW_DTAGS                       ?= no
 #DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
 #
+# Define CPP11 as yes if you want to enable C++11 features in GCC or
+# Clang.
+#
+#CPP11                          ?= yes
+
+#
 # To build test suite against static libraries define BUILD_TESTSUITE
 # as static, to build test suite against dynamic libraries define
 # BUILD_TESTSUITE as dynamic.
