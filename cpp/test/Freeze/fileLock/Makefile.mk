@@ -7,17 +7,19 @@
 #
 # **********************************************************************
 
-include $(CLEAR_RULES)
-LOCAL_EXE                   = client
-LOCAL_PATH                  = cpp/test/Freeze/fileLock
-LOCAL_SRCS                  = Client.cpp
-LOCAL_DEPENDENT_MODULES     = Freeze
-LOCAL_RESOURCES             = db
-include $(TEST_APPLICATION_RULES)
+ifeq ($(BUILD_TESTSUITE),dynamic)
+    include $(CLEAR_RULES)
+    LOCAL_EXE                   = client
+    LOCAL_PATH                  = cpp/test/Freeze/fileLock
+    LOCAL_SRCS                  = Client.cpp
+    LOCAL_DEPENDENT_MODULES     = Freeze
+    LOCAL_RESOURCES             = db
+    include $(TEST_APPLICATION_RULES)
 
-include $(CLEAR_RULES)
-LOCAL_EXE                   = clientFail
-LOCAL_PATH                  = cpp/test/Freeze/fileLock
-LOCAL_SRCS                  = ClientFail.cpp
-LOCAL_DEPENDENT_MODULES     = Freeze
-include $(TEST_APPLICATION_RULES)
+    include $(CLEAR_RULES)
+    LOCAL_EXE                   = clientFail
+    LOCAL_PATH                  = cpp/test/Freeze/fileLock
+    LOCAL_SRCS                  = ClientFail.cpp
+    LOCAL_DEPENDENT_MODULES     = Freeze
+    include $(TEST_APPLICATION_RULES)
+endif

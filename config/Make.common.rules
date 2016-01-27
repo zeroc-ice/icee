@@ -205,6 +205,7 @@ PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
 RESOURCES_RULES                 = $(CURDIR)/config/Make.resources.rules
 ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 FREEZE_RULES                    = $(CURDIR)/config/Make.freeze.rules
+CPP11LIBRARY_RULES              = $(CURDIR)/config/Make.cpp11library.rules
 
 #
 # Install directories
@@ -217,6 +218,21 @@ ifeq ($(prefix),$(base_prefix)/usr)
 else
     ice_install_slice_dir       ?= $(prefix)/slice
 endif
+
+CPP11_MODULES = \
+    IceUtil \
+    Ice \
+    IceSSL \
+    Glacier2 \
+    Glacier2CryptPermissionsVerifier \
+    IceBox \
+    IceGrid \
+    IceStorm \
+    Freeze \
+    IceStormService \
+    IceDiscovery \
+    IceLocatorDiscovery \
+    Slice
 
 #
 # Include required .mk files
@@ -247,8 +263,6 @@ else
     #
     ifeq ($(filter $(MAKECMDGOALS),install dist $(DIST_TARGETS)),)
         include $(call rwildcard,,*.mk)
-        # include $(call rwildcard,cpp/src,*.mk)
-        # include $(call rwildcard,cpp/test,*.mk)
     else
         include $(call rwildcard,cpp/src,*.mk)
         include $(call rwildcard,python,*.mk)
@@ -309,7 +323,7 @@ DEPLOYDIR                       := $(shell mktemp -d)
 test_deploy: test_compile
 	mkdir -p $(DEPLOYDIR)
 	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
-	mkdir -p $(DEPLOYDIR)/python/python=
+	mkdir -p $(DEPLOYDIR)/python/python
 	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
 	rm -rf $(DEPLOYDIR)
 
@@ -329,7 +343,6 @@ test_deploy: test_compile
 		--exclude="python" \
 		--exclude="mcpp" \
 		--exclude="*~" \
-		--include="db 0.db 1.db 2.db 0.db2 1.db2 2.db2" \
 		. $(DEPLOY_TARGET)
 
 	# We need cpp/include/IceUtil/Config.h for IceStorm tests
@@ -344,17 +357,28 @@ ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
 else
 	# Necessary so that the tests can find the top level python directory
-	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python
+	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python/
 endif
 	rsync -aczv --prune-empty-dirs \
-	      --exclude="*.pyc" \
-	      --exclude="Make*" \
-	      --exclude="*.d" \
-	      --exclude="test/Slice/import/Test/*" \
-	      --exclude="test/Slice/import/*_ice.py" \
-	      ice/python/test $(DEPLOY_TARGET)/python/
+		--exclude="*.pyc" \
+		--exclude="Make*" \
+		--exclude="*.d" \
+		--exclude="test/Slice/import/Test/*" \
+		--exclude="test/Slice/import/*_ice.py" \
+		ice/python/test $(DEPLOY_TARGET)/python/
 	rsync -aczv --prune-empty-dirs --exclude="Make*" ice/slice $(DEPLOY_TARGET)/
 	rsync -aczv --prune-empty-dirs --exclude="Make*" --exclude="*.d" python/test/* $(DEPLOY_TARGET)/python/test/
+
+	rsync -av --filter="+ /*" --filter="+ /*/*" \
+		--filter="+ /*/*/db" \
+		--filter="+ /*/*/db2" \
+		--filter="+ /*/*/0.db" \
+		--filter="+ /*/*/0.db2" \
+		--filter="+ /*/*/1.db" \
+		--filter="+ /*/*/1.db2" \
+		--filter="+ /*/*/2.db" \
+		--filter="+ /*/*/2.db2" \
+		--exclude="*" cpp/test/ $(DEPLOY_TARGET)/cpp/test/
 
 scripts: ice/scripts
 	@rm -rf scripts

@@ -658,7 +658,7 @@ cpp/include/IceBox/Config.h
 cpp/src/IceBox/IceBox.cpp
 cpp/include/IceBox/IceBox.h
 cpp/include/IceBox/Config.h
-cpp/bin/icebox
+cpp/bin/icebox++11
 cpp/bin/iceboxadmin
 cpp/src/IceStorm/IceStorm.cpp
 cpp/src/IceStorm/Metrics.cpp

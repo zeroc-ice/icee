@@ -19,6 +19,9 @@ include $(LIBRARY_RULES)
 #
 include $(CLEAR_RULES)
 LOCAL_MODULE                    = icebox
+ifeq ($(CPP11),yes)
+    LOCAL_EXE                   = icebox++11
+endif
 LOCAL_PATH                      = cpp/src/IceBox
 LOCAL_DEPENDENT_DYMODULES       = IceBox Ice IceUtil
 LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)

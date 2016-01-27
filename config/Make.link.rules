@@ -16,6 +16,8 @@ ifneq ($(ICEE_HOME),$(base_prefix)/usr)
     LOCAL_LDFLAGS               += -L$(icee_lib_dir)
 endif
 
+include $(CPP11LIBRARY_RULES)
+
 $(LOCAL_TARGET): LOCAL_LINKWITH := $(LOCAL_LINKWITH)
 
 $(LOCAL_TARGET): LOCAL_DEPENDENT_MODULES := $(LOCAL_DEPENDENT_MODULES)
@@ -39,6 +41,5 @@ endif
 ifneq ($(LOCAL_DEPENDENT_DYMODULES),)
     LOCAL_MY_LINKWITH           := $(LOCAL_MY_LINKWITH) -Wl,-Bdynamic $(addprefix -l,$(LOCAL_DEPENDENT_DYMODULES))
 endif
-
 
 $(LOCAL_TARGET): LOCAL_MY_LINKWITH := $(LOCAL_MY_LINKWITH)

@@ -74,16 +74,7 @@ tests = [
     ("Ice/logger", ["once"]),
     ("Ice/networkProxy", ["core", "noipv6", "nosocks"]),
     ("Ice/services", ["once"]),
-    ("Freeze/dbmap", ["once", "novc100", "nomingw"]),
-    ("Freeze/complex", ["once", "novc100", "nomingw"]),
-    ("Freeze/evictor", ["once", "novc100", "nomingw"]),
-    ("Freeze/fileLock", ["once", "novc100", "nomingw"]),
-    ("IceStorm/single", ["service", "novc100", "noappverifier", "nomingw"]), # This test doesn't work with appverifier
-    ("IceStorm/federation", ["service", "novc100", "nomingw"]),
-    ("IceStorm/federation2", ["service", "novc100", "nomingw"]),
-    ("IceStorm/stress", ["service", "stress", "novc100", "nomingw"]), # Too slow with appverifier.
-    ("IceStorm/rep1", ["service", "novc100", "nomingw"]),
-    ("IceStorm/repstress", ["service", "noipv6", "stress", "novc100", "nomingw"]),
+
     ("Glacier2/router", ["service", "novc100", "nomingw"]),
     ("Glacier2/attack", ["service", "novc100", "nomingw", "nomx"]),
     ("Glacier2/override", ["service", "novc100", "nomingw"]),
@@ -92,16 +83,33 @@ tests = [
     ("Glacier2/dynamicFiltering", ["service", "novc100", "nomingw"]),
     ("Glacier2/staticFiltering", ["service", "noipv6", "novc100", "nomingw", "nomx"]),
     ("Glacier2/sessionHelper", ["core", "novc100", "nomingw"]),
+
     ("IceDiscovery/simple", ["service"]),
     ]
 
-if os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin.so")):
+if os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin.so")) or \
+   os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin++11.so")):
+
     tests += [("Ice/plugin", ["core"])]
 
-if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "admin", "libTestService.so")):
+    # If Ice/plugin is built then assume that we are running all dynamic library tests
+    tests += [("Freeze/dbmap", ["once", "novc100", "nomingw"]),
+    ("Freeze/complex", ["once", "novc100", "nomingw"]),
+    ("Freeze/evictor", ["once", "novc100", "nomingw"]),
+    ("Freeze/fileLock", ["once", "novc100", "nomingw"]),
+    ("IceStorm/single", ["service", "novc100", "noappverifier", "nomingw"]), # This test doesn't work with appverifier
+    ("IceStorm/federation", ["service", "novc100", "nomingw"]),
+    ("IceStorm/federation2", ["service", "novc100", "nomingw"]),
+    ("IceStorm/stress", ["service", "stress", "novc100", "nomingw"]), # Too slow with appverifier.
+    ("IceStorm/rep1", ["service", "novc100", "nomingw"]),
+    ("IceStorm/repstress", ["service", "noipv6", "stress", "novc100", "nomingw"])]
+
+if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "admin", "libTestService.so")) or \
+os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "admin", "libTestService++11.so")):
     tests += [("IceBox/admin", ["core", "noipv6", "nomx"])]
 
-if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "configuration", "libTestService.so")):
+if os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "configuration", "libTestService.so")) or \
+   os.path.isfile(os.path.join(path[0], "cpp", "test", "IceBox", "configuration", "libTestService++11.so")):
     tests += [("IceBox/configuration", ["core", "noipv6", "nomx"])]
 
 #

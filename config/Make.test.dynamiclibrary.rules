@@ -16,9 +16,15 @@ ifeq ($(LOCAL_LIBDIR),)
 endif
 LOCAL_SRCS                      := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
 
-LOCAL_DYLIBNAME                 := lib$(LOCAL_MODULE).so
-LOCAL_DYLIBSONAME               := lib$(LOCAL_MODULE).so.$(SOVERSION)
-LOCAL_DYLIBFILENAME             := lib$(LOCAL_MODULE).so.$(VERSION)
+ifeq ($(CPP11),yes)
+    ifeq ($(LOCAL_DYLIBNAME_SUFFIX),)
+        LOCAL_DYLIBNAME_SUFFIX = ++11
+    endif
+endif
+
+LOCAL_DYLIBNAME                 := lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so
+LOCAL_DYLIBSONAME               := lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(SOVERSION)
+LOCAL_DYLIBFILENAME             := lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(VERSION)
 LOCAL_MODULE                    := $(subst /,_,$(LOCAL_PATH))_$(LOCAL_MODULE)
 
 ifeq ($(BUILD_TESTSUITE),dynamic)
