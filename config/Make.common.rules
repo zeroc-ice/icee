@@ -28,7 +28,7 @@ endif
 all::
 clean::
 
-VERSION                         = 3.6.1
+VERSION                         = 3.6.2
 SOVERSION                       = 36
 
 ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)

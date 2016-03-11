@@ -92,7 +92,7 @@ HOST                            ?= arm-linux-gnueabihf
 # Set this to the root directory of your cross development third party
 # libraries.
 #
-THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
+THIRDPARTY_HOME                 ?= /opt/IceE-3.6.2-ThirdParty
 
 #
 # Include common definitions.

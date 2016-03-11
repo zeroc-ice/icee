@@ -7,7 +7,7 @@
 #
 # **********************************************************************
 
-PREFIX="/opt/IceE-3.6.1-ThirdParty"
+PREFIX="/opt/IceE-3.6.2-ThirdParty"
 
 #
 # Uninstall a package
@@ -40,7 +40,7 @@ answer=""
 
 while [[ $ok -eq 0 ]]
 do
-    echo "Install all Ice-E 3.6.1 Wheezy ARMHF third party packages"
+    echo "Install all Ice-E 3.6.2 Wheezy ARMHF third party packages"
     echo "into $PREFIX? Yes/No"
     read -p "$*" answer
     if [[ ! "$answer" ]]; then
