@@ -26,7 +26,7 @@ Ice-E depends on the `python`, `bzip2` and `openssl` development libraries.
 We provide a script that will download and setup the required libraries from
 the Debian 7.8 (Wheezy) repositories:
 
-    curl -fsSL https://github.com/zeroc-ice/icee/raw/v3.6.1/config/install_wheezy_thirdparty.sh | sudo bash
+    curl -fsSL https://github.com/zeroc-ice/icee/raw/v3.6.2/config/install_wheezy_thirdparty.sh | sudo bash
 
 #### Yocto
 
@@ -95,7 +95,7 @@ then install passlib by running:
 
     pip install passlib
 
-[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.1
+[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.2
 [2]: https://doc.zeroc.com/display/Ice36/Ice-E+Release+Notes
 [3]: https://github.com/zeroc-ice/meta-zeroc
 [4]: https://pip.pypa.io/en/latest/installing.html

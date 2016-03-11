@@ -95,12 +95,6 @@ TARGET_DIST                     ?= jessie
 HOST                            ?= arm-linux-gnueabihf
 
 #
-# Set this to the root directory of your cross development third party
-# libraries.
-#
-#THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
-
-#
 # Include common definitions.
 #
 include $(CURDIR)/config/Make.common.rules
