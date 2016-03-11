@@ -28,7 +28,7 @@ endif
 all::
 clean::
 
-VERSION                         = 3.6.1
+VERSION                         = 3.6.2
 SOVERSION                       = 36
 
 ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
@@ -36,7 +36,7 @@ ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
 else ifeq ($(findstring debian,$(shell uname -a)),debian)
     ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 else
-    ifeq ($(shell -m uname),x86_64)
+    ifeq ($(shell uname -m),x86_64)
         ice_libprefix           = 64
     endif
 endif
@@ -196,6 +196,7 @@ LINK_RULES                      = $(CURDIR)/config/Make.link.rules
 SUBMODULE_RULES                 = $(CURDIR)/config/Make.submodule.rules
 APPLICATION_RULES               = $(CURDIR)/config/Make.application.rules
 TEST_APPLICATION_RULES          = $(CURDIR)/config/Make.test.application.rules
+TEST_STATICLIBRARY_RULES        = $(CURDIR)/config/Make.test.staticlibrary.rules
 TEST_DYNAMICLIBRARY_RULES       = $(CURDIR)/config/Make.test.dynamiclibrary.rules
 CLIENTSERVERTEST_RULES          = $(CURDIR)/config/Make.clientservertest.rules
 LIBRARY_RULES                   = $(CURDIR)/config/Make.library.rules
@@ -245,13 +246,15 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
-    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm Freeze IceStormService IceDiscovery IceLocatorDiscovery Slice
+    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm IcePatch2 \
+                   Freeze IceStormService IceDiscovery IceLocatorDiscovery Slice
     DIST_TARGETS = slice2cpp \
                    slice2py \
                    slice2freeze \
                    glacier2router \
                    icebox \
                    iceboxadmin \
+                   icestormdb \
                    icestormadmin \
                    $(DIST_MODULES) \
                    IcePy

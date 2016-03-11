@@ -38,7 +38,10 @@ LOCAL_FREEZE_DEPS               = ice/slice/Ice/BuiltinSequences.ice
 include $(FREEZE_RULES)
 
 LOCAL_SRCDIR                    = ice/cpp/src/$(LOCAL_MODULE)
-LOCAL_SRCS                      = $(wildcard $(LOCAL_SRCDIR)/*.cpp)
+LOCAL_SRCS                      = $(filter-out $(LOCAL_SRCDIR)/PingObject.cpp \
+					       $(LOCAL_SRCDIR)/Catalog.cpp \
+					       $(LOCAL_SRCDIR)/CatalogIndexList.cpp, \
+					       $(wildcard $(LOCAL_SRCDIR)/*.cpp))
 LOCAL_OBJS                      = $(FREEZE_LOCAL_GENOBJS)
 LOCAL_DEPENDENT_DYMODULES       = Ice IceUtil
 LOCAL_LINKWITH                  = -Wl,-Bdynamic -ldb_cxx-5.3

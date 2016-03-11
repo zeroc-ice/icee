@@ -21,7 +21,7 @@ ifeq ($(BUILD_TESTSUITE),static)
     #
     LOCAL_DEPENDENT_MODULES     := $(filter-out IceUtil IceSSL IceDiscovery, $(LOCAL_DEPENDENT_MODULES))
     LOCAL_DEPENDENT_MODULES     := $(LOCAL_DEPENDENT_MODULES) Ice
-    LOCAL_LINKWITH              = -Wl,-Bdynamic -lcrypt -lssl
+    LOCAL_LINKWITH              := -Wl,-Bdynamic -lcrypt -lssl $(LOCAL_LINKWITH)
 endif
 
 ifeq ($(BUILD_TESTSUITE),dynamic)

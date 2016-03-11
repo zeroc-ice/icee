@@ -76,6 +76,14 @@ ifneq ($(TEST_LINKWITH),)
     LOCAL_LINKWITH              += $(TEST_LINKWITH)
 endif
 
+ifneq ($(CLIENT_LDFLAGS),)
+    LOCAL_LDFLAGS               += $(CLIENT_LDFLAGS)
+endif
+
+ifneq ($(TEST_LDFLAGS),)
+    LOCAL_LDFLAGS               += $(TEST_LDFLAGS)
+endif
+
 include $(TEST_APPLICATION_RULES)
 
 #
@@ -144,6 +152,14 @@ endif
 
 ifneq ($(TEST_LINKWITH),)
     LOCAL_LINKWITH              += $(TEST_LINKWITH)
+endif
+
+ifneq ($(SERVER_LDFLAGS),)
+    LOCAL_LDFLAGS               += $(SERVER_LDFLAGS)
+endif
+
+ifneq ($(TEST_LDFLAGS),)
+    LOCAL_LDFLAGS               += $(TEST_LDFLAGS)
 endif
 
 include $(TEST_APPLICATION_RULES)
@@ -232,6 +248,14 @@ ifneq ($(findstring colloc,$(TEST_TARGET_EXT)),)
         LOCAL_LINKWITH              += $(TEST_LINKWITH)
     endif
 
+    ifneq ($(COLLOC_LDFLAGS),)
+        LOCAL_LDFLAGS               += $(COLLOC_LDFLAGS)
+    endif
+
+    ifneq ($(TEST_LDFLAGS),)
+        LOCAL_LDFLAGS               += $(TEST_LDFLAGS)
+    endif
+
     include $(TEST_APPLICATION_RULES)
 
 endif
@@ -303,6 +327,14 @@ ifneq ($(findstring serveramd,$(TEST_TARGET_EXT)),)
 
     ifneq ($(TEST_LINKWITH),)
         LOCAL_LINKWITH              += $(TEST_LINKWITH)
+    endif
+
+    ifneq ($(AMD_LDFLAGS),)
+        LOCAL_LDFLAGS               += $(AMD_LDFLAGS)
+    endif
+
+    ifneq ($(TEST_LDFLAGS),)
+        LOCAL_LDFLAGS               += $(TEST_LDFLAGS)
     endif
 
     include $(TEST_APPLICATION_RULES)

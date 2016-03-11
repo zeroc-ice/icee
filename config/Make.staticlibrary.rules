@@ -23,7 +23,11 @@ ifeq ($(LOCAL_LIBNAME),)
     LOCAL_LIBNAME               = lib$(LOCAL_MODULE)$(LOCAL_LIBNAME_SUFFIX).a
 endif
 
-LOCAL_LIB                       = $(icee_lib_dir)/$(LOCAL_LIBNAME)
+ifeq ($(LOCAL_LIBDIR),)
+    LOCAL_LIBDIR                = $(icee_lib_dir)
+endif
+
+LOCAL_LIB                       = $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME)
 
 $(LOCAL_LIB): LOCAL_OBJS := $(LOCAL_OBJS)
 
