@@ -12,16 +12,24 @@ LOCAL_CPPFLAGS                  := -fPIC $(LOCAL_CPPFLAGS)
 
 include $(OBJECT_RULES)
 
+ifeq ($(CPP11),yes)
+    ifneq ($(filter $(LOCAL_MODULE),$(CPP11_MODULES)),)
+        ifeq ($(LOCAL_DYLIBNAME_SUFFIX),)
+            LOCAL_DYLIBNAME_SUFFIX = ++11
+        endif
+    endif
+endif
+
 ifeq ($(LOCAL_DYLIBNAME),)
-    LOCAL_DYLIBNAME             = lib$(LOCAL_MODULE).so
+    LOCAL_DYLIBNAME             = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so
 endif
 
 ifeq ($(LOCAL_DYLIBSONAME),)
-    LOCAL_DYLIBSONAME           = lib$(LOCAL_MODULE).so.$(SOVERSION)
+    LOCAL_DYLIBSONAME           = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(SOVERSION)
 endif
 
 ifeq ($(LOCAL_DYLIBFILENAME),)
-    LOCAL_DYLIBFILENAME         = lib$(LOCAL_MODULE).so.$(VERSION)
+    LOCAL_DYLIBFILENAME         = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(VERSION)
 endif
 
 ifeq ($(LOCAL_LIBDIR),)

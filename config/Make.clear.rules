@@ -32,9 +32,11 @@ LOCAL_BINDIR                    =
 LOCAL_LIB                       =
 LOCAL_LIBDIR                    =
 LOCAL_LIBNAME                   =
+LOCAL_LIBNAME_SUFFIX            =
 LOCAL_DYLIBNAME                 =
 LOCAL_DYLIBSONAME               =
 LOCAL_DYLIBFILENAME             =
+LOCAL_DYLIBNAME_SUFFIX          =
 LOCAL_RESOURCES                 =
 LOCAL_HEADERPATH                =
 LOCAL_HEADERS                   =
@@ -44,3 +46,15 @@ LOCAL_TARGETPREFIX              =
 LOCAL_STRIP_DISABLED            =
 LOCAL_PREFIX                    =
 LOCAL_PACKAGE                   =
+
+# Clear Local Freeze Rules
+LOCAL_FREEZEOUTPUTDIR           =
+LOCAL_FREEZE_SRCS               =
+LOCAL_FREEZE_HEADERS            =
+LOCAL_SLICE2FREEZEFLAGS         =
+LOCAL_FREEZE_CLASS              =
+LOCAL_FREEZE_HEADER             =
+LOCAL_FREEZE_SRC                =
+LOCAL_FREEZE_DICT               =
+LOCAL_FREEZE_DICT_INDEX         =
+LOCAL_FREEZE_DEPS               =

@@ -33,6 +33,8 @@ SOVERSION                       = 36
 
 ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
     ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+else ifeq ($(findstring debian,$(shell uname -a)),debian)
+    ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 else
     ifeq ($(shell -m uname),x86_64)
         ice_libprefix           = 64
@@ -102,6 +104,13 @@ ifeq ($(EMBEDDED_RUNPATH),yes)
         DTAGS                   = -Wl,--disable-new-dtags
     endif
     DTAGS                       := $(DTAGS)
+endif
+
+#
+# Enable C++11 features
+#
+ifeq ($(CPP11), yes)
+    override CPPFLAGS           += -std=c++11
 endif
 
 #
@@ -195,6 +204,8 @@ DYNAMICLIBRARY_RULES            = $(CURDIR)/config/Make.dynamiclibrary.rules
 PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
 RESOURCES_RULES                 = $(CURDIR)/config/Make.resources.rules
 ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
+FREEZE_RULES                    = $(CURDIR)/config/Make.freeze.rules
+CPP11LIBRARY_RULES              = $(CURDIR)/config/Make.cpp11library.rules
 
 #
 # Install directories
@@ -208,6 +219,21 @@ else
     ice_install_slice_dir       ?= $(prefix)/slice
 endif
 
+CPP11_MODULES = \
+    IceUtil \
+    Ice \
+    IceSSL \
+    Glacier2 \
+    Glacier2CryptPermissionsVerifier \
+    IceBox \
+    IceGrid \
+    IceStorm \
+    Freeze \
+    IceStormService \
+    IceDiscovery \
+    IceLocatorDiscovery \
+    Slice
+
 #
 # Include required .mk files
 #
@@ -219,12 +245,14 @@ ifeq ($(USE_BIN_DIST),yes)
 install::
 
 else
-    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm IceDiscovery IceLocatorDiscovery Slice
+    DIST_MODULES = IceUtil Ice IceSSL Glacier2 IceBox IceGrid IceStorm Freeze IceStormService IceDiscovery IceLocatorDiscovery Slice
     DIST_TARGETS = slice2cpp \
                    slice2py \
+                   slice2freeze \
                    glacier2router \
                    icebox \
                    iceboxadmin \
+                   icestormadmin \
                    $(DIST_MODULES) \
                    IcePy
 
@@ -248,15 +276,19 @@ install:: dist
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/slice2cpp $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/slice2py $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/slice2freeze $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/glacier2router $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/icebox $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)cp -rf $(icee_bin_dir)/iceboxadmin $(DESTDIR)$(ice_install_bin_dir)
+	$(Q)cp -rf $(icee_bin_dir)/icestormadmin $(DESTDIR)$(ice_install_bin_dir)
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/slice2cpp.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/slice2py.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/slice2freeze.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/glacier2router.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/icebox.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)cp -rf $(ice_man_dir)/iceboxadmin.1 $(DESTDIR)$(ice_install_man_dir)
+	$(Q)cp -rf $(ice_man_dir)/icestormadmin.1 $(DESTDIR)$(ice_install_man_dir)
 	$(Q)mkdir -p $(DESTDIR)$(python_install_dir)
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/*.py  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IcePy.so.$(VERSION)  $(DESTDIR)$(python_install_dir)/IcePy.so
@@ -281,7 +313,7 @@ all:: $(TARGETS)
 clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
-    test_deploy: glacier2router icebox iceboxadmin IcePy
+    test_deploy: glacier2router icebox iceboxadmin icestormadmin IcePy
 endif
 
 .PHONY: test_deploy
@@ -313,6 +345,8 @@ test_deploy: test_compile
 		--exclude="*~" \
 		. $(DEPLOY_TARGET)
 
+	# We need cpp/include/IceUtil/Config.h for IceStorm tests
+	rsync -aczv --prune-empty-dirs --relative  cpp/include/IceUtil/Config.h $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
 ifneq ($(USE_BIN_DIST),yes)
@@ -323,17 +357,28 @@ ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
 else
 	# Necessary so that the tests can find the top level python directory
-	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python
+	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python/
 endif
 	rsync -aczv --prune-empty-dirs \
-	      --exclude="*.pyc" \
-	      --exclude="Make*" \
-	      --exclude="*.d" \
-	      --exclude="test/Slice/import/Test/*" \
-	      --exclude="test/Slice/import/*_ice.py" \
-	      ice/python/test $(DEPLOY_TARGET)/python/
+		--exclude="*.pyc" \
+		--exclude="Make*" \
+		--exclude="*.d" \
+		--exclude="test/Slice/import/Test/*" \
+		--exclude="test/Slice/import/*_ice.py" \
+		ice/python/test $(DEPLOY_TARGET)/python/
 	rsync -aczv --prune-empty-dirs --exclude="Make*" ice/slice $(DEPLOY_TARGET)/
 	rsync -aczv --prune-empty-dirs --exclude="Make*" --exclude="*.d" python/test/* $(DEPLOY_TARGET)/python/test/
+
+	rsync -av --filter="+ /*" --filter="+ /*/*" \
+		--filter="+ /*/*/db" \
+		--filter="+ /*/*/db2" \
+		--filter="+ /*/*/0.db" \
+		--filter="+ /*/*/0.db2" \
+		--filter="+ /*/*/1.db" \
+		--filter="+ /*/*/1.db2" \
+		--filter="+ /*/*/2.db" \
+		--filter="+ /*/*/2.db2" \
+		--exclude="*" cpp/test/ $(DEPLOY_TARGET)/cpp/test/
 
 scripts: ice/scripts
 	@rm -rf scripts

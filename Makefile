@@ -57,6 +57,12 @@ NEW_DTAGS                       ?= no
 #DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
 #
+# Define CPP11 as yes if you want to enable C++11 features in GCC or
+# Clang.
+#
+#CPP11                          ?= yes
+
+#
 # To build test suite against static libraries define BUILD_TESTSUITE
 # as static, to build test suite against dynamic libraries define
 # BUILD_TESTSUITE as dynamic.
@@ -76,9 +82,9 @@ BUILD_TESTSUITE                 ?= static
 ###############################################################################
 
 #
-# Target distribution supported values are 'wheezy' 'trusty' and 'vivid'.
+# Target distribution supported values are 'wheezy' 'jessie' 'trusty' and 'vivid'.
 #
-TARGET_DIST                     ?= wheezy
+TARGET_DIST                     ?= jessie
 
 # Debian arch tuple of the host machine. Supported values are
 # 'arm-linux-gnueabihf' and 'x86_64-linux-gnu'.
@@ -92,7 +98,7 @@ HOST                            ?= arm-linux-gnueabihf
 # Set this to the root directory of your cross development third party
 # libraries.
 #
-THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
+#THIRDPARTY_HOME                 ?= /opt/IceE-3.6.1-ThirdParty
 
 #
 # Include common definitions.

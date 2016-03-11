@@ -24,7 +24,9 @@ else
 endif
 
 LOCAL_GEN_SRCS                  := $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_SLICES:.ice=.cpp)))
+LOCAL_GEN_SRCS                  += $(addprefix $(LOCAL_PATH)/,$(notdir $(LOCAL_FREEZE_SRCS)))
 LOCAL_GEN_HEADERS               := $(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_SLICES:.ice=.h)))
+LOCAL_GEN_HEADERS               += $(LOCAL_FREEZE_HEADERS)
 
 ifneq ($(LOCAL_HEADERS),)
     LOCAL_HEADERS               := $(filter-out $(LOCAL_GEN_HEADERS),$(addprefix $(LOCAL_SLICEOUTPUTDIR)/,$(notdir $(LOCAL_HEADERS))))
@@ -73,7 +75,6 @@ endif
 	@LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
 $(LOCAL_PATH)/%.cpp: $(LOCAL_SLICEOUTPUTDIR)/%.h
-	
 
 cpp/%.h:: ice/cpp/%.h
 	@mkdir -p $(@D)
@@ -108,10 +109,10 @@ endif
 
 ifneq ($(LOCAL_GEN_SRCS),)
 $(LOCAL_MODULE)_gitignore: LOCAL_GEN_SRCS := $(LOCAL_GEN_SRCS)
-$(LOCAL_MODULE)_gitignore: LOCAL_GENHEADERS := $(LOCAL_GENHEADERS)
+$(LOCAL_MODULE)_gitignore: LOCAL_GEN_HEADERS := $(LOCAL_GEN_HEADERS)
 $(LOCAL_MODULE)_gitignore: LOCAL_HEADERS := $(LOCAL_HEADERS)
 $(LOCAL_MODULE)_gitignore::
-	@for line in $(LOCAL_GEN_SRCS) $(LOCAL_GENHEADERS) $(LOCAL_HEADERS) ; do \
+	@for line in $(LOCAL_GEN_SRCS) $(LOCAL_GEN_HEADERS) $(LOCAL_HEADERS) ; do \
         echo $$line ; \
     done
 gitignore:: $(LOCAL_MODULE)_gitignore

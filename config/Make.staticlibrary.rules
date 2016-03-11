@@ -11,7 +11,18 @@ LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
 
 include $(OBJECT_RULES)
 
-LOCAL_LIBNAME                   = lib$(LOCAL_MODULE).a
+ifeq ($(CPP11),yes)
+    ifneq ($(filter $(LOCAL_MODULE),$(CPP11_MODULES)),)
+        ifeq ($(LOCAL_DYLIBNAME_SUFFIX),)
+            LOCAL_LIBNAME_SUFFIX    = ++11
+        endif
+    endif
+endif
+
+ifeq ($(LOCAL_LIBNAME),)
+    LOCAL_LIBNAME               = lib$(LOCAL_MODULE)$(LOCAL_LIBNAME_SUFFIX).a
+endif
+
 LOCAL_LIB                       = $(icee_lib_dir)/$(LOCAL_LIBNAME)
 
 $(LOCAL_LIB): LOCAL_OBJS := $(LOCAL_OBJS)

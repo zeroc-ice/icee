@@ -25,7 +25,7 @@ $(LOCAL_TARGET): $(LOCAL_RESOURCES)
 $(LOCAL_PATH)/%: $(LOCAL_SRCDIR)/%
 	@mkdir -p $(@D)
 	$(E) Copying resource $(@F)
-	$(Q)cp $< $@
+	$(Q)cp -r $< $@
 
 $(LOCAL_MODULE)_clean: LOCAL_RESOURCES := $(LOCAL_RESOURCES)
 $(LOCAL_MODULE)_clean::
