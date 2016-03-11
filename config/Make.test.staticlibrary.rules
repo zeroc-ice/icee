@@ -1,0 +1,38 @@
+# **********************************************************************
+#
+# Copyright (c) 2003-2016 ZeroC, Inc. All rights reserved.
+#
+# This copy of Ice is licensed to you under the terms described in the
+# ICE_LICENSE file included in this distribution.
+#
+# **********************************************************************
+
+LOCAL_TESTDIR                   = ice/$(LOCAL_PATH)
+LOCAL_SLICEDIR                  = $(LOCAL_TESTDIR)
+LOCAL_SRCDIR                    = $(LOCAL_TESTDIR)
+
+ifeq ($(LOCAL_LIBDIR),)
+    LOCAL_LIBDIR                = $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)
+endif
+
+ifneq ($(LOCAL_SRCS),)
+	LOCAL_SRCS                  := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
+endif
+
+LOCAL_LIBNAME                   := lib$(LOCAL_MODULE)$(LOCAL_LIBNAME_SUFFIX).a
+LOCAL_MODULE                    := $(subst /,_,$(LOCAL_PATH))_$(LOCAL_MODULE)
+
+
+LOCAL_CPPFLAGS                  := $(LOCAL_CPPFLAGS) -Iice/cpp/test/include -I$(LOCAL_PATH) -I$(LOCAL_SRCDIR)
+LOCAL_SLICE2CPPFLAGS            := $(LOCAL_SLICE2CPPFLAGS) -I$(LOCAL_SLICEDIR)
+
+include $(STATICLIBRARY_RULES)
+
+.PHONY: test_compile test_clean $(LOCAL_MODULE)_clean
+
+test_compile: $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME)
+test_clean: $(LOCAL_MODULE)_clean
+
+$(LOCAL_MODULE)_clean:: $(LOCAL_MODULE)_staticlib_clean
+
+include $(RESOURCES_RULES)
