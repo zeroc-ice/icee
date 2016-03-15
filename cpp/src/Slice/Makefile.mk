@@ -17,4 +17,10 @@ include $(LIBRARY_RULES)
 
 Slice: Slice_dynamiclib
 
+Slice_headers_install: Slice
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/Slice
+	$(Q)cp cpp/include/Slice/*.h $(DESTDIR)$(ice_install_include_dir)/Slice 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) Slice_headers_install
+
 endif

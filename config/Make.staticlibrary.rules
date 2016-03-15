@@ -76,3 +76,21 @@ CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
 
 TARGETS := $(TARGETS) $(LOCAL_LIB)
 
+
+ifeq ($(findstring /test/,$(LOCAL_PATH)),)
+
+$(LOCAL_MODULE)_staticlib_install: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
+$(LOCAL_MODULE)_staticlib_install: LOCAL_LIBNAME := $(LOCAL_LIBNAME)
+$(LOCAL_MODULE)_staticlib_install: LOCAL_MODULE := $(LOCAL_MODULE)
+
+$(LOCAL_MODULE)_staticlib_install: $(LOCAL_MODULE)_staticlib
+	@mkdir -p $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(LOCAL_LIBDIR)/$(LOCAL_LIBNAME) $(DESTDIR)/$(ice_install_lib_dir)
+ifeq ($(CPP11),yes)
+	@mkdir -p $(DESTDIR)/$(ice_install_lib_dir)/c++11
+	$(Q)cp -rf $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a $(DESTDIR)/$(ice_install_lib_dir)/c++11/
+endif
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) $(LOCAL_MODULE)_staticlib_install
+endif
+

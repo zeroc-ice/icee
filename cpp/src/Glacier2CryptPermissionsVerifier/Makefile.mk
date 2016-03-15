@@ -1,6 +1,8 @@
 #
 # Glacier2CryptPermissionsVerifier lib
 #
+
+ifneq ($(CPP11),yes)
 include $(CLEAR_RULES)
 
 LOCAL_MODULE                    = Glacier2CryptPermissionsVerifier
@@ -12,3 +14,4 @@ LOCAL_DEPENDENT_DYMODULES       = Glacier2 Ice IceUtil
 LOCAL_LINKWITH                  = -Wl,-Bdynamic -lcrypt
 include $(DYNAMICLIBRARY_RULES)
 
+endif

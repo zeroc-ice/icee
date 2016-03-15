@@ -45,3 +45,13 @@ LOCAL_LDFLAGS                   = -rdynamic
 include $(APPLICATION_RULES)
 
 endif
+
+IceBox_slice_install: IceBox
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceBox
+	$(Q)cp ice/slice/IceBox/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceBox
+
+IceBox_headers_install: IceBox
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceBox
+	$(Q)cp cpp/include/IceBox/*.h $(DESTDIR)$(ice_install_include_dir)/IceBox 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) IceBox_slice_install IceBox_headers_install

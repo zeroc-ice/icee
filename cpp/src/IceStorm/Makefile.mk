@@ -142,3 +142,13 @@ LOCAL_LDFLAGS                   = -rdynamic
 
 include $(APPLICATION_RULES)
 endif
+
+IceStorm_slice_install: IceStorm
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceStorm
+	$(Q)cp ice/slice/IceStorm/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceStorm
+
+IceStorm_headers_install: IceStorm
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceStorm
+	$(Q)cp cpp/include/IceStorm/*.h $(DESTDIR)$(ice_install_include_dir)/IceStorm 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) IceStorm_slice_install IceStorm_headers_install

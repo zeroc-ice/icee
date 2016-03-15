@@ -100,4 +100,14 @@ IceMX_clean:
 
 CLEAN_TARGETS := $(CLEAN_TARGETS) IceMX_clean
 
+
+IcePy_install: IcePy
+	$(Q)mkdir -p $(DESTDIR)$(python_install_dir)
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/*.py  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IcePy.so.$(VERSION)  $(DESTDIR)$(python_install_dir)/IcePy.so
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceBox  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
+	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
+
 endif

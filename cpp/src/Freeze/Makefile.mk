@@ -49,3 +49,13 @@ LOCAL_LINKWITH                  = -Wl,-Bdynamic -ldb_cxx-5.3
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
 include $(DYNAMICLIBRARY_RULES)
+
+Freeze_slice_install: Freeze
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/Freeze
+	$(Q)cp ice/slice/Freeze/*.ice $(DESTDIR)$(ice_install_slice_dir)/Freeze
+
+Freeze_headers_install: Freeze
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/Freeze
+	$(Q)cp cpp/include/Freeze/*.h $(DESTDIR)$(ice_install_include_dir)/Freeze 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) Freeze_slice_install Freeze_headers_install

@@ -37,3 +37,13 @@ LOCAL_LDFLAGS                   = -rdynamic
 include $(APPLICATION_RULES)
 
 endif
+
+Glacier2_slice_install: Glacier2
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/Glacier2
+	$(Q)cp ice/slice/Glacier2/*.ice $(DESTDIR)$(ice_install_slice_dir)/Glacier2
+
+Glacier2_headers_install: Glacier2
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/Glacier2
+	$(Q)cp cpp/include/Glacier2/*.h $(DESTDIR)$(ice_install_include_dir)/Glacier2 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) Glacier2_slice_install Glacier2_headers_install

@@ -107,3 +107,24 @@ CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_dynamiclib_clean
 
 TARGETS := $(TARGETS) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME)
 
+
+ifeq ($(findstring /test/,$(LOCAL_PATH)),)
+
+$(LOCAL_MODULE)_dynamiclib_install: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
+$(LOCAL_MODULE)_dynamiclib_install: LOCAL_DYLIBNAME := $(LOCAL_DYLIBNAME)
+$(LOCAL_MODULE)_dynamiclib_install: LOCAL_DYLIBSONAME := $(LOCAL_DYLIBSONAME)
+$(LOCAL_MODULE)_dynamiclib_install: LOCAL_DYLIBFILENAME := $(LOCAL_DYLIBFILENAME)
+$(LOCAL_MODULE)_dynamiclib_install: LOCAL_MODULE := $(LOCAL_MODULE)
+
+$(LOCAL_MODULE)_dynamiclib_install: $(LOCAL_MODULE)_dynamiclib
+	@mkdir -p $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME) $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME) $(DESTDIR)/$(ice_install_lib_dir)
+	$(Q)cp -rf $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME) $(DESTDIR)/$(ice_install_lib_dir)
+ifeq ($(CPP11),yes)
+	@mkdir -p $(DESTDIR)/$(ice_install_lib_dir)/c++11
+	$(Q)cp -rf $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so $(DESTDIR)/$(ice_install_lib_dir)/c++11/
+endif
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) $(LOCAL_MODULE)_dynamiclib_install
+endif

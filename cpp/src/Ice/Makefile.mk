@@ -56,3 +56,35 @@ include $(STATICLIBRARY_RULES)
 LOCAL_OBJS                      =
 include $(DYNAMICLIBRARY_RULES)
 Ice: Ice_staticlib Ice_dynamiclib
+
+
+Ice_slice_install: Ice
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/Ice
+	$(Q)cp ice/slice/Ice/*.ice $(DESTDIR)$(ice_install_slice_dir)/Ice
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceSSL
+	$(Q)cp ice/slice/IceSSL/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceSSL
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceDiscovery
+	$(Q)cp ice/slice/IceDiscovery/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceDiscovery
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceLocatorDiscovery
+	$(Q)cp ice/slice/IceLocatorDiscovery/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceLocatorDiscovery
+
+Ice_headers_install: Ice
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceUtil
+	$(Q)cp cpp/include/IceUtil/*.h $(DESTDIR)$(ice_install_include_dir)/IceUtil
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/Ice
+	$(Q)cp cpp/include/IceUtil/*.h $(DESTDIR)$(ice_install_include_dir)/Ice
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceSSL
+	$(Q)cp cpp/include/IceSSL/*.h $(DESTDIR)$(ice_install_include_dir)/IceSSL
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceDiscovery
+	$(Q)cp cpp/include/IceDiscovery/*.h $(DESTDIR)$(ice_install_include_dir)/IceDiscovery
+
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceLocatorDiscovery
+	$(Q)cp cpp/include/IceLocatorDiscovery/*.h $(DESTDIR)$(ice_install_include_dir)/IceLocatorDiscovery
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) Ice_slice_install Ice_headers_install

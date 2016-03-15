@@ -92,3 +92,20 @@ $(LOCAL_MODULE)_gitignore::
 	@echo $(LOCAL_BINDIR)/$(LOCAL_EXE)
 
 gitignore:: $(LOCAL_MODULE)_gitignore
+
+ifeq ($(findstring /test/,$(LOCAL_PATH)),)
+
+$(LOCAL_MODULE)_install: LOCAL_BINDIR := $(LOCAL_BINDIR)
+$(LOCAL_MODULE)_install: LOCAL_EXE := $(LOCAL_EXE)
+
+$(LOCAL_MODULE)_install: $(LOCAL_MODULE)
+	@mkdir -p $(DESTDIR)/$(ice_install_bin_dir)
+	$(Q)cp -rf $(LOCAL_BINDIR)/$(LOCAL_EXE) $(DESTDIR)/$(ice_install_bin_dir)
+ifneq ($(wildcard ice/man/man1/$(LOCAL_EXE).1),)
+	@mkdir -p $(DESTDIR)/$(ice_install_man_dir)
+	$(Q)cp -rf ice/man/man1/$(LOCAL_EXE).1 $(DESTDIR)/$(ice_install_man_dir)
+endif
+
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) $(LOCAL_MODULE)_install
+endif

@@ -17,3 +17,12 @@ LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
 include $(LIBRARY_RULES)
 
+IceGrid_slice_install: IceGrid
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_slice_dir)/IceGrid
+	$(Q)cp ice/slice/IceGrid/*.ice $(DESTDIR)$(ice_install_slice_dir)/IceGrid
+
+IceGrid_headers_install: IceGrid
+	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceGrid
+	$(Q)cp cpp/include/IceGrid/*.h $(DESTDIR)$(ice_install_include_dir)/IceGrid 
+
+INSTALL_TARGETS := $(INSTALL_TARGETS) IceGrid_slice_install IceGrid_headers_install
