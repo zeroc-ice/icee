@@ -11,14 +11,15 @@ ifneq ($(TARGET_PREFIX),)
     #
     # Strip trailing and leading dash (-) in TARGET_PREFIX
     #
-    OBJPREFIX                   = $(subst $(eval) ,-,$(strip $(subst -, ,$(TARGET_PREFIX))))
+    LIBPREFIX                   = $(subst $(eval) ,-,$(strip $(subst -, ,$(TARGET_PREFIX))))
 else
     #
     # For native builds TARGET_PREFIX is not set
     #
-    OBJPREFIX                   = $(shell uname -m)-pokynative-linux
+    LIBPREFIX                   = $(shell uname -m)-pokynative-linux
 endif
 
+OBJPREFIX                       = $(LIBPREFIX)$(CPP11PREFIX)
 icee_libsubdir                  = lib
 ice_install_lib_dir             ?= $(prefix)/lib
 

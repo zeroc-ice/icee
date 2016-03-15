@@ -76,6 +76,7 @@ endif
 	@LD_LIBRARY_PATH=$(ice_lib_dir):$$LD_LIBRARY_PATH $(SLICE2CPP) --depend $(LOCAL_SLICE2CPPFLAGS) $(SLICE2CPPFLAGS) $< | sed 's|\(.*:\)|$(@D)/\1|' > $(@D)/.depend/$(*F).ice.d
 
 $(LOCAL_PATH)/%.cpp: $(LOCAL_SLICEOUTPUTDIR)/%.h
+	
 
 cpp/%.h:: ice/cpp/%.h
 	@mkdir -p $(@D)

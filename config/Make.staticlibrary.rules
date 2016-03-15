@@ -37,15 +37,40 @@ $(LOCAL_LIB): $(LOCAL_OBJS)
 	$(Q)$(call mklib,$@,$(LOCAL_OBJS))
 
 $(LOCAL_MODULE)_staticlib: LOCAL_LIB := $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
+$(LOCAL_MODULE)_staticlib: LOCAL_MODULE := $(LOCAL_MODULE)
 
 $(LOCAL_MODULE)_staticlib: $(LOCAL_LIB)
 
 $(LOCAL_MODULE)_non-pic_clean: LOCAL_LIB := $(LOCAL_LIB)
 
+ifeq ($(CPP11),yes)
+
+$(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a: LOCAL_LIBNAME := $(LOCAL_LIBNAME)
+$(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a: $(LOCAL_LIB)
+	@mkdir -p $(@D)
+	@rm -f $@
+	$(Q)ln -s ../$(LOCAL_LIBNAME) $@
+
+$(LOCAL_MODULE)_staticlib:  $(LOCAL_LIB) $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a
+
+else
+
+$(LOCAL_MODULE)_staticlib:  $(LOCAL_LIB)
+
+endif
+
+$(LOCAL_MODULE): $(LOCAL_MODULE)_staticlib
 
 $(LOCAL_MODULE)_staticlib_clean: LOCAL_LIB := $(LOCAL_LIB)
+$(LOCAL_MODULE)_staticlib_clean: LOCAL_MODULE := $(LOCAL_MODULE)
+$(LOCAL_MODULE)_staticlib_clean: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
+
 $(LOCAL_MODULE)_staticlib_clean:
 	$(Q)rm -rf $(LOCAL_LIB)
+ifeq ($(CPP11),yes)
+	$(Q)rm -rf $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a
+endif
 
 CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
 

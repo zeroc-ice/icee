@@ -1,6 +1,7 @@
 #
 # Python Ice module
 #
+ifneq ($(CPP11),yes)
 include $(CLEAR_RULES)
 LOCAL_PATH                      = python/test/Slice/import
 LOCAL_MODULE                    = $(subst /,_,$(LOCAL_PATH))
@@ -11,3 +12,4 @@ LOCAL_SLICES                    = $(wildcard $(LOCAL_SLICEDIR)/*.ice)
 include $(PYTHON_RULES)
 
 test_compile: $(LOCAL_MODULE)
+endif

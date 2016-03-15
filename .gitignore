@@ -5,9 +5,9 @@ bin
 .depend
 debian
 yocto
-arm-linux-gnueabihf
-x86_64-linux-gnu
-arm-poky-linux-gnueabi
+arm-linux-gnueabihf*
+x86_64-linux-gnu*
+arm-poky-linux-gnueabi*
 *.so
 *.so.*
 *~

@@ -33,7 +33,11 @@ LOCAL_MODULE                    = IceStormServiceLocalSlice
 LOCAL_PATH                      = cpp/src/IceStorm
 
 LOCAL_SLICEDIR                  = ice/$(LOCAL_PATH)
-LOCAL_SLICES                    = $(filter-out $(LOCAL_SLICEDIR)/DBTypes.ice, $(wildcard $(LOCAL_SLICEDIR)/*.ice))
+LOCAL_SLICES                    = $(filter-out $(LOCAL_SLICEDIR)/DBTypes.ice \
+					       $(LOCAL_SLICEDIR)/dummy.ice \
+					       $(LOCAL_SLICEDIR)/dummy2.ice, \
+					       $(wildcard $(LOCAL_SLICEDIR)/*.ice))
+
 LOCAL_SLICE2CPPFLAGS            = --ice -Iice/cpp/src -Iice/cpp/src/IceStorm --include-dir IceStorm
 
 LOCAL_OBJPREFIX                 = $(OBJPREFIX)/pic
@@ -93,6 +97,7 @@ LOCAL_LDFLAGS                   = -rdynamic
 LOCAL_CPPFLAGS 			= -I$(LOCAL_PATH)
 include $(DYNAMICLIBRARY_RULES)
 
+ifneq ($(CPP11),yes)
 #
 # icestormadmin
 #
@@ -125,7 +130,7 @@ LOCAL_SLICES                    = $(LOCAL_SLICEDIR)/DBTypes.ice
 LOCAL_SLICE2CPPFLAGS            = --ice -Icpp/src -I$(LOCAL_SLICEDIR) --include-dir IceStorm
 
 LOCAL_CPPFLAGS			= -I$(LOCAL_PATH)
-LOCAL_DEPENDENT_DYMODULES       = IceStorm Ice IceUtil IcePatch2 Freeze
+LOCAL_DEPENDENT_DYMODULES       = IceStorm Ice IceUtil Freeze
 LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)
 LOCAL_SRCS                      = $(LOCAL_SRCDIR)/IceStormDB.cpp \
                                   $(LOCAL_SRCDIR)/LLUMap.cpp \
@@ -136,3 +141,4 @@ LOCAL_LINKWITH                  = -Wl,-Bdynamic -lssl
 LOCAL_LDFLAGS                   = -rdynamic
 
 include $(APPLICATION_RULES)
+endif

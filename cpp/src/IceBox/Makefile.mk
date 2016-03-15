@@ -32,6 +32,9 @@ include $(APPLICATION_RULES)
 #
 # IceBox admin
 #
+
+ifneq ($(CPP11),yes)
+
 include $(CLEAR_RULES)
 LOCAL_MODULE                    = iceboxadmin
 LOCAL_PATH                      = cpp/src/IceBox
@@ -40,3 +43,5 @@ LOCAL_SRCDIR                    = ice/$(LOCAL_PATH)
 LOCAL_SRCS                      = $(LOCAL_SRCDIR)/Admin.o
 LOCAL_LDFLAGS                   = -rdynamic
 include $(APPLICATION_RULES)
+
+endif

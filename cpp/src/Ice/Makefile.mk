@@ -55,3 +55,4 @@ LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 include $(STATICLIBRARY_RULES)
 LOCAL_OBJS                      =
 include $(DYNAMICLIBRARY_RULES)
+Ice: Ice_staticlib Ice_dynamiclib

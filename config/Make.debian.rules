@@ -17,7 +17,8 @@ ifeq ($(filter $(HOST),arm-linux-gnueabihf x86_64-linux-gnu),)
     $(error Invalid HOST: `$(HOST)' supported values are: `arm-linux-gnueabihf' and `x86_64-linux-gnu')
 endif
 
-OBJPREFIX                       = $(HOST)
+LIBPREFIX                       = $(HOST)
+OBJPREFIX                       = $(HOST)$(CPP11PREFIX)
 icee_libsubdir                  = lib/$(HOST)
 
 #

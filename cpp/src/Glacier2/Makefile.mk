@@ -18,6 +18,8 @@ LOCAL_DEPENDENT_DYMODULES       = Ice IceUtil
 
 include $(LIBRARY_RULES)
 
+ifneq ($(CPP11),yes)
+
 include $(CLEAR_RULES)
 LOCAL_MODULE                    = glacier2router
 LOCAL_PATH                      = cpp/src/Glacier2
@@ -34,3 +36,4 @@ LOCAL_LINKWITH                  = -Wl,-Bdynamic -lssl
 LOCAL_LDFLAGS                   = -rdynamic
 include $(APPLICATION_RULES)
 
+endif

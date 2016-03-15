@@ -19,19 +19,20 @@ Ice-E usage page for your target platform.
 
 ### Third-Party Libraries
 
-Ice-E depends on the `python`, `bzip2` and `openssl` development libraries.
+Ice-E depends on the `python`, `Berkeley DB 5.3`, `bzip2`, `expat` and `openssl`
+development libraries.
 
 #### Debian
 
-We provide a script that will download and setup the required libraries from
-the Debian 7.8 (Wheezy) repositories:
+Ensure that `python`, `Berkeley DB 5.3`, `bzip2`, `expat` and `openssl` development
+packages from Debian repositories are installed.
 
-    curl -fsSL https://github.com/zeroc-ice/icee/raw/v3.6.2/config/install_wheezy_thirdparty.sh | sudo bash
 
 #### Yocto
 
-Ensure the `python`, `bzip2` and `ssl` development packages are installed on your image.
-If you are cross compiling they must be included in your SDK.
+Ensure the `python`, `Berkeley db 5.3`, `bzip2`, `expat` and `ssl` development
+packages are installed on your image. If you are cross compiling they must be
+included in your SDK.
 
 ## Building Ice-E
 
@@ -47,8 +48,8 @@ In a command window, run `make` to build Ice-E. This will build:
 
 - the Ice for C++ static and dynamic libraries,
 - Ice for Python,
-- the `slice2cpp` and `slice2py` Slice compilers,
-- `glacier2router`, `icebox`, and `iceboxadmin` executables, and
+- the `slice2cpp`, `slice2py` and `slice2freeze` Slice compilers,
+- `dumpdb`, `glacier2router`, `icebox`, `iceboxadmin` and `transformdb` executables, and
 - the C++ and Python test suites.
 
 The C++ static and dynamic libraries are built in a subfolder of `cpp/lib`. The

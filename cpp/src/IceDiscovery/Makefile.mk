@@ -16,5 +16,3 @@ LOCAL_DEPENDENT_DYMODULES       = Ice IceUtil
 LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
 include $(DYNAMICLIBRARY_RULES)
-
-IceDiscovery: IceDiscovery_dynamiclib
