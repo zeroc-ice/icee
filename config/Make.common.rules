@@ -227,11 +227,12 @@ CPP11_MODULES = IceUtil \
 		Glacier2 \
 		IceBox \
 		IceGrid \
-		IceStorm \
-		Freeze \
-		IceStormService \
 		IceDiscovery \
 		IceLocatorDiscovery
+
+ifneq ($(NOFREEZE),yes)
+CPP11_MODULES := $(CPP11_MODULES) Freeze IceStorm IceStormService
+endif
 
 ifeq ($(CPP11),yes)
 DIST_MODULES = $(CPP11_MODULES)
@@ -243,27 +244,26 @@ DIST_MODULES = IceUtil \
 	       Glacier2 \
 	       IceBox \
 	       IceGrid \
-	       IceStorm \
-	       Freeze \
-	       IceStormService \
 	       IceDiscovery \
 	       IceLocatorDiscovery \
 	       Slice \
-	       IceXML
 
 DIST_TARGETS = slice2cpp \
 	       slice2py \
-	       slice2freeze \
 	       glacier2router \
 	       icebox \
 	       iceboxadmin \
-	       icestormdb \
-	       icestormadmin \
-	       transformdb \
-	       dumpdb \
 	       $(DIST_MODULES) \
 	       IcePy
+
+ifneq ($(NOFREEZE),yes)
+DIST_MODULES = $(DIST_MODULES) Freeze IceStorm IceStormService IceXML
+DIST_TARGETS = $(sort $(DIST_TARGETS) slice2freeze icestormdb icestormadmin transformdb dumpdb $(DIST_MODULES))
 endif
+
+endif
+
+
 
 #
 # Include required .mk files
