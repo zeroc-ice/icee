@@ -293,7 +293,11 @@ ifeq ($(NOFREEZE),yes)
 SKIPFRAGMENTS		= cpp/src/Freeze/Makefile.mk \
 			  cpp/src/FreezeScript/Makefile.mk \
 			  cpp/src/slice2freeze/Makefile.mk \
-			  cpp/test/Freeze/%/Makefile.mk
+			  cpp/src/IceXML/Makefile.mk \
+			  cpp/src/IceStorm/Makefile.mk \
+			  cpp/test/Freeze/%/Makefile.mk \
+			  cpp/test/IceStorm/%/Makefile.mk \
+
 endif
 
 MAKEFRAGMENTS		:= $(filter-out $(SKIPFRAGMENTS),$(MAKEFRAGMENTS))

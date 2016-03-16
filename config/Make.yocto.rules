@@ -34,4 +34,3 @@ else
 endif
 
 SLICE2PY                        = $(ice_bin_dir)/slice2py
-SLICE2FREEZE                    = $(ice_bin_dir)/slice2freeze
