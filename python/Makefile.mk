@@ -110,4 +110,6 @@ IcePy_install: IcePy
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceMX  $(DESTDIR)$(python_install_dir)/
 
+INSTALL_TARGETS := $(INSTALL_TARGETS) IcePy_install
+
 endif
