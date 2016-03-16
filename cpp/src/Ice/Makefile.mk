@@ -76,7 +76,7 @@ Ice_headers_install: Ice
 	$(Q)cp cpp/include/IceUtil/*.h $(DESTDIR)$(ice_install_include_dir)/IceUtil
 
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/Ice
-	$(Q)cp cpp/include/IceUtil/*.h $(DESTDIR)$(ice_install_include_dir)/Ice
+	$(Q)cp cpp/include/Ice/*.h $(DESTDIR)$(ice_install_include_dir)/Ice
 
 	$(Q)mkdir -p $(DESTDIR)$(ice_install_include_dir)/IceSSL
 	$(Q)cp cpp/include/IceSSL/*.h $(DESTDIR)$(ice_install_include_dir)/IceSSL
