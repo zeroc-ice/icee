@@ -23,9 +23,9 @@ endif
 include $(CLEAR_RULES)
 
 ifeq ($(BUILD_TESTSUITE),static)
-cpp/test/Ice/objects/client:: cpp_test_Ice_objects_TestDerived_staticlib
+cpp/test/Ice/objects/client: cpp_test_Ice_objects_TestDerived_staticlib
 else
-cpp/test/Ice/objects/client:: cpp_test_Ice_objects_TestDerived_dynamiclib
+cpp/test/Ice/objects/client: cpp_test_Ice_objects_TestDerived_dynamiclib
 endif
 
 LOCAL_PATH                      = cpp/test/Ice/objects

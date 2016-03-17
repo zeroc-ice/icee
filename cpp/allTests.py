@@ -87,8 +87,9 @@ tests = [
     ("IceDiscovery/simple", ["service"]),
     ]
 
-if os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin.so")) or \
-   os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin++11.so")):
+if not TestUtil.isYocto() and \
+   (os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin.so")) or \
+   os.path.isfile(os.path.join(path[0], "cpp", "test", "Ice", "plugin", "plugins", "libTestPlugin++11.so"))):
 
     tests += [("Ice/plugin", ["core"])]
 

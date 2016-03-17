@@ -25,6 +25,8 @@ LOCAL_HEADERPATH                = cpp/include/$(LOCAL_MODULE)
 
 include $(LIBRARY_RULES)
 
+ifneq ($(NOFREEZE),yes)
+
 #
 # IceStormLocalSlice
 #
@@ -141,6 +143,8 @@ LOCAL_LINKWITH                  = -Wl,-Bdynamic -lssl
 LOCAL_LDFLAGS                   = -rdynamic
 
 include $(APPLICATION_RULES)
+endif
+
 endif
 
 IceStorm_slice_install: IceStorm

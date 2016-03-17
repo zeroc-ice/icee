@@ -228,11 +228,12 @@ CPP11_MODULES = IceUtil \
 		Glacier2 \
 		IceBox \
 		IceGrid \
+		IceStorm \
 		IceDiscovery \
 		IceLocatorDiscovery
 
 ifneq ($(NOFREEZE),yes)
-CPP11_MODULES := $(CPP11_MODULES) Freeze IceStorm IceStormService
+CPP11_MODULES := $(CPP11_MODULES) Freeze IceStormService
 endif
 
 ifeq ($(CPP11),yes)
@@ -245,6 +246,7 @@ DIST_MODULES = IceUtil \
 	       Glacier2 \
 	       IceBox \
 	       IceGrid \
+	       IceStorm \
 	       IceDiscovery \
 	       IceLocatorDiscovery \
 	       Slice \
@@ -258,7 +260,7 @@ DIST_TARGETS = slice2cpp \
 	       IcePy
 
 ifneq ($(NOFREEZE),yes)
-DIST_MODULES := $(DIST_MODULES) Freeze IceStorm IceStormService IceXML
+DIST_MODULES := $(DIST_MODULES) Freeze IceStormService IceXML
 DIST_TARGETS := $(sort $(DIST_TARGETS) slice2freeze icestormdb icestormadmin transformdb dumpdb $(DIST_MODULES))
 endif
 
@@ -295,7 +297,6 @@ SKIPFRAGMENTS		= cpp/src/Freeze/Makefile.mk \
 			  cpp/src/FreezeScript/Makefile.mk \
 			  cpp/src/slice2freeze/Makefile.mk \
 			  cpp/src/IceXML/Makefile.mk \
-			  cpp/src/IceStorm/Makefile.mk \
 			  cpp/test/Freeze/%/Makefile.mk \
 			  cpp/test/IceStorm/%/Makefile.mk \
 
@@ -313,7 +314,10 @@ all:: $(TARGETS)
 clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
-    test_deploy: glacier2router icebox iceboxadmin icestormadmin IcePy
+    test_deploy: glacier2router icebox iceboxadmin IcePy
+    ifneq ($(NOFREEZE),yes)
+        test_deploy: icestormadmin 
+    endif
 endif
 
 .PHONY: test_deploy
