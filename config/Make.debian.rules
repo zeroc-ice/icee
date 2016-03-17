@@ -80,8 +80,6 @@ ice_install_lib_dir = $(prefix)/lib/$(HOST)
 
 ifeq ($(ICE_HOME),)
     SLICE2PY                    = ice/cpp/bin/slice2py
-    SLICE2FREEZE                = ice/cpp/bin/slice2freeze
 else
     SLICE2PY                    = slice2py
-    SLICE2FREEZE                = slice2freeze
 endif

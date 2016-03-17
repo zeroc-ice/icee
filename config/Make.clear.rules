@@ -46,6 +46,7 @@ LOCAL_TARGETPREFIX              =
 LOCAL_STRIP_DISABLED            =
 LOCAL_PREFIX                    =
 LOCAL_PACKAGE                   =
+LOCAL_INSTALLDIR		=
 
 # Clear Local Freeze Rules
 LOCAL_FREEZEOUTPUTDIR           =

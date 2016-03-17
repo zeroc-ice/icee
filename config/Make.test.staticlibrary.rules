@@ -12,7 +12,7 @@ LOCAL_SLICEDIR                  = $(LOCAL_TESTDIR)
 LOCAL_SRCDIR                    = $(LOCAL_TESTDIR)
 
 ifeq ($(LOCAL_LIBDIR),)
-    LOCAL_LIBDIR                = $(LOCAL_PATH)/$(LOCAL_OBJPREFIX)
+    LOCAL_LIBDIR                = $(LOCAL_PATH)
 endif
 
 ifneq ($(LOCAL_SRCS),)

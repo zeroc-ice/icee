@@ -22,7 +22,7 @@ ifeq ($(BUILD_TESTSUITE),dynamic)
     LOCAL_SLICES                = Test.ice
     LOCAL_SRCS                  = TestI.cpp Service.cpp
     LOCAL_DEPENDENT_DYMODULES   = IceBox Ice IceUtil
-    LOCAL_RESOURCES             = config.icebox config.service
+    LOCAL_RESOURCES             = config.icebox config.service config.admin
     include $(TEST_DYNAMICLIBRARY_RULES)
 
 endif

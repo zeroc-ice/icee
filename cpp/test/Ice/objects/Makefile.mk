@@ -14,14 +14,22 @@ LOCAL_PATH              = cpp/test/Ice/objects
 
 LOCAL_SLICES            = Derived.ice \
                           DerivedEx.ice
-
+ifeq ($(BUILD_TESTSUITE),static)
 include $(TEST_STATICLIBRARY_RULES)
+else
+include $(TEST_DYNAMICLIBRARY_RULES)
+endif
 
 include $(CLEAR_RULES)
-cpp_test_Ice_objects_client:: cpp_test_Ice_objects_TestDerived_staticlib
+
+ifeq ($(BUILD_TESTSUITE),static)
+cpp/test/Ice/objects/client:: cpp_test_Ice_objects_TestDerived_staticlib
+else
+cpp/test/Ice/objects/client:: cpp_test_Ice_objects_TestDerived_dynamiclib
+endif
 
 LOCAL_PATH                      = cpp/test/Ice/objects
-TEST_LDFLAGS					= -L$(LOCAL_PATH)/$(LOCAL_OBJPREFIX)
+TEST_LDFLAGS					= -L$(LOCAL_PATH)
 TEST_LINKWITH					= -lTestDerived
 CLIENT_SRCS_EXT                 = TestI.cpp
 SERVER_SRCS_EXT					= TestIntfI.cpp

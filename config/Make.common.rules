@@ -60,6 +60,7 @@ else
 endif
 
 SLICE2CPP                       = $(ice_bin_dir)/slice2cpp
+SLICE2FREEZE                    = $(ice_bin_dir)/slice2freeze
 SLICE2CPPFLAGS                  = -I$(ice_slice_dir)
 SLICE2PYFLAGS                   = -I$(ice_slice_dir)
 
@@ -257,8 +258,8 @@ DIST_TARGETS = slice2cpp \
 	       IcePy
 
 ifneq ($(NOFREEZE),yes)
-DIST_MODULES = $(DIST_MODULES) Freeze IceStorm IceStormService IceXML
-DIST_TARGETS = $(sort $(DIST_TARGETS) slice2freeze icestormdb icestormadmin transformdb dumpdb $(DIST_MODULES))
+DIST_MODULES := $(DIST_MODULES) Freeze IceStorm IceStormService IceXML
+DIST_TARGETS := $(sort $(DIST_TARGETS) slice2freeze icestormdb icestormadmin transformdb dumpdb $(DIST_MODULES))
 endif
 
 endif
@@ -323,6 +324,7 @@ test_deploy: test_compile
 	mkdir -p $(DEPLOYDIR)
 	mkdir -p $(subst $(prefix),$(DEPLOYDIR)/cpp,$(ice_install_lib_dir))
 	mkdir -p $(DEPLOYDIR)/python/python
+	mkdir -p $(DEPLOYDIR)/cpp/include/IceUtil
 	rsync -aczv $(DEPLOYDIR)/* $(DEPLOY_TARGET)
 	rm -rf $(DEPLOYDIR)
 
@@ -344,8 +346,8 @@ test_deploy: test_compile
 	        --exclude="*~" \
 	        . $(DEPLOY_TARGET)
 
-	# We need cpp/include/IceUtil/Config.h for IceStorm tests
-	rsync -aczv --prune-empty-dirs --relative  cpp/include/IceUtil/Config.h $(DEPLOY_TARGET)
+	# We need ice/cpp/include/IceUtil/Config.h for IceStorm tests
+	rsync -aczv --prune-empty-dirs  ice/cpp/include/IceUtil/Config.h $(DEPLOY_TARGET)/cpp/include/IceUtil/Config.h
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/scripts $(DEPLOY_TARGET)
 	rsync -aczv --prune-empty-dirs --exclude="*.pyc" ice/certs $(DEPLOY_TARGET)
 ifneq ($(USE_BIN_DIST),yes)

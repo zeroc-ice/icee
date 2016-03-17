@@ -77,7 +77,7 @@ CLEAN_TARGETS := $(CLEAN_TARGETS) $(LOCAL_MODULE)_staticlib_clean
 TARGETS := $(TARGETS) $(LOCAL_LIB)
 
 
-ifeq ($(findstring /test/,$(LOCAL_PATH)),)
+ifeq ($(filter cpp/test/% python/test/% cpp/src/mcpp,$(LOCAL_PATH)),)
 
 $(LOCAL_MODULE)_staticlib_install: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
 $(LOCAL_MODULE)_staticlib_install: LOCAL_LIBNAME := $(LOCAL_LIBNAME)

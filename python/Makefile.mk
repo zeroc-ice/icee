@@ -20,6 +20,8 @@ LOCAL_DYLIBNAME                 = $(LOCAL_MODULE).so
 LOCAL_DYLIBSONAME               = $(LOCAL_MODULE).so.$(SOVERSION)
 LOCAL_DYLIBFILENAME             = $(LOCAL_MODULE).so.$(VERSION)
 
+LOCAL_INSTALLDIR		= $(python_install_dir)
+
 include $(DYNAMICLIBRARY_RULES)
 
 METRICS_SLICES                  = ice/slice/Ice/Metrics.ice ice/slice/Glacier2/Metrics.ice ice/slice/IceStorm/Metrics.ice
@@ -104,7 +106,6 @@ CLEAN_TARGETS := $(CLEAN_TARGETS) IceMX_clean
 IcePy_install: IcePy
 	$(Q)mkdir -p $(DESTDIR)$(python_install_dir)
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/*.py  $(DESTDIR)$(python_install_dir)/
-	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IcePy.so.$(VERSION)  $(DESTDIR)$(python_install_dir)/IcePy.so
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceBox  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceGrid  $(DESTDIR)$(python_install_dir)/
 	$(Q)cp -rf python/python$(PYTHON_BASEVERSION)/IceStorm  $(DESTDIR)$(python_install_dir)/
