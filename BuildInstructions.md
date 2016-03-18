@@ -37,9 +37,7 @@ included in your SDK.
 ## Building Ice-E
 
 Edit [`Makefile`](./Makefile) to establish your build configuration. The
-comments in the file provide more information. On Debian, pay particular
-attention to the variable that defines the location of the third-party
-libraries.
+comments in the file provide more information.
 
 If you are cross compiling make sure you have configured your cross
 development environment.

@@ -11,16 +11,8 @@ LOCAL_OBJPREFIX                 = $(OBJPREFIX)/non-pic
 
 include $(OBJECT_RULES)
 
-ifeq ($(CPP11),yes)
-    ifneq ($(filter $(LOCAL_MODULE),$(CPP11_MODULES)),)
-        ifeq ($(LOCAL_DYLIBNAME_SUFFIX),)
-            LOCAL_LIBNAME_SUFFIX    = ++11
-        endif
-    endif
-endif
-
 ifeq ($(LOCAL_LIBNAME),)
-    LOCAL_LIBNAME               = lib$(LOCAL_MODULE)$(LOCAL_LIBNAME_SUFFIX).a
+    LOCAL_LIBNAME               = lib$(LOCAL_MODULE)$(LIBNAME_SUFFIX).a
 endif
 
 ifeq ($(LOCAL_LIBDIR),)
@@ -44,7 +36,14 @@ $(LOCAL_MODULE)_staticlib: $(LOCAL_LIB)
 
 $(LOCAL_MODULE)_non-pic_clean: LOCAL_LIB := $(LOCAL_LIB)
 
+$(LOCAL_MODULE)_staticlib:  $(LOCAL_LIB)
+
 ifeq ($(CPP11),yes)
+
+#
+# Don't create symlinks for test library targets
+#
+ifeq ($(findstring /test/,$(LOCAL_PATH)),)
 
 $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a: LOCAL_LIBNAME := $(LOCAL_LIBNAME)
 $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a: $(LOCAL_LIB)
@@ -52,7 +51,8 @@ $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a: $(LOCAL_LIB)
 	@rm -f $@
 	$(Q)ln -s ../$(LOCAL_LIBNAME) $@
 
-$(LOCAL_MODULE)_staticlib:  $(LOCAL_LIB) $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a
+$(LOCAL_MODULE)_staticlib: $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).a
+endif
 
 else
 

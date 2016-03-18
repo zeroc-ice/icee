@@ -113,6 +113,7 @@ endif
 ifeq ($(CPP11), yes)
     override CPPFLAGS           += -std=c++11
     CPP11PREFIX                 = -cpp11
+    LIBNAME_SUFFIX		= ++11
 endif
 
 #
@@ -208,7 +209,6 @@ PYTHON_RULES                    = $(CURDIR)/config/Make.python.rules
 RESOURCES_RULES                 = $(CURDIR)/config/Make.resources.rules
 ICEE_PYTHON_RULES               = $(CURDIR)/config/Make.iceepython.rules
 FREEZE_RULES                    = $(CURDIR)/config/Make.freeze.rules
-CPP11LIBRARY_RULES              = $(CURDIR)/config/Make.cpp11library.rules
 
 #
 # Install directories
@@ -314,10 +314,7 @@ all:: $(TARGETS)
 clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
-    test_deploy: glacier2router icebox iceboxadmin IcePy
-    ifneq ($(NOFREEZE),yes)
-        test_deploy: icestormadmin 
-    endif
+    test_deploy: $(filter $(DIST_TARGETS),glacier2router icebox iceboxadmin icestormadmin IcePy)
 endif
 
 .PHONY: test_deploy

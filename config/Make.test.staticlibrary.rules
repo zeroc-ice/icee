@@ -19,7 +19,7 @@ ifneq ($(LOCAL_SRCS),)
 	LOCAL_SRCS                  := $(addprefix $(LOCAL_SRCDIR)/,$(LOCAL_SRCS))
 endif
 
-LOCAL_LIBNAME                   := lib$(LOCAL_MODULE)$(LOCAL_LIBNAME_SUFFIX).a
+LOCAL_LIBNAME                   := lib$(LOCAL_MODULE)$(LIBNAME_SUFFIX).a
 LOCAL_MODULE                    := $(subst /,_,$(LOCAL_PATH))_$(LOCAL_MODULE)
 
 

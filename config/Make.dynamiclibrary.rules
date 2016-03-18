@@ -12,24 +12,16 @@ LOCAL_CPPFLAGS                  := -fPIC $(LOCAL_CPPFLAGS)
 
 include $(OBJECT_RULES)
 
-ifeq ($(CPP11),yes)
-    ifneq ($(filter $(LOCAL_MODULE),$(CPP11_MODULES)),)
-        ifeq ($(LOCAL_DYLIBNAME_SUFFIX),)
-            LOCAL_DYLIBNAME_SUFFIX = ++11
-        endif
-    endif
-endif
-
 ifeq ($(LOCAL_DYLIBNAME),)
-    LOCAL_DYLIBNAME             = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so
+    LOCAL_DYLIBNAME             = lib$(LOCAL_MODULE)$(LIBNAME_SUFFIX).so
 endif
 
 ifeq ($(LOCAL_DYLIBSONAME),)
-    LOCAL_DYLIBSONAME           = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(SOVERSION)
+    LOCAL_DYLIBSONAME           = lib$(LOCAL_MODULE)$(LIBNAME_SUFFIX).so.$(SOVERSION)
 endif
 
 ifeq ($(LOCAL_DYLIBFILENAME),)
-    LOCAL_DYLIBFILENAME         = lib$(LOCAL_MODULE)$(LOCAL_DYLIBNAME_SUFFIX).so.$(VERSION)
+    LOCAL_DYLIBFILENAME         = lib$(LOCAL_MODULE)$(LIBNAME_SUFFIX).so.$(VERSION)
 endif
 
 ifeq ($(LOCAL_LIBDIR),)
@@ -69,17 +61,25 @@ $(LOCAL_MODULE)_dynamiclib: LOCAL_MODULE := $(LOCAL_MODULE)
 $(LOCAL_MODULE)_dynamiclib: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
 
 
+$(LOCAL_MODULE)_dynamiclib: $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME)
+
 ifeq ($(CPP11),yes)
 
+#
+# Don't create symlinks for test library targets
+#
+ifeq ($(findstring /test/,$(LOCAL_PATH)),)
+
+$(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so: LOCAL_LIBDIR := $(LOCAL_LIBDIR)
 $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so: LOCAL_DYLIBFILENAME := $(LOCAL_DYLIBFILENAME)
 
-$(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so:
+$(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so: $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME)
 	@mkdir -p $(@D)
 	@rm -f $@
 	$(Q)ln -s ../$(LOCAL_DYLIBFILENAME) $@
 
-$(LOCAL_MODULE)_dynamiclib: $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME) \
-			    $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so
+$(LOCAL_MODULE)_dynamiclib: $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so
+endif
 
 else
 
@@ -97,7 +97,7 @@ $(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBNAME := $(LOCAL_DYLIBNAME)
 $(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBSONAME := $(LOCAL_DYLIBSONAME)
 $(LOCAL_MODULE)_dynamiclib_clean: LOCAL_DYLIBFILENAME := $(LOCAL_DYLIBFILENAME)
 
-$(LOCAL_MODULE)_dynamiclib_clean::
+$(LOCAL_MODULE)_dynamiclib_clean:
 	$(Q)rm -rf $(LOCAL_LIBDIR)/$(LOCAL_DYLIBNAME) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBSONAME) $(LOCAL_LIBDIR)/$(LOCAL_DYLIBFILENAME)
 ifeq ($(CPP11),yes)
 	$(Q)rm -rf $(LOCAL_LIBDIR)/c++11/lib$(LOCAL_MODULE).so
