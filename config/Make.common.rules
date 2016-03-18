@@ -68,7 +68,7 @@ endif
 
 ifeq ($(filter $(MAKECMDGOALS),clean),)
     ifeq ($(wildcard $(SLICE2CPP)),)
-        $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution $(SLICE2CPP))
+        $(error You need to build Ice for C++ from ice/cpp directory or set ICE_HOME to use an Ice binary distribution)
     endif
 endif
 
