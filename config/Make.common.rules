@@ -31,9 +31,7 @@ clean::
 VERSION                         = 3.6.2
 SOVERSION                       = 36
 
-ifeq ($(findstring Ubuntu,$(shell uname -a)),Ubuntu)
-    ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-else ifeq ($(findstring Debian,$(shell uname -a)),Debian)
+ifeq ($(findstring Debian,$(shell uname -a)),Debian)
     ice_libprefix               = /$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 else
     ifeq ($(shell uname -m),x86_64)
@@ -145,7 +143,7 @@ rwildcard			= $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(su
 #
 # Relative path
 #
-relpath                         = $(subst $(eval) ,/,$(patsubst %,..,$(subst /, ,$(subst $1,,$2))))
+relpath				= $(subst $(eval) ,/,$(patsubst %,..,$(subst /, ,$(subst $1,,$2))))
 
 #
 # Verbosity

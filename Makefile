@@ -57,8 +57,7 @@ NEW_DTAGS                       ?= no
 #DEFAULT_MUTEX_PROTOCOL         ?= PrioNone
 
 #
-# Define CPP11 as yes if you want to enable C++11 features in GCC or
-# Clang.
+# Define CPP11 as yes if you want to enable C++11 features.
 #
 #CPP11                          ?= yes
 
@@ -77,15 +76,11 @@ BUILD_TESTSUITE                 ?= static
 
 ###############################################################################
 #                                                                             #
-# Debian/Ubuntu specific options                                              #
+# Debian specific options                                                     #
 #                                                                             #
 ###############################################################################
 
 #
-# Target distribution supported values are 'wheezy' 'jessie' 'trusty' and 'vivid'.
-#
-TARGET_DIST                     ?= jessie
-
 # Debian arch tuple of the host machine. Supported values are
 # 'arm-linux-gnueabihf' and 'x86_64-linux-gnu'.
 #
