@@ -14,6 +14,8 @@ ifeq ($(filter $(LOCAL_CPPFLAGS),-fPIC),)
 else
     LOCAL_TARGETPREFIX          = _pic
     LOCAL_OBJPREFIX             = $(OBJPREFIX)/pic
+    LOCAL_LDFLAGS               := -rdynamic $(LOCAL_LDFLAGS)
+    LOCAL_STRIP_DISABLED 	= yes
 endif
 
 ifneq ($(LOCAL_HEADERPATH),)
