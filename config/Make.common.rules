@@ -312,7 +312,7 @@ all:: $(TARGETS)
 clean:: $(CLEAN_TARGETS) test_clean
 
 ifneq ($(USE_BIN_DIST),yes)
-    test_deploy: $(filter $(DIST_TARGETS),glacier2router icebox iceboxadmin icestormadmin IcePy)
+    test_deploy: $(filter $(DIST_TARGETS),glacier2router icebox iceboxadmin icestormadmin IcePy slice2py)
 endif
 
 .PHONY: test_deploy
@@ -353,12 +353,6 @@ ifneq ($(USE_BIN_DIST),yes)
 	rsync -aczv --prune-empty-dirs --exclude="*.a" $(icee_lib_dir)/* $(subst $(prefix),$(DEPLOY_TARGET)/cpp,$(ice_install_lib_dir))
 endif
 	rsync -aczv python/allTests.py $(DEPLOY_TARGET)/python/
-ifneq ($(USE_BIN_DIST),yes)
-	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR) $(DEPLOY_TARGET)/python/python
-else
-	# Necessary so that the tests can find the top level python directory
-	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python/
-endif
 	rsync -aczv --prune-empty-dirs \
 	        --exclude="*.pyc" \
 	        --exclude="Make*" \
@@ -366,6 +360,12 @@ endif
 	        --exclude="test/Slice/import/Test/*" \
 	        --exclude="test/Slice/import/*_ice.py" \
 	        ice/python/test $(DEPLOY_TARGET)/python/
+ifneq ($(USE_BIN_DIST),yes)
+	rsync -aczv --prune-empty-dirs --exclude="*.o" --exclude="*.d" python/$(PYTHON_DIR)/ $(DEPLOY_TARGET)/python/python
+else
+	# Necessary so that the tests can find the top level python directory
+	rsync -aczv ice/python/python/Ice.py $(DEPLOY_TARGET)/python/python/
+endif
 	rsync -aczv --prune-empty-dirs --exclude="Make*" ice/slice $(DEPLOY_TARGET)/
 	rsync -aczv --prune-empty-dirs --exclude="Make*" --exclude="*.d" python/test/* $(DEPLOY_TARGET)/python/test/
 
