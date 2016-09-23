@@ -94,7 +94,7 @@ then install passlib by running:
 
     pip install passlib
 
-[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.2
+[1]: https://doc.zeroc.com/display/Ice36/Supported+Platforms+for+Ice-E+3.6.3
 [2]: https://doc.zeroc.com/display/Ice36/Ice-E+Release+Notes
 [3]: https://github.com/zeroc-ice/meta-zeroc
 [4]: https://pip.pypa.io/en/latest/installing.html
