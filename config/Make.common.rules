@@ -177,6 +177,8 @@ GITIGNORE_DEFAULT               = certs \
                                   arm-poky-linux-gnueabi* \
                                   *.so \
                                   *.so.* \
+                                  *.a \
+                                  *.pyc \
                                   *~ \
                                   cpp/**/run.py \
                                   python/python2.7/ \
