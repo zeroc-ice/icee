@@ -28,6 +28,7 @@ tests = [
     ("Slice/structure", ["once"]),
     ("Slice/macros", ["once"]),
     ("Slice/import", ["once"]),
+    ("Slice/unicodePaths", ["once"]),
     ("Ice/adapterDeactivation", ["core"]),
     ("Ice/binding", ["core"]),
     ("Ice/exceptions", ["core"]),
@@ -45,13 +46,13 @@ tests = [
     ("Ice/slicing/objects", ["core"]),
     ("Ice/custom", ["core"]),
     ("Ice/checksum", ["core"]),
-    ("Ice/timeout", ["core", "nocompress", "nossl"]), # This test relies on the socket send() blocking and 
+    ("Ice/timeout", ["core", "nocompress", "nossl"]), # This test relies on the socket send() blocking and
                                                       # doesn't work well with old OpenSSL versions.
     ("Ice/servantLocator", ["core"]),
     ("Ice/blobject", ["core"]),
     ("Ice/defaultServant", ["core"]),
     ("Ice/defaultValue", ["core"]),
-    ("Ice/ami", ["core", "nocompress", "nossl"]),       # This test relies on the socket send() blocking and 
+    ("Ice/ami", ["core", "nocompress", "nossl"]),       # This test relies on the socket send() blocking and
                                                         # doesn't work well with old OpenSSL versions.
     ("Ice/optional", ["core"]),
     ("Ice/enums", ["core"]),
