@@ -31,3 +31,9 @@ LOCAL_EXE                       = client4
 LOCAL_PATH                      = cpp/test/Ice/logger
 LOCAL_SRCS                      = Client4.cpp
 include $(TEST_APPLICATION_RULES)
+
+include $(CLEAR_RULES)
+LOCAL_EXE                       = client5
+LOCAL_PATH                      = cpp/test/Ice/logger
+LOCAL_SRCS                      = Client5.cpp
+include $(TEST_APPLICATION_RULES)
