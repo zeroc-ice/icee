@@ -78,6 +78,12 @@ PYTHON_DIR                      ?= python$(PYTHON_BASEVERSION)
 #
 # Optimization flags
 #
+ifeq ($(ICEE_TARGET_OS),yocto)
+
+    override CPPFLAGS           += $(CXXFLAGS)
+    override LDFLAGS            := $(LDFLAGS)
+else
+
 ifeq ($(OPTIMIZE),yes)
     CFLAGS                      = -O2 -DNDEBUG -ffunction-sections -fdata-sections
     override CPPFLAGS           += -Os -DNDEBUG -ffunction-sections -fdata-sections
@@ -85,6 +91,8 @@ ifeq ($(OPTIMIZE),yes)
 else
     CFLAGS                      = -g
     override CPPFLAGS           := $(CPPFLAGS) -g
+endif
+
 endif
 
 ifeq ($(EMBEDDED_RUNPATH),yes)
