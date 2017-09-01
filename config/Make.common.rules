@@ -28,7 +28,7 @@ endif
 all::
 clean::
 
-VERSION                         = 3.6.3
+VERSION                         = 3.6.4
 SOVERSION                       = 36
 
 ifeq ($(findstring Debian,$(shell uname -a)),Debian)
